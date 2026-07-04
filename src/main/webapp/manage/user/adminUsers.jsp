@@ -155,7 +155,7 @@ $(function(){
 		<!-- 사이드바 -->
 		<c:import url="../fragments/sidebar.jsp"></c:import>
 
-		<jsp:useBean id="rDTO" class="kr.co.sist.manage.client.RangeDTO" scope="page"/>
+		<jsp:useBean id="rDTO" class="manage.client.RangeDTO" scope="page"/>
 		<jsp:setProperty name="rDTO" property="*"/>
 		<%
 		ClientService cs = new ClientService();
@@ -178,11 +178,7 @@ $(function(){
 		
 		int pageScale = 10;
 		int totalCnt = cs.getTotalCount();
-		int pageCnt = totalCnt / pageScale;
-		
-		if (totalCnt % pageScale != 0) {
-			pageCnt++;
-		}
+		int pageCnt = (int)Math.ceil((double)totalCnt / pageScale);
 		
 		if (currentPage < 1) {
 			currentPage = 1;
@@ -274,7 +270,7 @@ $(function(){
 								</tr>
 								</c:if>
 								<c:forEach var="client" items="${ clientList }">
-								<tr class="user-row" data-id="${ client.clientId }" 
+								<tr class="user-row" data-id="${ client.clientNo }" 
 									data-name="${ client.clientName }" data-email="${ client.email }" 
 									data-phone="${ client.phone }" data-date="${ client.joinDate }">
 									<td>${ client.clientName }</td>
@@ -285,10 +281,21 @@ $(function(){
 								</c:forEach>
 							</tbody>
 						</table>
-						<div id="divPagination" style="text-align:center">
-						<c:forEach var="i" begin="1" end="${rDTO.pageCnt}">
-						[<a href="adminUsers.jsp?currentPage=${i}&keyword=${param.keyword}">${i}</a>]
-						</c:forEach>
+						<div id="divPagination-wrap" style="text-align:center">
+						<c:if test="${rDTO.pageCnt > 0}">
+						    <c:forEach var="i" begin="1" end="${rDTO.pageCnt}">
+						        <c:choose>
+						            <c:when test="${i == currentPage}">
+						                <b>[${i}]</b>
+						            </c:when>
+						            <c:otherwise>
+						                <a href="adminUsers.jsp?currentPage=${i}">
+						                    [${i}]
+						                </a>
+						            </c:otherwise>
+						        </c:choose>
+						    </c:forEach>
+						</c:if>
 						</div>
 					</div>
 

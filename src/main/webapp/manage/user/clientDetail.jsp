@@ -6,7 +6,7 @@
 ClientService sc = new ClientService();
 
 String clientId = request.getParameter("clientId");
-ClientDTO cDTO = sc.getClientDetail(clientId);
+ClientDTO cDTO = sc.getClientDEtail(clientId);
 
 response.setContentType("application/json;charset=UTF-8");
 
