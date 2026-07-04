@@ -80,11 +80,14 @@ function selectPeriod(btn) {
 
 function changePageSize() {
     let form = document.getElementById("searchForm");
-    let pageInput = document.createElement("input");
-    pageInput.type = "hidden";
-    pageInput.name = "page";
+    let pageInput = form.querySelector("input[name='page']");
+    if (!pageInput) {
+        pageInput = document.createElement("input");
+        pageInput.type = "hidden";
+        pageInput.name = "page";
+        form.appendChild(pageInput);
+    }
     pageInput.value = "1";
-    form.appendChild(pageInput);
     form.submit();
 }//changePageSize
 
@@ -123,10 +126,10 @@ function deleteProduct(){
     form.submit();
 }//deleteProduct
 
-function openEditModal(productNo, productName, stock){
+function openEditModal(productNo, productName, quantity){
     document.getElementById("editProductNo").value = productNo;
     document.getElementById("editName").value = productName;
-    document.getElementById("editStock").value = stock;
+    document.getElementById("editStock").value = quantity;
     document.getElementById("editModal").style.display = "flex";
 }//openEditModal
 
@@ -184,12 +187,17 @@ function closeEditModal(){
 		List<ProductDTO> productList = sps.searchItem(rDTO);
 		
 		request.setAttribute("productList", productList);
-		request.setAttribute("totalCount", sps.getTotalCount());
+		
+		int totalCount = sps.getTotalCount();
+		int totalPage = (int)Math.ceil((double)totalCount / pageSize);
+
+		request.setAttribute("totalCount", totalCount);
 		request.setAttribute("onSaleCount", sps.getOnSaleCount());
 		request.setAttribute("soldoutCount", sps.getSoldoutCount());
-		
+
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageSize", pageSize);
+		request.setAttribute("totalPage", totalPage);
 		%>
 
 		<!-- 메인 -->
@@ -225,7 +233,7 @@ function closeEditModal(){
 				</div>
 
 				<!-- 검색 -->
-				<form action="viewEditProducts.jsp" method="get" id="searchForm">
+				<form action="vieweditProducts.jsp" method="get" id="searchForm">
 				<input type="hidden" id="period" name="period" value="<%= request.getParameter("period") == null ? "3month" : request.getParameter("period") %>">
 				<div class="search-area">
 					<div class="search-row">
@@ -239,15 +247,15 @@ function closeEditModal(){
 						<div class="search-title">판매상태</div>
 						<div class="search-content">
 						<label>
-							<input type="radio" name="status" value="all" <%= status == null || "all".equals(status) ? "checked" : "" %>>
+							<input type="radio" name="status" value="전체" <%= status == null || "all".equals(status) ? "checked" : "" %>>
 							전체
 						</label>
 						<label>
-							<input type="radio" name="status" value="sale" <%= "sale".equals(status) ? "checked" : "" %>>
+							<input type="radio" name="status" value="판매중" <%= "sale".equals(status) ? "checked" : "" %>>
 							판매중
 						</label>
 						<label>
-							<input type="radio" name="status" value="soldout" <%= "soldout".equals(status) ? "checked" : "" %>>
+							<input type="radio" name="status" value="품절" <%= "soldout".equals(status) ? "checked" : "" %>>
 							품절
 						</label>
 						</div>
@@ -290,9 +298,9 @@ function closeEditModal(){
 				<div class="list-top">
 					<span>상품목록 <b>${ totalCount }</b>개</span> 
 					<select id="pageSize" name="pageSize" onchange="changePageSize()">
+						<option value="10" <%= pageSize == 10 ? "selected" : "" %>>10개씩</option>
 						<option value="20" <%= pageSize == 20 ? "selected" : "" %>>20개씩</option>
-						<option value="50" <%= pageSize == 50 ? "selected" : "" %>>50개씩</option>
-						<option value="100" <%= pageSize == 100 ? "selected" : "" %>>100개씩</option>
+						<option value="40" <%= pageSize == 40 ? "selected" : "" %>>40개씩</option>
 					</select>
 				</div>
 				</form>
@@ -316,7 +324,7 @@ function closeEditModal(){
 									value="${product.prdID}"></td>
 								<td>
 									<button class="btn btn-sm btn-outline-secondary"
-										onclick="openEditModal('${product.prdID}','${product.prdName}','${product.stock}')">
+										onclick="openEditModal('${product.prdID}','${product.prdName}','${product.quantity}')">
 										수정</button>
 								</td>
 								<td>
@@ -326,16 +334,27 @@ function closeEditModal(){
 								<td>${product.prdID}</td>
 								<td>${product.prdName}</td>
 								<td>${product.status}</td>
-								<td>${product.stock}</td>
+								<td>${product.quantity}</td>
 							</tr>
 						</c:forEach>
 					</tbody>
 				</table>
 
 				<div id="divPagination-wrap" style="text-align:center">
-				<c:forEach var="i" begin="1" end="${rDTO.pageCnt}">
-				[<a href="adminUsers.jsp?currentPage=${i}&keyword=${param.keyword}">${i}</a>]
-				</c:forEach>
+			    <c:if test="${totalPage > 1}">
+			        <c:forEach var="i" begin="1" end="${totalPage}">
+			            <c:choose>
+			                <c:when test="${i == currentPage}">
+			                    [${i}]
+			                </c:when>
+			                <c:otherwise>
+			                    <a href="vieweditProducts.jsp?page=${i}&pageSize=${pageSize}&keyword=${param.keyword}&status=${param.status}&category=${param.category}&startDate=${param.startDate}&endDate=${param.endDate}&period=${param.period}">
+			                        [${i}]
+			                    </a>
+			                </c:otherwise>
+			            </c:choose>
+			        </c:forEach>
+			    </c:if>
 				</div>
 
 				<form id="deleteForm" method="post" action="deleteProduct.jsp"></form>

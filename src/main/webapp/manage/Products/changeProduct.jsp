@@ -1,39 +1,42 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.*" %>
 <%@ page import="manage.searchproduct.SearchProductService" %>
 <%@ page import="manage.searchproduct.ProductDTO" %>
+
 <%
 request.setCharacterEncoding("UTF-8");
 
 String prdID = request.getParameter("prdID");
 String prdName = request.getParameter("prdName");
-String stockStr = request.getParameter("stock");
+String quantityStr = request.getParameter("stock");
 
-int stock = 0;
-if(stockStr != null && !stockStr.equals("")){
-    stock = Integer.parseInt(stockStr);
+try {
+int quantity = 0;
+if (quantityStr != null && !quantityStr.trim().isEmpty()) {
+    quantity = Integer.parseInt(quantityStr);
 }
 
 ProductDTO dto = new ProductDTO();
 dto.setPrdID(prdID);
 dto.setPrdName(prdName);
-dto.setStock(stock);
+dto.setQuantity(quantity);
 
 SearchProductService sps = new SearchProductService();
-int result = sps.changeProduct(dto);
 
-if(result > 0){
+sps.changeProduct(dto);
 %>
+
 <script>
-alert("수정 성공");
-location.href="vieweditProducts.jsp";
+    alert("수정 성공");
+    location.href = "vieweditProducts.jsp";
 </script>
+
 <%
-} else {
+} catch (Exception e) {
+e.printStackTrace();
 %>
 <script>
-alert("수정 실패");
-history.back();
+    alert("수정 중 오류가 발생했습니다.");
+    history.back();
 </script>
 <%
 }

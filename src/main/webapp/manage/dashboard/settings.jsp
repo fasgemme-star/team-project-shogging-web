@@ -64,7 +64,7 @@ function successConfirm() {
 		<%
 		AdminService as = new AdminService();
 		
-		String adminId = (String) session.getAttribute("adminId");
+		String adminID = (String) session.getAttribute("adminId");
 		AdminDTO adminInfo = as.getAdminInfo(adminId);
 		
 		pageContext.setAttribute("adminInfo", adminInfo);
@@ -95,7 +95,7 @@ function successConfirm() {
 						</tr>
 						<tr>
 							<th>연락처</th>
-							<td><c:out value="${ adminInfo.adminTel }"/></td>
+							<td><c:out value="${ adminInfo.tel }"/></td>
 						</tr>
 						<tr>
 							<th>이메일</th>

@@ -12,7 +12,7 @@ int result = as.login(id, password);
 
 if (result == 1) {
 	session.setAttribute("adminId", id);
-	response.sendRedirect("dashboard.jsp");
+	response.sendRedirect("../dashboard/dashboard.jsp");
 } else {
 	response.sendRedirect("login.jsp?flag=N");
 }
