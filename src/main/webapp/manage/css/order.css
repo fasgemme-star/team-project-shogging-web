@@ -1,0 +1,121 @@
+.order-wrap{
+	background:#fff;
+	padding:25px;
+	border-radius:12px;
+}
+
+.page-title{
+	margin-bottom:25px;
+	font-size:24px;
+	font-weight:600;
+}
+
+.search-box{
+	border:1px solid #ddd;
+	padding:20px;
+	border-radius:10px;
+	margin-bottom:25px;
+	background:#fafafa;
+}
+
+.search-row{
+	display:flex;
+	align-items:center;
+	gap:10px;
+	margin-bottom:15px;
+}
+
+.search-row label{
+	width:80px;
+	font-weight:600;
+}
+
+.search-row select,
+.search-row input[type=date]{
+	height:36px;
+	padding:0 10px;
+	border:1px solid #ccc;
+	border-radius:6px;
+}
+
+.date-btn{
+	height:36px;
+	padding:0 12px;
+	border:1px solid #ccc;
+	background:white;
+	border-radius:6px;
+	cursor:pointer;
+}
+
+.date-btn.active{
+	background:#7CB342;
+	color:white;
+	border-color:#7CB342;
+}
+
+.search-btn-area{
+	text-align:center;
+	margin-top:20px;
+}
+
+#resetBtn,
+#searchBtn{
+	width:100px;
+	height:40px;
+	border:none;
+	border-radius:6px;
+	cursor:pointer;
+}
+
+#resetBtn{
+	background:#e9ecef;
+}
+
+#searchBtn{
+	background:#7CB342;
+	color:white;
+	margin-left:10px;
+}
+
+.order-table{
+	width:100%;
+	border-collapse:collapse;
+	background:white;
+}
+
+.order-table th{
+	background:#f5f5f5;
+	padding:12px;
+	border:1px solid #ddd;
+}
+
+.order-table td{
+	padding:12px;
+	border:1px solid #ddd;
+	text-align:center;
+}
+
+.claim-btn,
+.cancel-btn{
+	border:none;
+	background:#dc3545;
+	color:white;
+	padding:6px 12px;
+	border-radius:6px;
+	cursor:pointer;
+}
+
+.bottom-btn{
+	margin-top:20px;
+}
+
+#deliveryBtn{
+	width:120px;
+	height:40px;
+	border:1px solid #ccc;
+	background:white;
+	border-radius:6px;
+	cursor:pointer;
+}
+
+
