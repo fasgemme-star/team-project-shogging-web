@@ -1,14 +1,15 @@
 package inquiry;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import dbcon.DbConnection;
+import dbcon.Path;
 
-
-import kr.co.sist.dao.GetConnection;
 
 public class InquiryDAO {
 

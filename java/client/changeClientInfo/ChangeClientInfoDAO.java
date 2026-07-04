@@ -1,12 +1,15 @@
 package changeClientInfo;
 
 import java.sql.Connection;
+
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import kr.co.sist.dao.GetConnection;
 import signup.ClientDTO;
+import dbcon.DbConnection;
+import dbcon.Path;
 
 public class ChangeClientInfoDAO {
 
