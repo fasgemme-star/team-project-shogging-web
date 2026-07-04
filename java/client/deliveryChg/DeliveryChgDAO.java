@@ -28,14 +28,14 @@ public class DeliveryChgDAO {
 		
 		List<DeliveryDTO> list=new ArrayList<>();
 		
+		DbConnection dbcon = DbConnection.getInstance();
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql="SELECT DELIVERY_POSTCODE,DELIVERY_ADDR,FIRST_DESTINATION "
 					+ "FROM DELIVERY_DESTINATION "
@@ -59,11 +59,7 @@ public class DeliveryChgDAO {
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbcon.dbClose(rs, pstmt, con);
 		}
 		return list;
 		
@@ -74,10 +70,10 @@ public class DeliveryChgDAO {
 		
 		int cnt=0;
 		
+		DbConnection dbcon = DbConnection.getInstance();
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		StringBuilder sql = new StringBuilder();
 
@@ -88,7 +84,7 @@ public class DeliveryChgDAO {
 		sql.append("VALUES (?, ?, ?, ?, ?, SYSDATE, ?)");		
 		
 		try {
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			pstmt=con.prepareStatement(sql.toString());
 			
@@ -104,11 +100,7 @@ public class DeliveryChgDAO {
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				gc.dbClose(null, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbcon.dbClose(null, pstmt, con);
 		}
 		return cnt;
 	}
@@ -117,14 +109,14 @@ public class DeliveryChgDAO {
 	public int removeDelivery(DeliveryDTO dDTO) {
 		
 		 int cnt = 0;
+		 DbConnection dbcon = DbConnection.getInstance();
 
 		    Connection con = null;
 		    PreparedStatement pstmt = null;
 
-		    GetConnection gc = GetConnection.getInstance();
 
 		    try {
-		        con = gc.getConn("dbcp");
+		    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 		        String sql = "DELETE FROM DELIVERY_DESTINATION "
 		                   + "WHERE CLIENT_NO = ? AND DELIVERY_ID = ?";
@@ -139,11 +131,7 @@ public class DeliveryChgDAO {
 		    } catch (SQLException e) {
 		        e.printStackTrace();
 		    } finally {
-		        try {
-		            gc.dbClose(null, pstmt, con);
-		        } catch (SQLException e) {
-		            e.printStackTrace();
-		        }
+		    	dbcon.dbClose(null, pstmt, con);
 		    }
 
 		    return cnt;

@@ -27,15 +27,16 @@ private static ProductDetailDAO pdDAO;
 		
 		ProductDTO pDTO = null;
 
+		DbConnection dbcon = DbConnection.getInstance();
+		
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-	    GetConnection gc=GetConnection.getInstance();
 	    
 	    try {
 	    	
-	    	con=gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 	        StringBuilder sql = new StringBuilder();
 
@@ -80,11 +81,7 @@ private static ProductDetailDAO pdDAO;
 	    } catch(Exception e) {
 	        e.printStackTrace();
 	    } finally {
-	    	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 
 	    return pDTO;
@@ -95,15 +92,16 @@ private static ProductDetailDAO pdDAO;
 		
 		ProductDTO pDTO = null;
 
+		DbConnection dbcon = DbConnection.getInstance();
+		
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-	    GetConnection gc=GetConnection.getInstance();
 	    
 	    try {
 	    	
-	    	con=gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 	        StringBuilder sql = new StringBuilder();
 
@@ -130,11 +128,7 @@ private static ProductDetailDAO pdDAO;
 	    } catch(Exception e) {
 	        e.printStackTrace();
 	    } finally {
-	    	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 
 	    return pDTO;

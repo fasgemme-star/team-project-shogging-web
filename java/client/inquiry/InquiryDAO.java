@@ -29,15 +29,15 @@ public class InquiryDAO {
 	public List<InquiryDTO> selectList(String clientId){
 		
 		List<InquiryDTO> list=new ArrayList<InquiryDTO>();
+		DbConnection dbcon = DbConnection.getInstance();
 		
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql="SELECT i.INQUIRY_ID, i.INQUIRY_TITLE, i.INQUIRY_DATE, i.ANSWER_STATUS FROM INQUIRY i INNER JOIN INQUIRY_TYPE t ON i.INQUIRY_CODE=t.INQUIRY_CODE WHERE CLIENT_NO =? AND t.INQUIRY_CODE IN ('TYP000001','TYP000002')";
 			
@@ -59,11 +59,7 @@ public class InquiryDAO {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbcon.dbClose(rs, pstmt, con);
 		}
 		
 		return list;
@@ -72,15 +68,15 @@ public class InquiryDAO {
 	public InquiryDTO selectDetail(String inquiryId) {
 		
 		InquiryDTO iDTO=null;
+		DbConnection dbcon = DbConnection.getInstance();
 		
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql="SELECT i.INQUIRY_ID,i.INQUIRY_DATE,i.INQUIRY_TITLE,i.INQUIRY_SECRET,i.INQUIRY_CONTENT,i.ANSWER_STATUS,i.ANSWER,i.ANSWER_DATE t.INQUIRY_NAME,t.INQUIRY_TYPE "
 					+ "FROM INQUIRY i "
@@ -108,11 +104,7 @@ public class InquiryDAO {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbcon.dbClose(rs, pstmt, con);
 		}
 		return iDTO;
 	}

@@ -26,15 +26,15 @@ public class ChangeClientInfoDAO {
 	public boolean verifyPassword(String clientID, String hashPassword) {
 		boolean flag = false;
 
+		DbConnection dbcon = DbConnection.getInstance();
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-	    GetConnection gc = GetConnection.getInstance();
 
 	    try {
 
-	        con = gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 	        StringBuilder sql = new StringBuilder();
 
@@ -57,11 +57,7 @@ public class ChangeClientInfoDAO {
 	    } catch (SQLException se) {
 	        se.printStackTrace();
 	    } finally {
-	    	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 
 	    return flag;
@@ -70,14 +66,14 @@ public class ChangeClientInfoDAO {
 	public ClientDTO selectUserInfo(String clientID) {
 		ClientDTO cDTO=null;
 		
+		DbConnection dbcon = DbConnection.getInstance();
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql = "SELECT CLIENT_ID, CLIENT_NAME, CLIENT_EMAIL, CLIENT_TEL, CLIENT_BIRTH, CLIENT_CHECK " +
                     "FROM CLIENT WHERE CLIENT_ID = ?";
@@ -101,11 +97,7 @@ public class ChangeClientInfoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
    		} finally {
-   			try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+   			dbcon.dbClose(rs, pstmt, con);
    		}
 
 		return cDTO;
@@ -116,15 +108,15 @@ public class ChangeClientInfoDAO {
 	public int updateUserInfo(ClientDTO cDTO) {
 		
 		int rowCnt = 0;
+		DbConnection dbcon = DbConnection.getInstance();
 
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 
-	    GetConnection gc = GetConnection.getInstance();
 
 	    try {
 
-	        con = gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 	        StringBuilder sql = new StringBuilder();
 	        sql.append("UPDATE client ");
@@ -145,11 +137,7 @@ public class ChangeClientInfoDAO {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {
-	        try {
-	            gc.dbClose(null, pstmt, con);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+	    	dbcon.dbClose(null, pstmt, con);
 	    }
 
 	    return rowCnt;
@@ -160,14 +148,14 @@ public class ChangeClientInfoDAO {
 	public int updatePassword(String clientID, String newPassword) {
 		int rowCnt = 0;
 
+		DbConnection dbcon = DbConnection.getInstance();
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 
-	    GetConnection gc = GetConnection.getInstance();
 
 	    try {
 
-	        con = gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 	        StringBuilder sql = new StringBuilder();
 
@@ -186,11 +174,7 @@ public class ChangeClientInfoDAO {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {
-	        try {
-	            gc.dbClose(null, pstmt, con);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+	    	dbcon.dbClose(null, pstmt, con);
 	    }
 
 	    return rowCnt;
@@ -199,14 +183,14 @@ public class ChangeClientInfoDAO {
 	public int deleteMember(String clientID) {
 		int rowCnt = 0;
 
+		DbConnection dbcon = DbConnection.getInstance();
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 
-	    GetConnection gc = GetConnection.getInstance();
 
 	    try {
 
-	        con = gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 	        StringBuilder sql = new StringBuilder();
 
@@ -224,11 +208,7 @@ public class ChangeClientInfoDAO {
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {
-	        try {
-	            gc.dbClose(null, pstmt, con);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+	    	dbcon.dbClose(null, pstmt, con);
 	    }
 
 	    return rowCnt;

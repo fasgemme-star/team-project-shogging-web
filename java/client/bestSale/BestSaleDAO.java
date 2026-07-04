@@ -30,16 +30,16 @@ public class BestSaleDAO {
 	public List<ProductDTO> bestProduct(RangeDTO rDTO){
 		
 		List<ProductDTO> list=new ArrayList<>();
+		DbConnection dbcon = DbConnection.getInstance();
 
 	    Connection con=null;
 	    PreparedStatement pstmt=null;
 	    ResultSet rs=null;
 	    
-	    GetConnection gc=GetConnection.getInstance();
 	    
 	    try {
 	    	
-	    	con=gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 	    	
 	    	String sql=" SELECT pi.url, p.PRODUCT_ID,p.PRODUCT_NAME,p.SHORTINFO,po.DISCOUNT,po.PRICE, SUM(od.QUANTITY) sales_count "
 	    			+ "FROM ORDER_DETAILS od  "
@@ -71,11 +71,7 @@ public class BestSaleDAO {
 	    }catch(Exception e) {
 	    	e.printStackTrace();
 	    }finally {
-	    	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 		
 		return list;
@@ -85,15 +81,15 @@ public class BestSaleDAO {
 		
 		List<ProductDTO> list=new ArrayList<>();
 
+		DbConnection dbcon = DbConnection.getInstance();
 	    Connection con=null;
 	    PreparedStatement pstmt=null;
 	    ResultSet rs=null;
 	    
-	    GetConnection gc=GetConnection.getInstance();
 	    
 	    try {
 	    	
-	    	con=gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 	    	
 	    	String sql="SELECT pi.URL, p.PRODUCT_ID, p.PRODUCT_NAME,po.DISCOUNT, po.PRICE, p.SHORTINFO,SUM(od.QUANTITY) AS sales_count"
 	    			+ "FROM ORDER_DETAILS od"
@@ -127,11 +123,7 @@ public class BestSaleDAO {
 	    }catch(Exception e) {
 	    	e.printStackTrace();
 	    }finally {
-	    	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 		
 		return list;
@@ -141,16 +133,16 @@ public class BestSaleDAO {
 	public List<ProductDTO> economyProduct(RangeDTO rDTO){
 		
 		List<ProductDTO> list=new ArrayList<>();
+		DbConnection dbcon = DbConnection.getInstance();
 
 	    Connection con=null;
 	    PreparedStatement pstmt=null;
 	    ResultSet rs=null;
 	    
-	    GetConnection gc=GetConnection.getInstance();
 	    
 	    try {
 	    	
-	    	con=gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 	    	
 	    	String sql="SELECT pi.URL ,p.PRODUCT_ID, p.PRODUCT_NAME,po.DISCOUNT , po.PRICE, p.SHORTINFO "
 	    			+ "FROM PRODUCT p  "
@@ -180,11 +172,7 @@ public class BestSaleDAO {
 	    }catch(Exception e) {
 	    	e.printStackTrace();
 	    }finally {
-	    	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 		
 		return list;
@@ -195,15 +183,15 @@ public class BestSaleDAO {
 		
 		List<ProductDTO> list=new ArrayList<>();
 
+		DbConnection dbcon = DbConnection.getInstance();
 	    Connection con=null;
 	    PreparedStatement pstmt=null;
 	    ResultSet rs=null;
 	    
-	    GetConnection gc=GetConnection.getInstance();
 	    
 	    try {
 	    	
-	    	con=gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 	    	
 	    	String sql="SELECT p.PRODUCT_ID, p.PRODUCT_NAME, po.PRICE, p.SHORTINFO  "
 	    			+ "FROM PRODUCT p  "
@@ -233,11 +221,7 @@ public class BestSaleDAO {
 	    }catch(Exception e) {
 	    	e.printStackTrace();
 	    }finally {
-	    	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 		
 		return list;

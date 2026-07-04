@@ -32,15 +32,16 @@ public class UserMainDAO {
 		
 		List<ProductDTO> list=new ArrayList<>();
 		
+		DbConnection dbcon = DbConnection.getInstance();
+		
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql=" SELECT pi.url, p.PRODUCT_ID,p.PRODUCT_NAME,p.SHORTINFO,po.DISCOUNT,po.PRICE, SUM(od.QUANTITY) sales_count "
 					+ "FROM ORDER_DETAILS od "
@@ -71,11 +72,7 @@ public class UserMainDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbcon.dbClose(rs, pstmt, con);
 		}
 		
 		
@@ -87,14 +84,15 @@ public class UserMainDAO {
 		
 		List<ProductDTO> list=new ArrayList<>();
 		
+		DbConnection dbcon = DbConnection.getInstance();
+		
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql="SELECT pi.url,p.PRODUCT_ID, p.PRODUCT_NAME,po.DISCOUNT, po.PRICE, p.SHORTINFO "
 					+ "FROM PRODUCT p  "
@@ -128,11 +126,7 @@ public class UserMainDAO {
 			e.printStackTrace();
 			
 		}finally {
-			try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbcon.dbClose(rs, pstmt, con);
 		}
 		
 		return list;
@@ -143,15 +137,16 @@ public class UserMainDAO {
 
 	    List<ProductDTO> list = new ArrayList<>();
 
+	    DbConnection dbcon = DbConnection.getInstance();
+	    
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-	    GetConnection gc = GetConnection.getInstance();
 
 	    try {
 
-	        con = gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 	        String sql =
 	        		"SELECT * " +
@@ -204,11 +199,7 @@ public class UserMainDAO {
 	    } catch(Exception e) {
 	        e.printStackTrace();
 	    } finally {
-	        try {
-	            gc.dbClose(rs, pstmt, con);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 
 	    return list;
@@ -219,15 +210,16 @@ public class UserMainDAO {
 
 	    int cnt = 0;
 
+	    DbConnection dbcon = DbConnection.getInstance();
+	    
 	    Connection con = null;
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 
-	    GetConnection gc = GetConnection.getInstance();
 
 	    try {
 
-	        con = gc.getConn("dbcp");
+	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 	        String sql =
 	        "SELECT COUNT(*) " +
@@ -249,11 +241,7 @@ public class UserMainDAO {
 	    } catch(Exception e) {
 	        e.printStackTrace();
 	    } finally {
-	        try {
-	            gc.dbClose(rs, pstmt, con);
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }
 
 	    return cnt;

@@ -30,15 +30,16 @@ public class ProductSearchDAO {
 		
 		List<ProductDTO> list = new ArrayList<ProductDTO>();
 
+		DbConnection dbcon = DbConnection.getInstance();
+		
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        GetConnection gc=GetConnection.getInstance();
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
             StringBuilder sql = new StringBuilder();
 
@@ -75,11 +76,7 @@ public class ProductSearchDAO {
 
         } finally {
 
-        	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+        	dbcon.dbClose(rs, pstmt, con);
 
         }
 

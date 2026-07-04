@@ -26,15 +26,16 @@ public class SignupDAO {
 	public int selectID(ClientDTO cDTO) {
 		 int cnt = 0;
 
+		 DbConnection dbcon = DbConnection.getInstance();
+		 
 		    Connection con = null;
 		    PreparedStatement pstmt = null;
 		    ResultSet rs = null;
 
-		    GetConnection gc=GetConnection.getInstance();
 			
 			try {
 				
-				con=gc.getConn("dbcp");
+				con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 		        String sql =
 		                "SELECT COUNT(*) FROM CLIENT WHERE CLIENT_ID = ?";
@@ -51,11 +52,7 @@ public class SignupDAO {
 		    } catch(SQLException se) {
 		        se.printStackTrace();
 		    } finally {
-		    	try {
-					gc.dbClose(rs, pstmt, con);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+		    	dbcon.dbClose(rs, pstmt, con);
 		    }
 
 		    return cnt;
@@ -64,14 +61,15 @@ public class SignupDAO {
 	public int insertClient(ClientDTO cDTO) {
 		 	int rowCnt = 0;
 
+		 	DbConnection dbcon = DbConnection.getInstance();
+		 	
 		    Connection con = null;
 		    PreparedStatement pstmt = null;
 
-		    GetConnection gc=GetConnection.getInstance();
 			
 			try {
 				
-				con=gc.getConn("dbcp");
+				con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 		        StringBuilder sql = new StringBuilder();
 
@@ -100,11 +98,7 @@ public class SignupDAO {
 		    } catch(SQLException se) {
 		        se.printStackTrace();
 		    } finally {
-		    	try {
-					gc.dbClose(null, pstmt, con);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+		    	dbcon.dbClose(null, pstmt, con);
 		    }
 
 		    return rowCnt;

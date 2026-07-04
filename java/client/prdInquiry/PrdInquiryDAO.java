@@ -31,15 +31,16 @@ public class PrdInquiryDAO {
 		
 		List<InquiryDTO> list = new ArrayList<>();
 
+		DbConnection dbcon = DbConnection.getInstance();
+		
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        GetConnection gc=GetConnection.getInstance();
-		
+       
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
             StringBuilder sql = new StringBuilder();
 
@@ -67,11 +68,7 @@ public class PrdInquiryDAO {
         } catch(Exception e) {
             e.printStackTrace();
         }finally {
-        	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+        	dbcon.dbClose(rs, pstmt, con);
 		}
 
         return list;
@@ -82,15 +79,15 @@ public class PrdInquiryDAO {
 
         InquiryDTO iDto = null;
 
+        DbConnection dbcon = DbConnection.getInstance();
+        
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-
-        GetConnection gc=GetConnection.getInstance();
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
             StringBuilder sql = new StringBuilder();
 
@@ -121,11 +118,7 @@ public class PrdInquiryDAO {
         } catch(Exception e) {
             e.printStackTrace();
         }finally {
-        	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+        	dbcon.dbClose(rs, pstmt, con);
 		}
 
         return iDto;
@@ -136,14 +129,16 @@ public class PrdInquiryDAO {
 
         int cnt = 0;
 
+        DbConnection dbcon = DbConnection.getInstance();
+        
         Connection con = null;
         PreparedStatement pstmt = null;
 
-        GetConnection gc=GetConnection.getInstance();
+        
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
             StringBuilder sql = new StringBuilder();
 
@@ -167,11 +162,7 @@ public class PrdInquiryDAO {
         } catch(Exception e) {
             e.printStackTrace();
         }finally {
-        	try {
-				gc.dbClose(null, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+        	dbcon.dbClose(null, pstmt, con);
         }
 
         return cnt;
@@ -289,15 +280,17 @@ public class PrdInquiryDAO {
 
         boolean flag = false;
 
+        DbConnection dbcon = DbConnection.getInstance();
+        
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        GetConnection gc=GetConnection.getInstance();
+        
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
             String sql =
                     "SELECT INQUIRY_SECRET FROM INQUIRY WHERE INQUIRY_ID = ?";
@@ -316,11 +309,7 @@ public class PrdInquiryDAO {
         } catch(Exception e) {
             e.printStackTrace();
         }finally {
-        	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+        	dbcon.dbClose(rs, pstmt, con);
         }
 
         return flag;

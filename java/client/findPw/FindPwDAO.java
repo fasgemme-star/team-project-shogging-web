@@ -28,16 +28,16 @@ public class FindPwDAO {
 		
 		ClientDTO cDTO=null;
 		
+		DbConnection dbcon = DbConnection.getInstance();
 		Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 		
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql="SELECT CLIENT_ID,CLIENT_EMAIL,CLIENT_HASH FROM CLIENT WHERE CLIENT_ID=? AND CLIENT_EMAIL=?";
 			
@@ -59,11 +59,7 @@ public class FindPwDAO {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbcon.dbClose(rs, pstmt, con);
 		}
 		return cDTO;
 		
@@ -73,15 +69,15 @@ public class FindPwDAO {
 
         int result = 0;
         
+        DbConnection dbcon = DbConnection.getInstance();
         Connection con = null;
         PreparedStatement pstmt = null;
 
 
-        GetConnection gc=GetConnection.getInstance();
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
 			String sql =
 					"UPDATE CLIENT SET CLIENT_HASH=? WHERE CLIENT_ID=?";
@@ -96,11 +92,7 @@ public class FindPwDAO {
         } catch(Exception e) {
             e.printStackTrace();
         }finally {
-        	try {
-				gc.dbClose(null, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+        	dbcon.dbClose(null, pstmt, con);
 		}
 
         return result;

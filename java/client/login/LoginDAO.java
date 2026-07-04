@@ -27,16 +27,16 @@ public class LoginDAO {
 	public ClientDTO selectLoginInfo(String clientId, String clientPassword) {
 		
 		ClientDTO cDTO=new ClientDTO();
+		DbConnection dbcon = DbConnection.getInstance();
 		
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			StringBuilder sql=new StringBuilder();
 			sql.append("SELECT CLIENT_NO,CLIENT_ID, CLIENT_NAME ");
@@ -63,11 +63,7 @@ public class LoginDAO {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			dbcon.dbClose(rs, pstmt, con);
 		}
 		
 		return cDTO;

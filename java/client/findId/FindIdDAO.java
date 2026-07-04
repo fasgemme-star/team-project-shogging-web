@@ -28,16 +28,16 @@ public class FindIdDAO {
 	public ClientDTO selectClientId(String clientName, String clientEmail) {
 		
 		ClientDTO cDTO = null;
+		DbConnection dbcon = DbConnection.getInstance();
 		
 		Connection con=null;
 		PreparedStatement pstmt=null;
 		ResultSet rs=null;
 		
-		GetConnection gc=GetConnection.getInstance();
 		
 		try {
 			
-			con=gc.getConn("dbcp");
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql="SELECT CLIENT_ID FROM CLIENT WHERE CLIENT_NAME=? AND CLIENT_EMAIL=?";
 			
@@ -59,11 +59,7 @@ public class FindIdDAO {
 		}catch(SQLException se) {
 		    se.printStackTrace();
 	    } finally {
-	    	try {
-				gc.dbClose(rs, pstmt, con);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+	    	dbcon.dbClose(rs, pstmt, con);
 	    }//try
 		
 		return cDTO;
