@@ -13,7 +13,6 @@
 
 <script>
 $(function(){
-	//id="id", id="passwoard", id="btnSubmit" 에서 이벤트가 발생하면, null을 체크하러 이동
 	$("#id").keyup(function(evt){
 		if(evt.which == 13){
 			chkNull();

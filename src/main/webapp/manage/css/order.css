@@ -112,8 +112,9 @@
 #deliveryBtn{
 	width:120px;
 	height:40px;
-	border:1px solid #ccc;
-	background:white;
+	background:#7CB342;
+	color: white;
+	border:1px solid #ddd;
 	border-radius:6px;
 	cursor:pointer;
 }

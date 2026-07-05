@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/plain; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ page import="manage.client.ClientService" %>
+<%@ page import="manage.client.ClientService" %>
 <%
 ClientService sc = new ClientService();
 

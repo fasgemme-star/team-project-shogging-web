@@ -49,6 +49,34 @@ $(function(){
 
         allCheck.prop("checked", total === checked);
     });
+    
+    $(".date-btn").on("click", function () {
+        $(".date-btn").removeClass("active");
+        $(this).addClass("active");
+
+        const today = new Date();
+        const startDate = new Date();
+        const buttonText = $(this).text().trim();
+
+        if (buttonText === "오늘") {
+            startDate.setDate(today.getDate());
+        } else if (buttonText === "1주일") {
+            startDate.setDate(today.getDate() - 7);
+        } else if (buttonText === "1개월") {
+            startDate.setMonth(today.getMonth() - 1);
+        } else if (buttonText === "3개월") {
+            startDate.setMonth(today.getMonth() - 3);
+        }
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return year + "-" + month + "-" + day;
+        }
+        $("#startDate").val(formatDate(startDate));
+        $("#endDate").val(formatDate(today));
+    });
 
     $("#deliveryBtn").on("click", function(){
         const orderIDs = $("#orderTableBody input[type=checkbox]:checked")
@@ -182,6 +210,7 @@ $(function(){
 		    orderList = oms.getOrderList(rDTO);
 		} catch (Exception e) {
 		    orderList = new ArrayList<>();
+		    throw new RuntimeException("주문 목록 조회 중 오류 발생", e);
 		}
 		
 		int totalCount = oms.totalCount(rDTO);
@@ -435,7 +464,6 @@ $(function(){
 			</div>
 		</div>
 	</div>
-
 </body>
 
 </html>
