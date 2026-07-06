@@ -205,8 +205,8 @@ $(function(){
 										<td>1</td>
 										<td>썸네일</td>
 										<td>
-											<input type="text" id="thumbFileName" readonly placeholder="선택된 파일이 없습니다.">
-											<input type="file" id="thumbImg" name="thumbImg" accept="image/*">
+											<input type="hidden" id="thumbImg" name="thumbImg">
+											<input type="text" id="thumbFileName" readonly placeholder="선택된 이미지가 없습니다.">
 										</td>
 										<td>
 											<button type="button" class="image-btn" data-target="thumbImg" data-preview="thumbPreview">등록하기</button>
@@ -216,8 +216,8 @@ $(function(){
 										<td>2</td>
 										<td>대표이미지</td>
 										<td>
-											<input type="text" id="mainFileName" readonly placeholder="선택된 파일이 없습니다.">
-											<input type="file" id="mainImg" name="mainImg" accept="image/*" hidden>
+											<input type="hidden" id="mainImg" name="mainImg">
+											<input type="text" id="mainFileName" readonly placeholder="선택된 이미지가 없습니다.">
 										</td>
 										<td>
 											<button type="button" class="image-btn" data-target="mainImg" data-preview="mainPreview">등록하기</button>
@@ -227,8 +227,8 @@ $(function(){
 										<td>3</td>
 										<td>상품설명</td>
 										<td>
-											<input type="text" id="descFileName" readonly placeholder="선택된 파일이 없습니다.">
-											<input type="file" id="descImg" name="descImg" accept="image/*" hidden>
+											<input type="hidden" id="descImg" name="descImg">
+											<input type="text" id="descFileName" readonly placeholder="선택된 이미지가 없습니다.">
 										</td>
 										<td>
 											<button type="button" class="image-btn" data-target="descImg" data-preview="descPreview">등록하기</button>
@@ -238,8 +238,8 @@ $(function(){
 										<td>4</td>
 										<td>상세정보</td>
 										<td>
-											<input type="text" id="detailFileName" readonly placeholder="선택된 파일이 없습니다.">
-											<input type="file" id="detailImg" name="detailImg" accept="image/*" hidden>
+											<input type="hidden" id="detailImg" name="detailImg">
+											<input type="text" id="detailFileName" readonly placeholder="선택된 이미지가 없습니다.">
 										</td>
 										<td>
 											<button type="button" class="image-btn" data-target="detailImg" data-preview="detailPreview">등록하기</button>
