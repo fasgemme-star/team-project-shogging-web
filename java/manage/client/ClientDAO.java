@@ -27,7 +27,7 @@ public class ClientDAO {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String query = "select count(1) cnt from client";
+		String query = "select count(1) cnt from client where CLIENT_DELETE_ACCOUNT = 'N'";
 		int cnt = 0;
 		
 		try {
@@ -72,6 +72,46 @@ public class ClientDAO {
 		
 	}// selectNewClient
 	
+	public int selectClientCount(RangeDTO rDTO) throws SQLException {
+		DbConnection dbcon = DbConnection.getInstance();
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    StringBuilder query = new StringBuilder();
+	    int result = 0;
+	    
+	    query.append(" select count(1) from client where CLIENT_DELETE_ACCOUNT = 'N' and 1=1 ");
+	    
+	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
+	        query.append("AND  ( instr(CLIENT_NAME, ? ) != 0 or instr(CLIENT_EMAIL, ? ) != 0  OR instr(CLIENT_TEL, ? ) != 0 )  ");
+	    } 
+	    
+	    try {
+            con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+            pstmt = con.prepareStatement(query.toString());
+
+            int paramIndex = 1;
+            
+            if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
+                String searchPattern = rDTO.getKeyword().trim();
+                pstmt.setString(paramIndex++, searchPattern); // CLIENT_NAME 매핑
+                pstmt.setString(paramIndex++, searchPattern); // CLIENT_EMAIL 매핑
+                pstmt.setString(paramIndex++, searchPattern); // CLIENT_PHONE 매핑
+            }
+            
+            // 4. 쿼리 실행 및 결과 담기
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+            	result = rs.getInt("cnt"); 
+            }
+        } finally {
+            // 5. 자원 해제
+            dbcon.dbClose(rs, pstmt, con);
+        }
+
+		return result;
+	}
+	
 	public List<ClientDTO> selectClientList(RangeDTO rDTO) throws SQLException{
 		List<ClientDTO> cList = new ArrayList<ClientDTO>();
 		DbConnection dbcon = DbConnection.getInstance();
@@ -85,8 +125,8 @@ public class ClientDAO {
 	    .append("		select CLIENT_NO, CLIENT_NAME, CLIENT_EMAIL, CLIENT_TEL, CLIENT_START_DATE from client where CLIENT_DELETE_ACCOUNT = 'N' and 1=1 ");
 	    
 	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
-	        query.append("AND (CLIENT_NAME LIKE ? OR CLIENT_EMAIL LIKE ? OR CLIENT_TEL LIKE ?) ");
-	    }
+	        query.append("AND  ( instr(CLIENT_NAME, ? ) != 0 or instr(CLIENT_EMAIL, ? ) != 0  OR instr(CLIENT_TEL, ? ) != 0 )  ");
+	    } 
 	    
 	    query.append("		order by client_start_date desc ))  ")
 	    .append("		where n between ? and ?  ");
@@ -98,7 +138,7 @@ public class ClientDAO {
             int paramIndex = 1;
             
             if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
-                String searchPattern = "%" + rDTO.getKeyword().trim() + "%";
+                String searchPattern = rDTO.getKeyword().trim();
                 pstmt.setString(paramIndex++, searchPattern); // CLIENT_NAME 매핑
                 pstmt.setString(paramIndex++, searchPattern); // CLIENT_EMAIL 매핑
                 pstmt.setString(paramIndex++, searchPattern); // CLIENT_PHONE 매핑
@@ -213,5 +253,5 @@ public class ClientDAO {
 		return email;
 	}
 	
-	//파일출력 메소드 추가
+	
 }
