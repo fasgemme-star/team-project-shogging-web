@@ -107,10 +107,12 @@ public class SearchProductDAO {
             // 4. 쿼리 실행 및 결과 담기
             rs = pstmt.executeQuery();
 
+            
             while (rs.next()) {
                 ProductDTO pDTO = new ProductDTO();
                 pDTO.setPrdID(rs.getString("OPTION_ID"));
                 pDTO.setPrdName(rs.getString("OPTION_NAME"));
+                pDTO.setStatus(rs.getInt("STOCKQUANTITY")==0?"품절":"판매중");
                 pDTO.setQuantity(rs.getInt("STOCKQUANTITY"));
                 pDTO.setPrice(rs.getInt("PRICE")); // 가격 데이터 담기
                 
