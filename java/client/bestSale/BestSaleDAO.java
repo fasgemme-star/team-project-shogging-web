@@ -1,5 +1,6 @@
 package bestSale;
 
+import java.io.File;
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
@@ -47,7 +48,7 @@ public class BestSaleDAO {
 	    			+ "INNER JOIN PRODUCT_OPTION po ON od.OPTION_ID = po.OPTION_ID  "
 	    			+ "INNER JOIN PRODUCT p ON po.PRODUCT_ID = p.PRODUCT_ID  "
 	    			+ "INNER JOIN PRODUCT_IMAGE  pi ON pi.PRODUCT_ID = p.PRODUCT_ID  "
-	    			+ "WHERE pi.IMAGE_TYPE ='THUMB "
+	    			+ "WHERE pi.IMAGE_TYPE ='THUMB' "
 	    			+ "GROUP BY pi.url, p.PRODUCT_ID, p.PRODUCT_NAME, p.SHORTINFO,po.DISCOUNT, po.PRICE "
 	    			+ "ORDER BY sales_count DESC";
 	    	
@@ -72,7 +73,12 @@ public class BestSaleDAO {
 	    }catch(Exception e) {
 	    	e.printStackTrace();
 	    }finally {
-	    	dbcon.dbClose(rs, pstmt, con);
+	    	try {
+				dbcon.dbClose(rs, pstmt, con);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 		
 		return list;
@@ -124,7 +130,12 @@ public class BestSaleDAO {
 	    }catch(Exception e) {
 	    	e.printStackTrace();
 	    }finally {
-	    	dbcon.dbClose(rs, pstmt, con);
+	    	try {
+				dbcon.dbClose(rs, pstmt, con);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 		
 		return list;
@@ -173,7 +184,12 @@ public class BestSaleDAO {
 	    }catch(Exception e) {
 	    	e.printStackTrace();
 	    }finally {
-	    	dbcon.dbClose(rs, pstmt, con);
+	    	try {
+				dbcon.dbClose(rs, pstmt, con);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 		
 		return list;
@@ -222,7 +238,12 @@ public class BestSaleDAO {
 	    }catch(Exception e) {
 	    	e.printStackTrace();
 	    }finally {
-	    	dbcon.dbClose(rs, pstmt, con);
+	    	try {
+				dbcon.dbClose(rs, pstmt, con);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 		
 		return list;

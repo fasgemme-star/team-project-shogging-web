@@ -1,5 +1,6 @@
 package deliveryChg;
 
+import java.io.File;
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
@@ -60,7 +61,12 @@ public class DeliveryChgDAO {
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
-			dbcon.dbClose(rs, pstmt, con);
+			try {
+				dbcon.dbClose(rs, pstmt, con);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return list;
 		
@@ -101,7 +107,12 @@ public class DeliveryChgDAO {
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
-			dbcon.dbClose(null, pstmt, con);
+			try {
+				dbcon.dbClose(null, pstmt, con);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return cnt;
 	}
@@ -132,7 +143,12 @@ public class DeliveryChgDAO {
 		    } catch (SQLException e) {
 		        e.printStackTrace();
 		    } finally {
-		    	dbcon.dbClose(null, pstmt, con);
+		    	try {
+					dbcon.dbClose(null, pstmt, con);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    }
 
 		    return cnt;
