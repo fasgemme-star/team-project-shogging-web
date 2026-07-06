@@ -1,6 +1,5 @@
 package client.findId;
 
-import client.findId.*;
 import client.signup.ClientDTO;
 
 public class FindIdService {

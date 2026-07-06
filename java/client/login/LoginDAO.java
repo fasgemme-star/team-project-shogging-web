@@ -2,13 +2,13 @@ package client.login;
 
 import java.io.File;
 
+
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import client.login.*;
 import client.signup.ClientDTO;
 import dbcon.DbConnection;
 import dbcon.Path;

@@ -1,11 +1,11 @@
 package client.claim;
 
 import java.io.File;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import dbcon.DbConnection;
 import dbcon.Path;
