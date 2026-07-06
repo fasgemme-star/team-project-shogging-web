@@ -19,17 +19,26 @@
 
 <script>
 function resetSearch() {
+    const form = document.getElementById("searchForm");
+
     document.getElementById("keyword").value = "";
-    document.querySelector("input[name='status'][value='all']").checked = true;
     document.getElementById("category").value = "";
+    document.querySelector("input[name='status'][value='전체']").checked = true;
     document.getElementById("startDate").value = "";
     document.getElementById("endDate").value = "";
     document.getElementById("period").value = "all";
     document.getElementById("pageSize").value = "20";
-    document.querySelectorAll(".date-btns button").forEach(function(btn) {
-        btn.classList.remove("active");
-    });
-    document.querySelector(".date-btns button[data-period='all']").classList.add("active");
+
+    let pageInput = form.querySelector("input[name='page']");
+    
+    if (!pageInput) {
+        pageInput = document.createElement("input");
+        pageInput.type = "hidden";
+        pageInput.name = "page";
+        form.appendChild(pageInput);
+    }
+    pageInput.value = "1";
+    form.submit();
 }//resetSearch
 
 function formatDate(date) {
@@ -158,26 +167,34 @@ function closeEditModal(){
 		
 		String pageParam = request.getParameter("page");
 		String pageSizeParam = request.getParameter("pageSize");
-		
 		int currentPage = 1;
 		int pageSize = 20;
 		
 		if (pageParam != null && !pageParam.isEmpty()) {
-			currentPage = Integer.parseInt(pageParam);
+		    currentPage = Integer.parseInt(pageParam);
 		}
 		
 		if (pageSizeParam != null && !pageSizeParam.isEmpty()) {
-			pageSize = Integer.parseInt(pageSizeParam);
+		    pageSize = Integer.parseInt(pageSizeParam);
 		}
 		
 		RangeDTO rDTO = new RangeDTO();
-		
 		rDTO.setKeyword(keyword);
-		rDTO.setStatus(status);
 		rDTO.setCategory(category);
 		rDTO.setStartDate(startDate);
 		rDTO.setEndDate(endDate);
 		
+		if (status == null || "전체".equals(status) || status.trim().isEmpty()) {
+		    rDTO.setStatus(null);
+		} else {
+		    rDTO.setStatus(status);
+		}
+		if (category == null || "".equals(category) || "전체".equals(category)) {
+		    rDTO.setCategory(null);
+		} else {
+		    rDTO.setCategory(category);
+		}
+
 		int startNum = (currentPage - 1) * pageSize + 1;
 		int endNum = currentPage * pageSize;
 		
@@ -185,16 +202,34 @@ function closeEditModal(){
 		rDTO.setEndNum(endNum);
 		
 		List<ProductDTO> productList = sps.searchItem(rDTO);
-		
 		request.setAttribute("productList", productList);
 		
-		int totalCount = sps.getTotalCount();
+		int totalCount = sps.getSelectedCount(rDTO);
+
+		RangeDTO saleDTO = new RangeDTO();
+		saleDTO.setKeyword(keyword);
+		saleDTO.setCategory(category);
+		saleDTO.setStartDate(startDate);
+		saleDTO.setEndDate(endDate);
+		saleDTO.setStatus("판매중");
+		
+		int onSaleCount = sps.getSelectedCount(saleDTO);
+		
+		RangeDTO soldDTO = new RangeDTO();
+		soldDTO.setKeyword(keyword);
+		soldDTO.setCategory(category);
+		soldDTO.setStartDate(startDate);
+		soldDTO.setEndDate(endDate);
+		soldDTO.setStatus("품절");
+		
+		String period = request.getParameter("period");
+		int soldoutCount = sps.getSelectedCount(soldDTO);
 		int totalPage = (int)Math.ceil((double)totalCount / pageSize);
-
+		
 		request.setAttribute("totalCount", totalCount);
-		request.setAttribute("onSaleCount", sps.getOnSaleCount());
-		request.setAttribute("soldoutCount", sps.getSoldoutCount());
-
+		request.setAttribute("onSaleCount", onSaleCount);
+		request.setAttribute("soldoutCount", soldoutCount);
+		
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageSize", pageSize);
 		request.setAttribute("totalPage", totalPage);
@@ -247,15 +282,15 @@ function closeEditModal(){
 						<div class="search-title">판매상태</div>
 						<div class="search-content">
 						<label>
-							<input type="radio" name="status" value="전체" <%= status == null || "all".equals(status) ? "checked" : "" %>>
+							<input type="radio" name="status" value="전체" <%= status == null || "전체".equals(status) ? "checked" : "" %>>
 							전체
 						</label>
 						<label>
-							<input type="radio" name="status" value="판매중" <%= "sale".equals(status) ? "checked" : "" %>>
+							<input type="radio" name="status" value="판매중" <%= "판매중".equals(status) ? "checked" : "" %>>
 							판매중
 						</label>
 						<label>
-							<input type="radio" name="status" value="품절" <%= "soldout".equals(status) ? "checked" : "" %>>
+							<input type="radio" name="status" value="품절" <%= "품절".equals(status) ? "checked" : "" %>>
 							품절
 						</label>
 						</div>
@@ -274,13 +309,13 @@ function closeEditModal(){
 						<div class="search-title">기간</div>
 						<div class="search-content">
 							<div class="date-btns">
-								<button type="button" data-period="today" onclick="selectPeriod(this)">오늘</button>
-								<button type="button" data-period="week" onclick="selectPeriod(this)">1주일</button>
-								<button type="button" data-period="month" onclick="selectPeriod(this)">1개월</button>
-								<button type="button" data-period="3month" onclick="selectPeriod(this)">3개월</button>
-								<button type="button" data-period="6month" onclick="selectPeriod(this)">6개월</button>
-								<button type="button" data-period="year" onclick="selectPeriod(this)">1년</button>
-								<button type="button" data-period="all" onclick="selectPeriod(this)">전체</button>
+								<button type="button" class="<%= "today".equals(period) ? "active" : "" %>" data-period="today" onclick="selectPeriod(this)">오늘</button>
+								<button type="button" class="<%= "week".equals(period) ? "active" : "" %>" data-period="week" onclick="selectPeriod(this)">1주일</button>
+								<button type="button" class="<%= "month".equals(period) ? "active" : "" %>" data-period="month" onclick="selectPeriod(this)">1개월</button>
+								<button type="button" class="<%= "3month".equals(period) ? "active" : "" %>" data-period="3month" onclick="selectPeriod(this)">3개월</button>
+								<button type="button" class="<%= "6month".equals(period) ? "active" : "" %>" data-period="6month" onclick="selectPeriod(this)">6개월</button>
+								<button type="button" class="<%= "year".equals(period) ? "active" : "" %>" data-period="year" onclick="selectPeriod(this)">1년</button>
+								<button type="button" class="<%= (period == null || "all".equals(period)) ? "active" : "" %>" data-period="all" onclick="selectPeriod(this)">전체</button>
 							</div>
 							<div class="date-input">
 								<input type="date" id="startDate" name="startDate" value="<%= startDate == null ? "" : startDate %>">~
