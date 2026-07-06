@@ -76,7 +76,7 @@ public class DashBoardDAO {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String query = "select count(1) cnt from product p join product_option po on p.product_id = po.product_id where is_deleted = 'N'";
+		String query = " select count(1) cnt from product_option where stockquantity != 0 ";
 		int cnt = 0;
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
