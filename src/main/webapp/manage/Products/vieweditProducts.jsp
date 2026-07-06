@@ -179,6 +179,14 @@ function closeEditModal(){
 		}
 		
 		RangeDTO rDTO = new RangeDTO();
+		
+		int total=sps.getTotalCount();
+		int onSale=sps.getOnSaleCount();
+		int soldout=sps.getSoldoutCount();
+		request.setAttribute("total", total);
+		request.setAttribute("onSale", onSale);
+		request.setAttribute("soldout", soldout);
+		
 		rDTO.setKeyword(keyword);
 		rDTO.setCategory(category);
 		rDTO.setStartDate(startDate);
@@ -250,19 +258,19 @@ function closeEditModal(){
 					<div class="status-item">
 						<p>전체</p>
 						<h3>
-							${totalCount} <span>건</span>
+							${total} <span>건</span>
 						</h3>
 					</div>
 					<div class="status-item">
 						<p>판매중</p>
 						<h3>
-							${onSaleCount} <span>건</span>
+							${onSale} <span>건</span>
 						</h3>
 					</div>
 					<div class="status-item">
 						<p>품절</p>
 						<h3>
-							${soldoutCount} <span>건</span>
+							${soldout} <span>건</span>
 						</h3>
 					</div>
 				</div>
