@@ -213,11 +213,11 @@ public class BestSaleDAO {
 	    	
 	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 	    	
-	    	String sql="SELECT p.PRODUCT_ID, p.PRODUCT_NAME, po.PRICE, p.SHORTINFO  "
+	    	String sql="SELECT pi.URL,p.PRODUCT_ID, p.PRODUCT_NAME, po.PRICE, po.discount, p.SHORTINFO  "
 	    			+ "FROM PRODUCT p  "
 	    			+ "JOIN product_option po ON p.product_ID=po.product_id  "
 	    			+ "JOIN PRODUCT_IMAGE pi ON pi.PRODUCT_ID =p.PRODUCT_ID  "
-	    			+ "WHERE DISCOUNT >=50 AND pi.IMAGE_TYPE  ='THUMB'  "
+	    			+ "WHERE po.DISCOUNT >=50 AND pi.IMAGE_TYPE  ='THUMB'  "
 	    			+ "ORDER BY DISCOUNT DESC";
 	    	
 	    	pstmt=con.prepareStatement(sql);
