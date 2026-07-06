@@ -128,7 +128,7 @@ const dropOutData = [
 				<%= rank %>. <%= entry.getKey() %>
 				</div>
 				<div>
-				<strong><%= entry.getValue() %>건 →</strong>
+				<strong><%= entry.getValue() %>건 </strong>
 				</div>
 				</div>
 				<%
