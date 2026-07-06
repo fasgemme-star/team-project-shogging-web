@@ -75,7 +75,7 @@ public class OrderManagementDAO {
 	    }
 	    if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty() && 
 	            rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
-	        query.append("        AND REG_DATE BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD') + 1 ");
+	        query.append("        AND ORDER_DATE BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD') + 1 ");
 	    }
 	    
 	    // 정렬
