@@ -47,7 +47,7 @@ public class PrdInquiryDAO {
 
             sql.append(" SELECT INQUIRY_ID, INQUIRY_DATE , INQUIRY_TITLE, ANSWER_STATUS ");
             sql.append(" FROM INQUIRY ");
-            sql.append(" WHERE INQUIRY_CODE='TYP000003'");
+            sql.append(" WHERE INQUIRY_CODE='TYP000003' ");
             sql.append(" ORDER BY INQUIRY_DATE DESC ");
 
             pstmt = con.prepareStatement(sql.toString());
@@ -97,7 +97,7 @@ public class PrdInquiryDAO {
 
             StringBuilder sql = new StringBuilder();
 
-            sql.append(" SELECT INQUIRY_ID, INQUIRY_DATE,INQUIRY_TITLE,INQUIRY_SECRET,INQUIRY_CONTENT,ANSWER_STATUS,ANSWER,ANSWER_DATE");
+            sql.append(" SELECT INQUIRY_ID, INQUIRY_DATE,INQUIRY_TITLE,INQUIRY_SECRET,INQUIRY_CONTENT,ANSWER_STATUS,ANSWER,ANSWER_DATE ");
             sql.append(" FROM INQUIRY ");
             sql.append(" WHERE INQUIRY_CODE='TYP000003' AND INQUIRY_ID = ? ");
 

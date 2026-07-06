@@ -98,14 +98,14 @@ public class BestSaleDAO {
 	    	
 	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 	    	
-	    	String sql="SELECT pi.URL, p.PRODUCT_ID, p.PRODUCT_NAME,po.DISCOUNT, po.PRICE, p.SHORTINFO,SUM(od.QUANTITY) AS sales_count"
-	    			+ "FROM ORDER_DETAILS od"
+	    	String sql="SELECT pi.URL, p.PRODUCT_ID, p.PRODUCT_NAME,po.DISCOUNT, po.PRICE, p.SHORTINFO,SUM(od.QUANTITY) AS sales_count "
+	    			+ "FROM ORDER_DETAILS od "
 	    			+ "INNER JOIN ORDERS o ON od.ORDER_ID = o.ORDER_ID    "
 	    			+ "INNER JOIN PRODUCT_OPTION po ON od.OPTION_ID = po.OPTION_ID "
 	    			+ "INNER JOIN PRODUCT p ON po.PRODUCT_ID = p.PRODUCT_ID "
 	    			+ "INNER JOIN PRODUCT_IMAGE  pi ON pi.PRODUCT_ID = p.PRODUCT_ID  "
 	    			+ "WHERE o.ORDER_DATE >= SYSDATE - 7 AND pi.IMAGE_TYPE ='THUMB'  "
-	    			+ "GROUP BY pi.URL, p.PRODUCT_ID,p.PRODUCT_NAME,po.DISCOUNT,po.PRICE, p.SHORTINFO"
+	    			+ "GROUP BY pi.URL, p.PRODUCT_ID,p.PRODUCT_NAME,po.DISCOUNT,po.PRICE, p.SHORTINFO "
 	    			+ "ORDER BY sales_count DESC";
 	    	
 	    	pstmt=con.prepareStatement(sql);

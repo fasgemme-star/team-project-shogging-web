@@ -85,7 +85,7 @@ public class ChangeClientInfoDAO {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
 			String sql = "SELECT CLIENT_ID, CLIENT_NAME, CLIENT_EMAIL, CLIENT_TEL, CLIENT_BIRTH, CLIENT_CHECK " +
-                    "FROM CLIENT WHERE CLIENT_ID = ?";
+                    "FROM CLIENT WHERE CLIENT_ID = ? ";
 
        pstmt = con.prepareStatement(sql);
        pstmt.setString(1, clientID);

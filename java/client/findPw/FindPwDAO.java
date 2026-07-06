@@ -41,7 +41,7 @@ public class FindPwDAO {
 			
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
-			String sql="SELECT CLIENT_ID,CLIENT_EMAIL,CLIENT_HASH FROM CLIENT WHERE CLIENT_ID=? AND CLIENT_EMAIL=?";
+			String sql="SELECT CLIENT_ID,CLIENT_EMAIL,CLIENT_HASH FROM CLIENT WHERE CLIENT_ID=? AND CLIENT_EMAIL=? ";
 			
 			pstmt=con.prepareStatement(sql);
 			

@@ -79,13 +79,13 @@ public class SignupDAO {
 
 		        StringBuilder sql = new StringBuilder();
 
-		        sql.append("insert into client(");
+		        sql.append("insert into client( ");
 		        sql.append("client_id, client_hash, ");
 		        sql.append("client_name, client_email, client_tel, ");
 		        sql.append("client_birth, client_ip, client_check, ");
-		        sql.append("client_start_date, client_delete_account, client_last_date");
-		        sql.append(") values(");
-		        sql.append(" ?, ?, ?, ?, ?, ?, ?, ?, sysdate, 'N', null");
+		        sql.append("client_start_date, client_delete_account, client_last_date ");
+		        sql.append(") values( ");
+		        sql.append(" ?, ?, ?, ?, ?, ?, ?, ?, sysdate, 'N', null ");
 		        sql.append(")");
 
 		        pstmt = con.prepareStatement(sql.toString());
