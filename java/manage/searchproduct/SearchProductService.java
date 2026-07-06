@@ -19,6 +19,15 @@ public class SearchProductService {
 		int total = rDTO.getTotalCnt();
 		return total;
 	}
+	public int getSelectedCount(RangeDTO rDTO) {
+		int result = 0;
+		try {
+			result = spDAO.selectChoicedCount(rDTO);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	
 	public int getOnSaleCount() {
 		RangeDTO rDTO = new RangeDTO();
