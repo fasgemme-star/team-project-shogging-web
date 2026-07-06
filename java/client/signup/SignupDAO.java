@@ -1,4 +1,4 @@
-package signup;
+package client.signup;
 
 import java.io.File;
 import java.sql.Connection;

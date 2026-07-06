@@ -1,6 +1,10 @@
-package bestSale;
+package client.bestSale;
 
 import java.io.File;
+
+
+import client.productDetail.*;
+import client.usermain.*;
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
@@ -9,8 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import productDetail.ProductDTO;
-import usermain.RangeDTO;
+import client.bestSale.*;
 import dbcon.DbConnection;
 import dbcon.Path;
 

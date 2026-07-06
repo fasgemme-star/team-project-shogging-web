@@ -1,8 +1,10 @@
-package deliveryChg;
+package client.deliveryChg;
 
 import java.util.List;
 
-import signup.ClientDTO;
+
+import client.deliveryChg.*;
+import client.signup.ClientDTO;
 
 public class DeliveryChgService {
 

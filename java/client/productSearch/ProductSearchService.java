@@ -1,8 +1,9 @@
-package productSearch;
+package client.productSearch;
 
 import java.util.List;
 
-import productDetail.ProductDTO;
+
+import client.productDetail.ProductDTO;
 
 public class ProductSearchService {
 

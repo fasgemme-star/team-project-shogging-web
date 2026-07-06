@@ -1,8 +1,9 @@
-package usermain;
+package client.usermain;
 
 import java.util.List;
 
-import productDetail.ProductDTO;
+
+import client.productDetail.ProductDTO;
 
 public class UserMainService {
 

@@ -1,9 +1,8 @@
-package login;
+package client.login;
 
-import changeClientInfo.ChangeClientInfoDAO;
-import signup.ClientDTO;
-import signup.HashUtil;
-import signup.SignupService;
+import client.login.*;
+import client.signup.ClientDTO;
+import client.signup.HashUtil;
 
 public class LoginService {
 

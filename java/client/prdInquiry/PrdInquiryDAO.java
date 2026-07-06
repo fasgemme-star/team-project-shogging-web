@@ -1,6 +1,7 @@
-package prdInquiry;
+package client.prdInquiry;
 
 import java.io.File;
+
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import inquiry.InquiryDTO;
+import client.inquiry.InquiryDTO;
 import dbcon.DbConnection;
 import dbcon.Path;
 public class PrdInquiryDAO {

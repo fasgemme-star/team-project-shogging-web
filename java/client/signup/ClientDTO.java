@@ -1,4 +1,4 @@
-package signup;
+package client.signup;
 
 import java.sql.Date;
 

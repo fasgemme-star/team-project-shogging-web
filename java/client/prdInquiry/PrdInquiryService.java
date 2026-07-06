@@ -1,9 +1,9 @@
-package prdInquiry;
+package client.prdInquiry;
 
 import java.util.List;
 
-import inquiry.InquiryDTO;
-import productDetail.ProductDTO;
+
+import client.inquiry.InquiryDTO;
 
 public class PrdInquiryService {
 

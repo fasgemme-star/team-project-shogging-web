@@ -1,4 +1,4 @@
-package inquiry;
+package client.inquiry;
 
 import java.io.File;
 import java.sql.Connection;

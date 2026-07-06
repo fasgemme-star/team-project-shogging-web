@@ -1,6 +1,7 @@
-package productSearch;
+package client.productSearch;
 
 import java.io.File;
+
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import productDetail.ProductDTO;
+import client.productDetail.ProductDTO;
 import dbcon.DbConnection;
 import dbcon.Path;
 

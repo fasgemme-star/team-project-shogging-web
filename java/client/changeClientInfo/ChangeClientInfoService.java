@@ -1,7 +1,7 @@
-package changeClientInfo;
+package client.changeClientInfo;
 
-import signup.ClientDTO;
-import signup.HashUtil;
+import client.signup.ClientDTO;
+import client.signup.HashUtil;
 
 public class ChangeClientInfoService {
 	

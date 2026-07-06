@@ -1,9 +1,10 @@
-package bestSale;
+package client.bestSale;
 
 import java.util.List;
+import client.productDetail.*;
+import client.usermain.*;
 
-import productDetail.ProductDTO;
-import usermain.RangeDTO;
+
 
 public class BestSaleService {
 

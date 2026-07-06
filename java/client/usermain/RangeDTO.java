@@ -1,4 +1,4 @@
-package usermain;
+package client.usermain;
 
 public class RangeDTO {
 

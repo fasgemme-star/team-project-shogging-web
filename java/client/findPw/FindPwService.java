@@ -1,7 +1,7 @@
-package findPw;
+package client.findPw;
 
-import signup.ClientDTO;
-import signup.HashUtil;
+import client.findPw.*;
+import client.signup.HashUtil;
 
 public class FindPwService {
 

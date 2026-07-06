@@ -1,14 +1,16 @@
-package changeClientInfo;
+package client.changeClientInfo;
+
 
 import java.io.File;
-import java.sql.Connection;
 
+
+import java.sql.Connection;
+import client.signup.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import signup.ClientDTO;
 import dbcon.DbConnection;
 import dbcon.Path;
 

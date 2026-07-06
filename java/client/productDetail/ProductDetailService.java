@@ -1,4 +1,4 @@
-package productDetail;
+package client.productDetail;
 
 public class ProductDetailService {
 	

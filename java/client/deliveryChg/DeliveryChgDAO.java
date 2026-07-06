@@ -1,4 +1,4 @@
-package deliveryChg;
+package client.deliveryChg;
 
 import java.io.File;
 import java.sql.Connection;

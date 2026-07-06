@@ -1,4 +1,4 @@
-package signup;
+package client.signup;
 
 
 public class SignupService {
