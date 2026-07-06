@@ -58,13 +58,14 @@ public class OrderManagementDAO {
 	    query.append("        SELECT od.order_details_id, o.order_id, o.delivery_status, o.order_date, ");
 	    query.append("               po.option_id, po.option_name, po.price, ");
 	    query.append("               po.price*(1 - po.discount * 0.01) discount_price, ");
-	    query.append("               od.quantity, o.total_amount, od.claim_id ");
+	    query.append("               od.quantity, o.total_amount, c.claim_id ");
 	    query.append("        FROM orders o ");
 	    query.append("        JOIN order_details od ON o.order_id = od.order_id ");
 	    query.append("        JOIN product_option po ON po.option_id = od.option_id ");
 	    query.append("        JOIN product p ON p.product_id = po.product_id ");
+	    query.append("        JOIN claim c ON od.order_details_id = c.order_details_id ");
 	    query.append("        WHERE 1=1 ");
-	    
+	       
 	    // 동적 쿼리 조건
 	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
 	        query.append("        AND p.PRODUCT_NAME LIKE ? "); // 식별자를 위해 p. 추가 권장
