@@ -48,14 +48,14 @@ public class OrderManagementDAO {
 		 * append("AND REG_DATE BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD') + 1 "
 		 * ); } query.append("ORDER BY PRODUCT_ID DESC");
 		 */
-	    query.append("SELECT order_details_id, order_id, delivery_status, order_date, ");
+	    query.append("SELECT order_details_id, order_id, delivery_status, order_date, client_no, ");
 	    query.append("       option_id, option_name, price, discount_price, quantity, total_amount, claim_id ");
 	    query.append("FROM ( ");
 	    query.append("    SELECT ROWNUM n, t.* ");
 	    query.append("    FROM ( ");
 	    
 	    // 2. 메인 데이터 조회 쿼리 (기존 코드)
-	    query.append("        SELECT od.order_details_id, o.order_id, o.delivery_status, o.order_date, ");
+	    query.append("        SELECT od.order_details_id, o.order_id, o.delivery_status, o.order_date,o.client_no, ");
 	    query.append("               po.option_id, po.option_name, po.price, ");
 	    query.append("               po.price*(1 - po.discount * 0.01) discount_price, ");
 	    query.append("               od.quantity, o.total_amount, c.claim_id ");
@@ -63,13 +63,13 @@ public class OrderManagementDAO {
 	    query.append("        JOIN order_details od ON o.order_id = od.order_id ");
 	    query.append("        JOIN product_option po ON po.option_id = od.option_id ");
 	    query.append("        JOIN product p ON p.product_id = po.product_id ");
-	    query.append("        JOIN claim c ON od.order_details_id = c.order_details_id ");
+	    query.append("      left outer  JOIN claim c ON od.order_details_id = c.order_details_id ");
 	    query.append("        WHERE 1=1 ");
 	       
 	    // 동적 쿼리 조건
-	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
-	        query.append("        AND p.PRODUCT_NAME LIKE ? "); // 식별자를 위해 p. 추가 권장
-	    }
+//	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
+//	        query.append("        AND p.PRODUCT_NAME LIKE ? "); // 식별자를 위해 p. 추가 권장
+//	    }
 	    if (rDTO.getDelivery_status() != null && !rDTO.getDelivery_status().equals("전체") && !rDTO.getDelivery_status().isEmpty()) {
 	        query.append("        AND STATUS = ? "); // 필요시 o.delivery_status 등으로 테이블 명시 권장
 	    }
@@ -110,6 +110,7 @@ public class OrderManagementDAO {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 OrderDTO oDTO = new OrderDTO();
+                oDTO.setClientID(rs.getString("client_no"));
                 oDTO.setOrderDetailsID(rs.getString("order_details_id"));
                 oDTO.setOrderID(rs.getString("order_id"));
                 oDTO.setDeliveryStatus(rs.getString("delivery_status"));
