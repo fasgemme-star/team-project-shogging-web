@@ -133,7 +133,7 @@ $(function() {
 
 		<%
 		CategoryService cs = new CategoryService();
-		List<String> categoryList=cs.showCategroy();
+		List<CategoryDTO> categoryList=cs.showCategroy();
 		pageContext.setAttribute("categoryList", categoryList);
 		%>
 
