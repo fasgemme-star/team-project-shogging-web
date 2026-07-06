@@ -21,38 +21,9 @@
 </div>
 <button class="text-primary font-bold hover:underline flex items-center gap-1" onclick="showView('category-view', '베스트')">전체보기 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter-md">
-<!-- Product Card 1 -->
-<div class="group cursor-pointer" onclick="showView('detail-view')">
-<div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-4 bg-surface-container">
-<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Fresh organic lettuce" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDalHL2kArSw9FyhFR3-22R_wXQhC854QJyKsxTOesPYLkGSJixEgVGlOLrB0ix-DDelEgiydVJXLqy4W1_gnaDExqguKKoy10HO7H22BWhyTshB2ZszQUX_NojZUeu-NPYzRagglgAtex4ZlONKBhw2RC8WX6x-5dYN4zSFiJ6BDYtpny4UptOzfDJBB4RtAmg1UVkVgA4cCEwi5ug1GGznlQaJyI-5yTgCNN0qvKFlaCWHWIbkWZ3IeyBmjjW3aavC-1fCS1oU6k"/>
-<button class="absolute bottom-4 right-4 bg-white/90 p-3 rounded-full shadow-md text-primary hover:bg-primary hover:text-white transition-all" onclick="event.stopPropagation(); addToCart('1', 1)">
-<span class="material-symbols-outlined">add_shopping_cart</span>
-</button>
-<span class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded text-label-md">Best</span>
-</div>
-<p class="text-on-surface-variant text-body-sm mb-1">[프레시] 유기농 모듬 쌈채소</p>
-<h3 class="font-bold text-on-surface text-body-lg mb-2">4,900원</h3>
-<div class="flex items-center gap-1 text-primary">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="text-label-md font-bold">4.9 (2,103)</span>
-</div>
-</div>
-<!-- Product Card 2 -->
-<div class="group cursor-pointer" onclick="showView('detail-view')">
-<div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-4 bg-surface-container">
-<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Fresh organic carrots" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSZusN5is3Nydu-CZqYb9SFW6pskAzhttR3suzgyLRPncRDNyHokhv3LxypME3EeX8_fkKPvL4LABPTRs7V2hdZOI55kEI7ysW2NuJaR5w-rf5i6R_SV-swt7tcmfS3UZbXUb_PSzn-ot7mYdOeDbHKg6uVY0iHrrgz6gMUT-XDJKMHuAtuLHzK954IECampDFQLJyaD8mdAtAXWGiMbYGFQmHiYgv6JcNhGuLbcyBl0i9jpeUXtsQzCigOQHCTZePag7rMnTqet8"/>
-<button class="absolute bottom-4 right-4 bg-white/90 p-3 rounded-full shadow-md text-primary hover:bg-primary hover:text-white transition-all" onclick="event.stopPropagation(); addToCart('2', 1)">
-<span class="material-symbols-outlined">add_shopping_cart</span>
-</button>
-</div>
-<p class="text-on-surface-variant text-body-sm mb-1">[지리산] 흙당근 500g</p>
-<h3 class="font-bold text-on-surface text-body-lg mb-2">3,200원</h3>
-<div class="flex items-center gap-1 text-primary">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
-<span class="text-label-md font-bold">4.8 (1,452)</span>
-</div>
-</div>
+<!-- 서버(HomeServlet: /api/home)에서 받아온 베스트 상품이 renderHome()에 의해 여기 채워짐 -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter-md" id="home-best-grid">
+<div class="col-span-full py-20 text-center text-on-surface-variant">상품 정보를 불러오고 있습니다...</div>
 </div>
 </section>
 </section>

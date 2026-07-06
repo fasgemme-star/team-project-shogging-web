@@ -3,6 +3,10 @@ package manage.client;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
+import javax.mail.*;
+import javax.mail.internet.*;
 
 public class ClientService {
 	private ClientDAO cDAO = ClientDAO.getInstance();
@@ -72,7 +76,8 @@ public class ClientService {
 	}// getClientDEtail
 	
 	public String changeClientPW(String ClientID) {
-		String randomPW = PasswordGenerator.generatePassword(10);	
+		String randomPW = PasswordGenerator.generatePassword(10);
+		sendEmail(ClientID,randomPW);
 		try {
 			cDAO.updateClientPW(ClientID, randomPW);
 		} catch (SQLException e) {
@@ -82,5 +87,35 @@ public class ClientService {
 		return randomPW;
 	}// changeClientPW
 	
-		
+	public void sendEmail(String id, String newPW) {
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.test.com");
+	    props.put("mail.smtp.port", "587");
+	    
+	    Session session = Session.getDefaultInstance(props);
+	    String email = null;;
+		try {
+			email = cDAO.selectEmail(id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        try {
+        	
+        	
+            MimeMessage message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress("admin@test.com"));
+            message.setRecipient(Message.RecipientType.TO,
+                    new InternetAddress(email));
+
+            message.setSubject("변경된 비밀번호입니다.");
+            message.setText(newPW);
+
+            // 실제 발송 시 사용
+            // Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+	    
+	}
 }

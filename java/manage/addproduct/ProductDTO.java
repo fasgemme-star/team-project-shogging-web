@@ -19,7 +19,8 @@ public class ProductDTO {
 	private int price;
 	private int minPurchae;
 	private int maxPurchase;
-	private int discount; 
+	private int discount;
+	private int quantity;
 	private String manufacturer;
 	private String origin;
 	private String underAgePurchase;
@@ -30,5 +31,6 @@ public class ProductDTO {
 	private String additionalInfo;
 	private String notice;
 	private String prdType;
+	
 
 }
