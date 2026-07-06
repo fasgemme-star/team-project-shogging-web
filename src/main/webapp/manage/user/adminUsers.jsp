@@ -81,69 +81,69 @@ $(function(){
 
 $(function(){
 	let selectedRow = null;
-    $(document).on("click",".user-row",function(){
-        let clientId=$(this).data("id");
-        // 같은 회원 다시 클릭하면 닫기
-        if(selectedRow === this){
-            $("#userDetail").hide();
-            $(this).removeClass("selected");
-            selectedRow = null;
-            return;
-        }//end if
-        $(".user-row").removeClass("selected");
-        $(this).addClass("selected");
-        selectedRow = this;
-        $.ajax({
-            url:"clientDetail.jsp",
-            type:"get",
-            dataType:"json",
-            data:{
-                clientId:clientId
-            },
-            success:function(data){
-                $("#detailName").text(data.name);
-                $("#detailEmail").text(data.email);
-                $("#detailPhone").text(data.phone);
-                $("#detailDate").text(data.joinDate);
-                $("#detailPayment").text(data.totalPayment);
-                $("#userDetail").show();
-                $("#resetPasswordBtn").data("id",clientId);
-            }
-        });//ajax
-    });
-	
-	$("#resetPasswordBtn").click(function(){
-		let pw = $("#newPassword").text();
-	    let clientId = $("#resetPasswordBtn").data("id");
+	$(document).on("click", ".user-row", function(){
+	    let clientId = $(this).data("id");
+	    if (selectedRow === this) {
+	        $("#userDetail").hide();
+	        $(this).removeClass("selected");
+	        selectedRow = null;
+	        return;
+	    }
+	    $(".user-row").removeClass("selected");
+	    $(this).addClass("selected");
+	    selectedRow = this;
 	    $.ajax({
-	        url:"resetPassword.jsp",
-	        type:"get",
-	        dataType:"json",
-	        data:{
-	            clientId:clientId
+	        url: "clientDetail.jsp",
+	        type: "get",
+	        dataType: "json",
+	        data: {
+	            clientId: clientId
 	        },
-	        success:function(data){
-	            $("#newPassword").text(data.newPw);
-	            new bootstrap.Modal(document.getElementById("resetPasswordModal")).show();
+	        success: function(data){
+	            $("#detailName").text(data.name);
+	            $("#detailEmail").text(data.email);
+	            $("#detailPhone").text(data.phone);
+	            $("#detailDate").text(data.joinDate);
+	            $("#detailPayment").text(data.totalPayment);
+	            $("#resetPasswordBtn").data("id", clientId);
+	            $("#userDetail").show();
+	        },
+	        error: function(){
+	            alert("회원 상세 정보를 불러오는 중 오류가 발생했습니다.");
 	        }
 	    });
 	});
-	
-	$("#resetConfirmBtn").click(function(){
-	    let pw=$("#newPassword").text();
-	    let clientId = $("#resetPasswordBtn").data("id");
+
+	$("#resetPasswordBtn").click(function(){
+	    let clientId = $(this).data("id");
+	    if (!clientId) {
+	        alert("회원을 먼저 선택해주세요.");
+	        return;
+	    }
 	    $.ajax({
-	        url:"sendEmail.jsp",
-	        type:"get",
-	        data:{
-	        	clientId:clientId,
-	            newPw:pw
+	        url: "resetPassword.jsp",
+	        type: "get",
+	        dataType: "json",
+	        data: {
+	            clientId: clientId
 	        },
-	        success:function(){
-	            alert("비밀번호 초기화 완료");
-	            bootstrap.Modal.getInstance(document.getElementById("resetPasswordModal")).hide();
+	        success: function(data){
+	            $("#newPassword").text(data.newPw);
+	            new bootstrap.Modal(
+	                document.getElementById("resetPasswordModal")
+	            ).show();
+	        },
+	        error: function(){
+	            alert("비밀번호 초기화 처리 중 오류가 발생했습니다.");
 	        }
 	    });
+	});
+
+	$("#resetConfirmBtn").click(function(){
+	    alert("비밀번호가 초기화되었습니다.");
+	    bootstrap.Modal.getInstance(
+	        document.getElementById("resetPasswordModal")
+	    ).hide();
 	});
 });
 </script>
@@ -289,7 +289,7 @@ $(function(){
 						                <b>[${i}]</b>
 						            </c:when>
 						            <c:otherwise>
-						                <a href="adminUsers.jsp?currentPage=${i}">
+						                <a href="adminUsers.jsp?currentPage=${i}&keyword=${param.keyword}">
 						                    [${i}]
 						                </a>
 						            </c:otherwise>
