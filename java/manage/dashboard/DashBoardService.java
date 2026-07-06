@@ -22,7 +22,7 @@ public class DashBoardService {
 	public int getNewClientCount() {
 		int total = 0;
 		try {
-			total = dDAO.selectTotalSales();
+			total = dDAO.selectNewClientWeekly();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

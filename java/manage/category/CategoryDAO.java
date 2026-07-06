@@ -105,13 +105,14 @@ public class CategoryDAO {
 		return cnt;
 	}//deleteCategory
 	
-	public List<String> selectCategoryList() throws SQLException{
-		List<String> cList = new ArrayList<String>();
+	public List<CategoryDTO> selectCategoryList() throws SQLException{
+		List<CategoryDTO> cList = new ArrayList<CategoryDTO>();
+		CategoryDTO cDTO = null;
 		DbConnection dbcon = DbConnection.getInstance();
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String query = "SELECT category_name FROM category WHERE isdeleted = 'N'";
+		String query = "SELECT category_name, category_id FROM category WHERE isdeleted = 'N'";
 		
 		try {
 			// 3.쿼리문 생성 객체 얻기
@@ -121,7 +122,10 @@ public class CategoryDAO {
 
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				cList.add(rs.getString("category_name"));
+				cDTO = new CategoryDTO();
+				cDTO.setCategoryID(rs.getString("category_id"));
+				cDTO.setCategoryName(rs.getString("category_name"));
+				cList.add(cDTO);
 			} // end while
 
 		} finally {

@@ -7,8 +7,8 @@ import java.util.List;
 public class CategoryService {
 	private CategoryDAO cDAO = CategoryDAO.getInstance();
 	
-	public List<String> showCategroy(){
-		List<String> cList = null;
+	public List<CategoryDTO> showCategroy(){
+		List<CategoryDTO> cList = null;
 		try {
 			cList = cDAO.selectCategoryList();
 		} catch (SQLException e) {
