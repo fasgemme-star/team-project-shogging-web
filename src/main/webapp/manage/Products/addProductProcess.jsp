@@ -13,12 +13,14 @@ String minPurchaseParam = request.getParameter("minPurchase");
 String maxPurchaseParam = request.getParameter("maxPurchase");
 String discountParam = request.getParameter("discount");
 String weightParam = request.getParameter("weight");
+String quantityParam = request.getParameter("quantity");
 
 int price = (priceParam == null || priceParam.trim().isEmpty()) ? 0 : Integer.parseInt(priceParam);
 int minPurchase = (minPurchaseParam == null || minPurchaseParam.trim().isEmpty()) ? 1 : Integer.parseInt(minPurchaseParam);
 int maxPurchase = (maxPurchaseParam == null || maxPurchaseParam.trim().isEmpty()) ? 999999999 : Integer.parseInt(maxPurchaseParam);
 int discount = (discountParam == null || discountParam.trim().isEmpty()) ? 0 : Integer.parseInt(discountParam);
 int weight = (weightParam == null || weightParam.trim().isEmpty()) ? 0 : Integer.parseInt(weightParam);
+int quantity = (quantityParam == null || quantityParam.trim().isEmpty()) ? 0 : Integer.parseInt(quantityParam);
 
 ProductDTO pDTO = new ProductDTO();
 
@@ -39,6 +41,7 @@ pDTO.setExpirationDate(request.getParameter("expirationDate"));
 pDTO.setStorageType(request.getParameter("storageType"));
 pDTO.setSalesUnit(request.getParameter("salesUnit"));
 pDTO.setAdditionalInfo(request.getParameter("additionalInfo"));
+pDTO.setQuantity(quantity);
 
 List<ImageDTO> imgList = new ArrayList<ImageDTO>();
 

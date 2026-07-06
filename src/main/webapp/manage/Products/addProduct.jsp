@@ -138,7 +138,7 @@ $(function(){
 								<div class="input-box">
 									<textarea id="productDesc" name="prdDescription" maxlength="150"
 										placeholder="상품설명을 입력하세요."></textarea>
-									<span class="count"> <span id="descCount">0</span>/150자
+									<span class="count"><span id="descCount">0</span>/150자
 									</span>
 								</div>
 							</div>
@@ -268,7 +268,7 @@ $(function(){
 
 								<!-- 무게 -->
 								<div class="form-row">
-									<label>무게(g)</label> <input type="number" name="weight" min="1">
+									<label>무게(kg)</label> <input type="number" name="weight" min="1">
 								</div>
 
 								<!-- 유통기한 -->
@@ -291,6 +291,12 @@ $(function(){
 								<div class="form-row">
 									<label>판매단위</label> 
 									<input type="text" name="salesUnit" placeholder="예) 1팩">
+								</div>
+								
+								<!-- 수량 -->
+								<div class="form-row">
+									<label>판매수량</label> 
+									<input type="text" name="quantity">
 								</div>
 
 								<!-- 추가정보 -->
