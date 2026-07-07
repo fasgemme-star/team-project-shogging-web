@@ -177,6 +177,8 @@ $(function(){
 		}
 		
 		int pageScale = 10;
+		//int allTotalCnt = cs.getTotalCount();
+		//int totalCnt = cs.getRangeCount(rDTO);
 		int totalCnt = cs.getTotalCount();
 		int pageCnt = (int)Math.ceil((double)totalCnt / pageScale);
 		
@@ -199,6 +201,7 @@ $(function(){
 		List<ClientDTO> clientList = cs.getClientList(rDTO);
 		
 		pageContext.setAttribute("clientList", clientList);
+		//pageContext.setAttribute("allTotalCnt", allTotalCnt);
 		pageContext.setAttribute("currentPage", currentPage);
 		pageContext.setAttribute("rDTO", rDTO);
 		pageContext.setAttribute("newCount", cs.getNewCount());
