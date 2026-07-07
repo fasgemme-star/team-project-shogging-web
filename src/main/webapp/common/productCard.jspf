@@ -1,0 +1,40 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%--
+  공용 상품 카드 조각
+  필요 변수: p (client.productDetail.ProductDTO) - EL로 p.prdID, p.prdName, p.price, p.discount, p.url 사용
+--%>
+<div class="group cursor-pointer">
+  <a href="${pageContext.request.contextPath}/productDetail.jsp?prdID=${p.prdID}">
+    <div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-4 bg-surface-container">
+      <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+           src="${p.url}" alt="${p.prdName}"
+           onerror="this.src='${pageContext.request.contextPath}/images/imgbanner1.png'"/>
+      <c:if test="${p.discount > 0}">
+        <span class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded text-label-md">${p.discount}% 할인</span>
+      </c:if>
+    </div>
+    <p class="text-on-surface-variant text-body-sm mb-1">${p.prdName}</p>
+    <c:choose>
+      <c:when test="${p.discount > 0}">
+        <h3 class="font-bold text-on-surface text-body-lg mb-2">
+          <fmt:formatNumber value="${p.price * (100 - p.discount) / 100}" type="number"/>원
+          <span class="text-body-sm text-on-surface-variant line-through ml-1"><fmt:formatNumber value="${p.price}" type="number"/>원</span>
+        </h3>
+      </c:when>
+      <c:otherwise>
+        <h3 class="font-bold text-on-surface text-body-lg mb-2"><fmt:formatNumber value="${p.price}" type="number"/>원</h3>
+      </c:otherwise>
+    </c:choose>
+    <c:if test="${not empty p.shortInfo}">
+      <p class="text-label-md text-on-surface-variant">${p.shortInfo}</p>
+    </c:if>
+  </a>
+  <form action="${pageContext.request.contextPath}/cartAdd.jsp" method="post" class="mt-2">
+    <input type="hidden" name="prdID" value="${p.prdID}"/>
+    <input type="hidden" name="quantity" value="1"/>
+    <input type="hidden" name="redirectTo" value="${pageContext.request.requestURI}${not empty pageContext.request.queryString ? '?' : ''}${pageContext.request.queryString}"/>
+    <button type="submit" class="w-full flex items-center justify-center gap-1 text-primary border border-primary rounded-lg py-2 text-body-sm hover:bg-primary hover:text-white transition-all">
+      <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span> 담기
+    </button>
+  </form>
+</div>
