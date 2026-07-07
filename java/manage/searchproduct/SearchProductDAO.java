@@ -73,11 +73,17 @@ public class SearchProductDAO {
 	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
 	        query.append(" AND instr(option_name, ? ) != 0 ");
 	    }
+	    if (rDTO.getCategory() != null&& !rDTO.getCategory().equals("과일") && !rDTO.getCategory().isEmpty()) {
+	    	query.append(" AND category_id = 'CAT000002' ");
+	    }
+	    if (rDTO.getCategory() != null&& !rDTO.getCategory().equals("채소") && !rDTO.getCategory().isEmpty()) {
+	    	query.append(" AND category_id = 'CAT000001' ");
+	    }
 	    if (rDTO.getStatus() != null && !rDTO.getStatus().equals("판매중") && !rDTO.getStatus().isEmpty()) {
-            query.append("AND STOCKQUANTITY = 0 ");
+            query.append("AND STOCKQUANTITY != 0 ");
         }
 	    if (rDTO.getStatus() != null && !rDTO.getStatus().equals("품절") && !rDTO.getStatus().isEmpty()) {
-	    	query.append("AND  STOCKQUANTITY != 0 ");
+	    	query.append("AND  STOCKQUANTITY = 0 ");
 	    }
 	    if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty() && 
 	    		rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
@@ -136,11 +142,17 @@ public class SearchProductDAO {
 	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
 	        query.append(" AND instr(option_name, ? ) != 0 ");
 	    }
+	    if (rDTO.getCategory() != null&& !rDTO.getCategory().equals("과일") && !rDTO.getCategory().isEmpty()) {
+	    	query.append(" AND category_id = 'CAT000002' ");
+	    }
+	    if (rDTO.getCategory() != null&& !rDTO.getCategory().equals("채소") && !rDTO.getCategory().isEmpty()) {
+	    	query.append(" AND category_id = 'CAT000001' ");
+	    }
 	    if (rDTO.getStatus() != null && !rDTO.getStatus().equals("판매중") && !rDTO.getStatus().isEmpty()) {
-            query.append("AND STOCKQUANTITY = 0 ");
+            query.append("AND STOCKQUANTITY != 0 ");
         }
 	    if (rDTO.getStatus() != null && !rDTO.getStatus().equals("품절") && !rDTO.getStatus().isEmpty()) {
-	    	query.append("AND  STOCKQUANTITY != 0 ");
+	    	query.append("AND  STOCKQUANTITY = 0 ");
 	    }
 	    if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty() && 
 	    		rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {

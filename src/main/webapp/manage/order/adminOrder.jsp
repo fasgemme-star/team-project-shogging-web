@@ -193,8 +193,8 @@ $(function(){
 		    rDTO.setDelivery_status(delivery_status);
 		}
 		
-		rDTO.setKeyword(keyword);
-		rDTO.setDelivery_status(delivery_status);
+		//rDTO.setKeyword(keyword);
+		//rDTO.setDelivery_status(delivery_status);
 		rDTO.setStartDate(startDate);
 		rDTO.setEndDate(endDate);
 		

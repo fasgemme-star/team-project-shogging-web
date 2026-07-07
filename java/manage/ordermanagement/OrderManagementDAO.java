@@ -66,12 +66,9 @@ public class OrderManagementDAO {
 	    query.append("      left outer  JOIN claim c ON od.order_details_id = c.order_details_id ");
 	    query.append("        WHERE 1=1 ");
 	       
-	    // 동적 쿼리 조건
-//	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
-//	        query.append("        AND p.PRODUCT_NAME LIKE ? "); // 식별자를 위해 p. 추가 권장
-//	    }
+
 	    if (rDTO.getDelivery_status() != null && !rDTO.getDelivery_status().equals("전체") && !rDTO.getDelivery_status().isEmpty()) {
-	        query.append("        AND STATUS = ? "); // 필요시 o.delivery_status 등으로 테이블 명시 권장
+	        query.append("        AND delivery_status = ? "); // 필요시 o.delivery_status 등으로 테이블 명시 권장
 	    }
 	    if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty() && 
 	            rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
@@ -92,10 +89,7 @@ public class OrderManagementDAO {
 
             // 3. 파라미터 매핑 (paramIndex 가변 증가 방식)
             int paramIndex = 1;
-            
-            if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
-                pstmt.setString(paramIndex++, "%" + rDTO.getKeyword() + "%");
-            }
+
             if (rDTO.getDelivery_status() != null && !rDTO.getDelivery_status().equals("전체") && !rDTO.getDelivery_status().isEmpty()) {
                 pstmt.setString(paramIndex++, rDTO.getDelivery_status());
             }
