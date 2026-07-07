@@ -46,14 +46,22 @@ public class UserMainDAO {
 			
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
-			String sql=" SELECT pi.url, p.PRODUCT_ID,p.PRODUCT_NAME,p.SHORTINFO,po.DISCOUNT,po.PRICE, SUM(od.QUANTITY) sales_count "
-					+ "FROM ORDER_DETAILS od "
-					+ "INNER JOIN PRODUCT_OPTION po ON od.OPTION_ID = po.OPTION_ID "
-					+ "INNER JOIN PRODUCT p ON po.PRODUCT_ID = p.PRODUCT_ID "
-					+ "INNER JOIN PRODUCT_IMAGE pi ON pi.PRODUCT_ID =p.PRODUCT_ID "
-					+ "WHERE pi.IMAGE_TYPE ='THUMB' "
-					+ "GROUP BY pi.url, p.PRODUCT_ID, p.PRODUCT_NAME, p.SHORTINFO,po.DISCOUNT, po.PRICE "
-					+ "ORDER BY sales_count DESC";
+			String sql=" SELECT pi.url, po.OPTION_ID, "
+					+ "  p.PRODUCT_NAME,p.SHORTINFO,  "
+					+ "  po.DISCOUNT,po.PRICE,   "
+					+ "  SUM(od.QUANTITY) sales_count   "
+					+ "  FROM ORDER_DETAILS od  "
+					+ "  INNER JOIN PRODUCT_OPTION po  "
+					+ " ON od.OPTION_ID = po.OPTION_ID  "
+					+ " INNER JOIN PRODUCT p  "
+					+ " ON po.PRODUCT_ID = p.PRODUCT_ID  "
+					+ " LEFT JOIN PRODUCT_IMAGE pi  "
+					+ " ON pi.PRODUCT_ID = p.PRODUCT_ID  "
+					+ " AND pi.IMAGE_TYPE='THUMB'  "
+					+ " GROUP BY pi.url, po.OPTION_ID,  "
+					+  "p.PRODUCT_NAME,p.SHORTINFO, "
+					+  "po.DISCOUNT,po.PRICE  "
+					+ " ORDER BY sales_count DESC";
 			
 			pstmt=con.prepareStatement(sql);
 			
@@ -63,7 +71,7 @@ public class UserMainDAO {
 				ProductDTO pDTO=new ProductDTO();
 				
 				pDTO.setUrl(rs.getString("URL"));
-				pDTO.setPrdID(rs.getString("PRODUCT_ID"));
+				pDTO.setOptionNo(rs.getString("OPTION_ID"));
 	    	    pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
 	    	    pDTO.setDiscount(rs.getInt("DISCOUNT"));
 	    	    pDTO.setPrice(rs.getInt("PRICE"));
@@ -102,12 +110,16 @@ public class UserMainDAO {
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
-			String sql="SELECT pi.url,p.PRODUCT_ID, p.PRODUCT_NAME,po.DISCOUNT, po.PRICE, p.SHORTINFO "
-					+ "FROM PRODUCT p  "
-					+ "INNER JOIN product_option po ON p.product_ID=po.product_id "
-					+ "INNER JOIN PRODUCT_IMAGE pi ON pi.PRODUCT_ID =p.PRODUCT_ID "
-					+ "WHERE po.DISCOUNT >0 AND pi.IMAGE_TYPE ='THUMB' "
-					+ "ORDER BY po.DISCOUNT DESC";
+			String sql="SELECT pi.url, po.OPTION_ID, "
+				      + "p.PRODUCT_NAME, po.DISCOUNT, po.PRICE, p.SHORTINFO "
+				      + "FROM PRODUCT p "
+				      + "INNER JOIN PRODUCT_OPTION po "
+				      + "ON p.PRODUCT_ID = po.PRODUCT_ID "
+				      + "LEFT JOIN PRODUCT_IMAGE pi "
+				      + "ON pi.PRODUCT_ID = p.PRODUCT_ID "
+				      + "AND pi.IMAGE_TYPE = 'THUMB' "
+				      + "WHERE po.DISCOUNT > 0 "
+				      + "ORDER BY po.DISCOUNT DESC";
 			
 			pstmt=con.prepareStatement(sql);
 			
@@ -118,7 +130,7 @@ public class UserMainDAO {
 				ProductDTO pDTO=new ProductDTO();
 				
 				pDTO.setUrl(rs.getString("URL"));
-				pDTO.setPrdID(rs.getString("PRODUCT_ID"));
+				pDTO.setOptionNo(rs.getString("OPTION_ID"));
 	    	    pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
 	    	    pDTO.setDiscount(rs.getInt("DISCOUNT"));
 	    	    pDTO.setPrice(rs.getInt("PRICE"));
@@ -161,31 +173,31 @@ public class UserMainDAO {
 
 	    	con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
-	        String sql =
-	        		"SELECT * " +
-	        		"FROM ( " +
-	        		"    SELECT A.*, ROWNUM RN " +
-	        		"    FROM ( " +
-	        		"        SELECT p.PRODUCT_ID, " +
-	        		"               p.PRODUCT_NAME, " +
-	        		"               p.SHORTINFO, " +
-	        		"               po.PRICE, " +
-	        		"               po.DISCOUNT, " +
-	        		"               pi.URL " +
-	        		"        FROM PRODUCT p " +
-	        		"        INNER JOIN PRODUCT_OPTION po " +
-	        		"            ON p.PRODUCT_ID = po.PRODUCT_ID " +
-	        		"        INNER JOIN CATEGORY c " +
-	        		"            ON p.CATEGORY_ID = c.CATEGORY_ID " +
-	        		"        INNER JOIN PRODUCT_IMAGE pi " +
-	        		"            ON p.PRODUCT_ID = pi.PRODUCT_ID " +
-	        		"        WHERE c.CATEGORY_NAME = ? " +
-	        		"          AND pi.IMAGE_TYPE = 'THUMB' " +
-	        		"        ORDER BY p.PRODUCT_ID DESC " +
-	        		"    ) A " +
-	        		"    WHERE ROWNUM <= ? " +
-	        		") " +
-	        		"WHERE RN >= ?";
+	    	String sql =
+	    		    "SELECT * "
+	    		  + "FROM ( "
+	    		  + " SELECT A.*, ROWNUM RN "
+	    		  + " FROM ( "
+	    		  + "   SELECT po.OPTION_ID, "
+	    		  + "          p.PRODUCT_NAME, "
+	    		  + "          p.SHORTINFO, "
+	    		  + "          po.PRICE, "
+	    		  + "          po.DISCOUNT, "
+	    		  + "          pi.URL "
+	    		  + "   FROM PRODUCT p "
+	    		  + "   INNER JOIN PRODUCT_OPTION po "
+	    		  + "   ON p.PRODUCT_ID = po.PRODUCT_ID "
+	    		  + "   INNER JOIN CATEGORY c "
+	    		  + "   ON p.CATEGORY_ID = c.CATEGORY_ID "
+	    		  + "   LEFT JOIN PRODUCT_IMAGE pi "
+	    		  + "   ON p.PRODUCT_ID = pi.PRODUCT_ID "
+	    		  + "   AND pi.IMAGE_TYPE='THUMB' "
+	    		  + "   WHERE c.CATEGORY_NAME = ? "
+	    		  + "   ORDER BY po.OPTION_ID DESC "
+	    		  + " ) A "
+	    		  + " WHERE ROWNUM <= ? "
+	    		  + ") "
+	    		  + "WHERE RN >= ?";
 
 	        pstmt = con.prepareStatement(sql);
 
@@ -200,7 +212,7 @@ public class UserMainDAO {
 	            ProductDTO pDTO = new ProductDTO();
 
 	            pDTO.setUrl(rs.getString("URL"));
-				pDTO.setPrdID(rs.getString("PRODUCT_ID"));
+	            pDTO.setOptionNo(rs.getString("OPTION_ID"));
 	    	    pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
 	    	    pDTO.setDiscount(rs.getInt("DISCOUNT"));
 	    	    pDTO.setPrice(rs.getInt("PRICE"));
@@ -245,6 +257,13 @@ public class UserMainDAO {
 	        "INNER JOIN CATEGORY c " +
 	        "ON p.CATEGORY_ID = c.CATEGORY_ID " +
 	        "WHERE c.CATEGORY_NAME = ?";
+//	        String sql="FROM PRODUCT p "
+//	        		+ "INNER JOIN CATEGORY c "
+//	        		+ "ON p.CATEGORY_ID = c.CATEGORY_ID "
+//	        		+ "INNER JOIN PRODUCT_IMAGE pi "
+//	        		+ "ON p.PRODUCT_ID = pi.PRODUCT_ID "
+//	        		+ "WHERE c.CATEGORY_NAME = ? "
+//	        		+ "AND pi.IMAGE_TYPE = 'THUMB'";
 
 	        pstmt = con.prepareStatement(sql);
 

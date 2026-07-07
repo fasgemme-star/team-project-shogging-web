@@ -30,7 +30,7 @@ public class LoginDAO {
 	//로그인 정보(아이디 및 비밀번호)일치 여부 확인
 	public ClientDTO selectLoginInfo(String clientId, String clientPassword) {
 		
-		ClientDTO cDTO=new ClientDTO();
+		ClientDTO cDTO=null;
 		DbConnection dbcon = DbConnection.getInstance();
 		
 		Connection con=null;

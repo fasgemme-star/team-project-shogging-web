@@ -46,11 +46,21 @@ public class ProductSearchDAO {
 
             StringBuilder sql = new StringBuilder();
 
-            sql.append(" SELECT pi.URL ,p.PRODUCT_ID, p.PRODUCT_NAME , p.SHORTINFO , po.OPTION_NAME  , po.PRICE, po.DISCOUNT  ");
-            sql.append(" FROM PRODUCT p  ");
-            sql.append(" JOIN PRODUCT_OPTION po ON p.PRODUCT_ID =po.PRODUCT_ID  ");
-            sql.append(" JOIN PRODUCT_IMAGE pi ON pi.PRODUCT_ID =p.PRODUCT_ID   ");
-            sql.append(" WHERE PRODUCT_NAME LIKE ? AND pi.IMAGE_TYPE ='THUMB' ");
+//            sql.append(" SELECT pi.URL ,p.PRODUCT_ID, p.PRODUCT_NAME , p.SHORTINFO , po.OPTION_NAME  , po.PRICE, po.DISCOUNT  ");
+//            sql.append(" FROM PRODUCT p  ");
+//            sql.append(" JOIN PRODUCT_OPTION po ON p.PRODUCT_ID =po.PRODUCT_ID  ");
+//            sql.append(" JOIN PRODUCT_IMAGE pi ON pi.PRODUCT_ID =p.PRODUCT_ID   ");
+//            sql.append(" WHERE PRODUCT_NAME LIKE ? AND pi.IMAGE_TYPE ='THUMB' ");
+            sql.append(" SELECT pi.URL, p.PRODUCT_ID, po.OPTION_ID, ");
+            sql.append(" p.PRODUCT_NAME, p.SHORTINFO, ");
+            sql.append(" po.OPTION_NAME, po.PRICE, po.DISCOUNT ");
+            sql.append(" FROM PRODUCT p ");
+            sql.append(" JOIN PRODUCT_OPTION po ");
+            sql.append(" ON p.PRODUCT_ID = po.PRODUCT_ID ");
+            sql.append(" LEFT JOIN PRODUCT_IMAGE pi ");
+            sql.append(" ON pi.PRODUCT_ID = p.PRODUCT_ID ");
+            sql.append(" AND pi.IMAGE_TYPE='THUMB' ");
+            sql.append(" WHERE p.PRODUCT_NAME LIKE ? ");
 
             pstmt = con.prepareStatement(sql.toString());
             pstmt.setString(1, "%" + prdName + "%");
@@ -64,6 +74,7 @@ public class ProductSearchDAO {
                 pDTO = new ProductDTO();
 
                 pDTO.setUrl(rs.getString("URL"));
+                pDTO.setOptionNo(rs.getString("OPTION_ID"));
                 pDTO.setPrdID(rs.getString("PRODUCT_ID"));
                 pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
                 pDTO.setPrdType(rs.getString("PRODUCT_TYPE"));

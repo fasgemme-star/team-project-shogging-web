@@ -97,7 +97,7 @@ public class SignupDAO {
 		        pstmt.setString(5, cDTO.getClientTel());
 		        pstmt.setString(6, cDTO.getClientBirth());
 		        pstmt.setString(7, cDTO.getClientIp());
-		        pstmt.setString(8, "정상");
+		        pstmt.setString(8, "Y");
 
 		        rowCnt = pstmt.executeUpdate();
 

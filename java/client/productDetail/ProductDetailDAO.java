@@ -24,7 +24,7 @@ private static ProductDetailDAO pdDAO;
 		return pdDAO;
 	}
 	//상품 기본 정보 조회
-	public ProductDTO selectProductInfo(String prdID) {
+	public ProductDTO selectProductInfo(String optionNO) {
 		
 		ProductDTO pDTO = null;
 
@@ -41,17 +41,22 @@ private static ProductDetailDAO pdDAO;
 
 	        StringBuilder sql = new StringBuilder();
 
-	        sql.append(" SELECT p.PRODUCT_ID , p.PRODUCT_NAME ,p.PRODUCT_TYPE ,p.NOTICE ,p.SHORTINFO , ");
-	        sql.append(" p.MANUFACTURER ,p.ORIGIN,p.UNDERAGE_PURCHASE ,p.UNIT ,p.MIN_PURCHASE ,p.MAX_PURCHASE , ");
-	        sql.append(" po.OPTION_NAME ,po.PRICE ,po.DISCOUNT,pi.URL  ");
+	        sql.append(" SELECT p.PRODUCT_ID, po.OPTION_ID, ");
+	        sql.append(" p.PRODUCT_NAME, p.PRODUCT_TYPE, p.NOTICE, p.SHORTINFO, ");
+	        sql.append(" p.MANUFACTURER, p.ORIGIN, ");
+	        sql.append(" p.UNDERAGE_PURCHASE, p.UNIT, ");
+	        sql.append(" p.MIN_PURCHASE, p.MAX_PURCHASE, ");
+	        sql.append(" po.OPTION_NAME, po.PRICE, po.DISCOUNT, pi.URL ");
 	        sql.append(" FROM PRODUCT p ");
-	        sql.append(" JOIN PRODUCT_OPTION po ON p.PRODUCT_ID=po.PRODUCT_ID  ");
-	        sql.append(" JOIN PRODUCT_IMAGE pi ON p.PRODUCT_ID=pi.PRODUCT_ID  ");
-	        sql.append(" AND pi.IMAGE_TYPE = 'THUMB' ");
-	        sql.append(" WHERE PRODUCT_ID = ? ");
+	        sql.append(" INNER JOIN PRODUCT_OPTION po ");
+	        sql.append(" ON p.PRODUCT_ID = po.PRODUCT_ID ");
+	        sql.append(" LEFT JOIN PRODUCT_IMAGE pi ");
+	        sql.append(" ON p.PRODUCT_ID = pi.PRODUCT_ID ");
+	        sql.append(" AND pi.IMAGE_TYPE='THUMB' ");
+	        sql.append(" WHERE po.OPTION_ID = ?");
 
 	        pstmt = con.prepareStatement(sql.toString());
-	        pstmt.setString(1, prdID);
+	        pstmt.setString(1, optionNO);
 
 	        rs = pstmt.executeQuery();
 
@@ -75,7 +80,7 @@ private static ProductDetailDAO pdDAO;
 	        	pDTO.setPrice(rs.getInt("PRICE"));
 	        	pDTO.setDiscount(rs.getInt("DISCOUNT"));
 
-	        	pDTO.setImg(rs.getNString("IMG"));
+	        	pDTO.setImg(rs.getNString("URL"));
 
 	        }
 
@@ -94,7 +99,7 @@ private static ProductDetailDAO pdDAO;
 		
 	}
 	//상품 상세 설명 및 내용 조회
-	public ProductDTO selectProductDetail(String prdID) {
+	public ProductDTO selectProductDetail(String optionNO) {
 		
 		ProductDTO pDTO = null;
 
@@ -112,11 +117,16 @@ private static ProductDetailDAO pdDAO;
 	        StringBuilder sql = new StringBuilder();
 
 	        sql.append(" SELECT * ");
-	        sql.append(" FROM PRODUCT_IMAGE  ");
-	        sql.append(" WHERE IMAGE_TYPE IN ('DETAIL','CONTENT') and PRODUCT_ID = ? ");
+	        sql.append(" FROM PRODUCT_IMAGE ");
+	        sql.append(" WHERE IMAGE_TYPE IN ('DETAIL','CONTENT') ");
+	        sql.append(" AND PRODUCT_ID = ( ");
+	        sql.append("     SELECT PRODUCT_ID ");
+	        sql.append("     FROM PRODUCT_OPTION ");
+	        sql.append("     WHERE OPTION_ID = ? ");
+	        sql.append(" ) ");
 
 	        pstmt = con.prepareStatement(sql.toString());
-	        pstmt.setString(1, prdID);
+	        pstmt.setString(1, optionNO);
 
 	        rs = pstmt.executeQuery();
 
