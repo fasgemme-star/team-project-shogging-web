@@ -53,6 +53,19 @@ public class ClientService {
 		return result;
 	}// getNewCount
 	
+	public int getRangeCount(RangeDTO rDTO) {
+		int cnt=0;
+		try {
+			cDAO.selectClientCount(rDTO);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return cnt;
+	}
+	
+	
+	
 	public List<ClientDTO> getClientList(RangeDTO rDTO){
 		List<ClientDTO> cList = new ArrayList<ClientDTO>();
 		try {
