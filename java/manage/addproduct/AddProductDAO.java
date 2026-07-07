@@ -35,11 +35,12 @@ public class AddProductDAO {
 		String queryMaxID = "SELECT MAX(PRODUCT_ID) FROM product";
 		String queryProduct = "INSERT INTO product(PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, DESCRIPTION, MIN_PURCHASE, MAX_PURCHASE, MANUFACTURER, ORIGIN, UNDERAGE_PURCHASE, EXPIRATION_DATE, STORAGE_TYPE, UNIT, NOTICE) "
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		String queryProductOption = "insert into product_option(option_name, PRICE, DISCOUNT, WEIGHT, stockquantity) values(?, ?, ?, ?, ?)";
+		String queryProductOption = "insert into product_option(option_name, PRICE, DISCOUNT, WEIGHT, stockquantity,product_id) values(?, ?, ?, ?, ?, ?)";
 		String queryImg = "insert into PRODUCT_IMAGE(IMAGE_TYPE, URL, PRODUCT_ID) values(?,?,?)";
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			con.setAutoCommit(false);
+			
 
 			String productNo = null;
 			pstmtMaxId = con.prepareStatement(queryMaxID);
@@ -84,6 +85,7 @@ public class AddProductDAO {
 			pstmtOption.setInt(3,pDTO.getDiscount());
 			pstmtOption.setInt(4,pDTO.getWeight());
 			pstmtOption.setInt(5,pDTO.getQuantity());
+			pstmtOption.setString(6,nextProductId);
 			
 			cnt = pstmtOption.executeUpdate();
 
@@ -121,6 +123,7 @@ public class AddProductDAO {
 			}
 			dbcon.dbClose(rs, pstmtMaxId, null);
 			dbcon.dbClose(null, pstmtProduct, null);
+			dbcon.dbClose(null, pstmtOption, null);
 			dbcon.dbClose(null, pstmtImg, con);
 		} // end finally
 
