@@ -42,6 +42,13 @@ public class LoginDAO {
 			
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
+			System.out.println("con = " + con);
+			System.out.println(Path.DATABASE_PROPERTIES);
+			File file = new File(Path.DATABASE_PROPERTIES);
+
+			System.out.println("exists = " + file.exists());
+			System.out.println("absolutePath = " + file.getAbsolutePath());
+			
 			StringBuilder sql=new StringBuilder();
 			sql.append("SELECT CLIENT_NO,CLIENT_ID, CLIENT_NAME ");
 			sql.append("FROM CLIENT ");
@@ -53,6 +60,8 @@ public class LoginDAO {
 			pstmt.setString(2, clientPassword);
 			
 			rs=pstmt.executeQuery();
+			
+			
 			
 			if(rs.next()) {
 

@@ -68,12 +68,14 @@ public class DbConnection {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-
 		// 2.커넥션 얻기
 		String url = prop.getProperty("url");
 		String id = prop.getProperty("id");
 		String pw = prop.getProperty("pw");
 
+		System.out.println("url = " + url);
+		System.out.println("id = " + id);
+		System.out.println("pw = " + pw);
 		con = DriverManager.getConnection(url, id, pw);
 
 		return con;

@@ -65,6 +65,7 @@ private static ProductDetailDAO pdDAO;
 	        	pDTO = new ProductDTO();
 
 	        	pDTO.setPrdID(rs.getString("PRODUCT_ID"));
+	        	pDTO.setOptionNo(rs.getString("OPTION_ID"));
 	        	pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
 	        	pDTO.setPrdType(rs.getString("PRODUCT_TYPE"));
 	        	pDTO.setNotification(rs.getString("NOTICE"));
@@ -137,7 +138,7 @@ private static ProductDetailDAO pdDAO;
 	        	pDTO.setImg(rs.getString("PRODUCT_IMG_ID"));
 	        	pDTO.setUrl(rs.getString("URL"));
 	        	pDTO.setImageType(rs.getString("IMAGE_TYPE"));
-	        	pDTO.setPrdID(rs.getString("PRODUCT_ID"));
+	        	pDTO.setOptionNo(rs.getString("PRODUCT_ID"));
 
 	        }
 
