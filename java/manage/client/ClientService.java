@@ -8,6 +8,8 @@ import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
 
+import client.signup.HashUtil;
+
 public class ClientService {
 	private ClientDAO cDAO = ClientDAO.getInstance();
 	
@@ -91,8 +93,9 @@ public class ClientService {
 	public String changeClientPW(String ClientID) {
 		String randomPW = PasswordGenerator.generatePassword(10);
 		sendEmail(ClientID,randomPW);
+		String hash = HashUtil.hashingPassword(randomPW);
 		try {
-			cDAO.updateClientPW(ClientID, randomPW);
+			cDAO.updateClientPW(ClientID, hash);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,34 +104,40 @@ public class ClientService {
 	}// changeClientPW
 	
 	public void sendEmail(String id, String newPW) {
-		Properties props = new Properties();
-		props.put("mail.smtp.host", "smtp.test.com");
-	    props.put("mail.smtp.port", "587");
-	    
-	    Session session = Session.getDefaultInstance(props);
-	    String email = null;;
-		try {
-			email = cDAO.selectEmail(id);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-        try {
-        	
-        	
-            MimeMessage message = new MimeMessage(session);
+		 final String username = "dldnjstjr0521@gmail.com"; 
+	        final String password = "agxjfsugomxlqorh"; 
 
-            message.setFrom(new InternetAddress("admin@test.com"));
-            message.setRecipient(Message.RecipientType.TO,
-                    new InternetAddress(email));
 
-            message.setSubject("변경된 비밀번호입니다.");
-            message.setText(newPW);
+	        String to = "won05210@naver.com"; // 받는 사람 메일
+	        String subject = "변경된 비밀번호입니다";
+	        String body = "변경된 비밀번호는 [" + newPW + "] 입니다.";
 
-            // 실제 발송 시 사용
-            // Transport.send(message);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+	        Properties props = new Properties();
+	        props.put("mail.smtp.auth", "true");
+	        props.put("mail.smtp.starttls.enable", "true");
+	        props.put("mail.smtp.host", "smtp.gmail.com");
+	        props.put("mail.smtp.port", "587");
+
+	        Session session = Session.getInstance(props, new Authenticator() {
+	            protected PasswordAuthentication getPasswordAuthentication() {
+	                return new PasswordAuthentication(username, password);
+	            }
+	        });
+
+	        try {
+	            Message message = new MimeMessage(session);
+	            message.setFrom(new InternetAddress(username));
+	            message.setRecipients(
+	                    Message.RecipientType.TO,
+	                    InternetAddress.parse(to)
+	            );
+	            message.setSubject(subject);
+	            message.setText(body);
+
+	           // Transport.send(message);
+	        } catch (MessagingException e) {
+	            e.printStackTrace();
+	        }
 	    
 	}
 }
