@@ -108,8 +108,8 @@ $(function(){
 								<label for="category">카테고리 <span class="required">*</span></label> <select id="category"
 									name="category">
 									<option value="">카테고리를 선택하세요.</option>
-									<option value="fruit">과일</option>
-									<option value="vegetable">채소</option>
+									<option value="CAT000001">과일</option>
+									<option value="CAT000002">채소</option>
 								</select> 
 							</div>
 						</div>

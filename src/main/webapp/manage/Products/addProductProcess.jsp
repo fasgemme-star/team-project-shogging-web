@@ -71,7 +71,7 @@ AddProductService service = new AddProductService();
 int result = service.addProduct(pDTO, imgList);
 
 if (result > 0) {
-response.sendRedirect("adminProducts.jsp");
+response.sendRedirect("addProduct.jsp");
 return;
 }
 %>
