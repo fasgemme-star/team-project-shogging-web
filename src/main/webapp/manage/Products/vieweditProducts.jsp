@@ -401,7 +401,6 @@ function closeEditModal(){
 				</div>
 
 				<form id="deleteForm" method="post" action="deleteProduct.jsp"></form>
-				
 				<div class="delete-btn">
 					<button type="button" id="deleteBtn" onclick="deleteProduct()">상품삭제</button>
 				</div>
