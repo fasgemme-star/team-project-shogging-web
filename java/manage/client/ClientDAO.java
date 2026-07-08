@@ -79,8 +79,8 @@ public class ClientDAO {
 	    ResultSet rs = null;
 	    StringBuilder query = new StringBuilder();
 	    int result = 0;
-	    
-	    query.append(" select count(1) from client where CLIENT_DELETE_ACCOUNT = 'N' and 1=1 ");
+	      
+	    query.append(" select count(1) cnt from client where CLIENT_DELETE_ACCOUNT = 'N' and 1=1 ");
 	    
 	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
 	        query.append("AND  ( instr(CLIENT_NAME, ? ) != 0 or instr(CLIENT_EMAIL, ? ) != 0  OR instr(CLIENT_TEL, ? ) != 0 )  ");
