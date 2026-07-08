@@ -77,7 +77,8 @@ public class ProductSearchDAO {
                 pDTO.setOptionNo(rs.getString("OPTION_ID"));
                 pDTO.setPrdID(rs.getString("PRODUCT_ID"));
                 pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
-                pDTO.setPrdType(rs.getString("PRODUCT_TYPE"));
+                pDTO.setShortInfo(rs.getString("SHORTINFO"));
+                pDTO.setOptionName(rs.getString("OPTION_NAME"));
                 pDTO.setPrice(rs.getInt("PRICE"));
                 pDTO.setDiscount(rs.getInt("DISCOUNT"));
 

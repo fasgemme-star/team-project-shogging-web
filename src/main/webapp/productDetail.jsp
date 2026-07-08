@@ -72,6 +72,8 @@
         <div class="border-t border-surface-variant mt-4 pt-4 flex justify-between items-center">
           <span class="font-bold text-on-surface-variant">총 상품 금액</span>
           <span class="text-headline-md font-bold text-primary"><fmt:formatNumber value="${unitPrice * quantity}" type="number"/>원</span>
+          
+          
         </div>
       </div>
 

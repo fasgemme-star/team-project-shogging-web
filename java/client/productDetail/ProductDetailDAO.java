@@ -61,7 +61,8 @@ private static ProductDetailDAO pdDAO;
 	        rs = pstmt.executeQuery();
 
 	        if(rs.next()) {
-
+	        	
+	        	 
 	        	pDTO = new ProductDTO();
 
 	        	pDTO.setPrdID(rs.getString("PRODUCT_ID"));
@@ -81,7 +82,10 @@ private static ProductDetailDAO pdDAO;
 	        	pDTO.setPrice(rs.getInt("PRICE"));
 	        	pDTO.setDiscount(rs.getInt("DISCOUNT"));
 
-	        	pDTO.setImg(rs.getNString("URL"));
+	        	pDTO.setUrl(rs.getNString("URL"));
+	        	
+	        	System.out.println("PRICE = " + rs.getInt("PRICE"));
+	        	System.out.println("DISCOUNT = " + rs.getInt("DISCOUNT"));
 
 	        }
 
