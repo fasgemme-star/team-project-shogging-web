@@ -45,13 +45,14 @@ public class OrderManagementService {
 	
 	
 	public boolean processDelivery(String orderID) {
+		boolean flag = false;
 		try {
-			oDAO.updateDeliveryStatus(orderID);
+			flag =  (oDAO.updateDeliveryStatus(orderID)==1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return true;
+		return flag;
 	}// processDelivery
 	
 	/**

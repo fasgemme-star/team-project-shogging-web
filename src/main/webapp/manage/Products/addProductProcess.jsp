@@ -51,7 +51,7 @@ String descImg = request.getParameter("descImg");
 String detailImg = request.getParameter("detailImg");
 
 if (thumbImg != null && !thumbImg.trim().isEmpty()) {
-imgList.add(new ImageDTO("THUMBNAIL", thumbImg));
+imgList.add(new ImageDTO("THUMB", thumbImg));
 }
 
 if (mainImg != null && !mainImg.trim().isEmpty()) {
@@ -59,7 +59,7 @@ imgList.add(new ImageDTO("MAIN", mainImg));
 }
 
 if (descImg != null && !descImg.trim().isEmpty()) {
-imgList.add(new ImageDTO("DESCRIPTION", descImg));
+imgList.add(new ImageDTO("CONTENT", descImg));
 }
 
 if (detailImg != null && !detailImg.trim().isEmpty()) {

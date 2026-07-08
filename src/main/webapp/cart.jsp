@@ -12,7 +12,37 @@
     }
 
     // ---- CartService 메소드 연결 ----
-    List<OrderDTO> cartList = cartService.getCartList(clientNo);
+    // 주의(JSP-only 우회): CartDAO.selectCart()가 option_id를 조회하지 않아서
+    // 수량조절/삭제 버튼에 필요한 orderID가 항상 비어있는 자바 버그가 있음(별도 보고됨).
+    // .java 파일을 못 고치는 상황이라, 여기서는 CartService를 거치지 않고
+    // 기존 DbConnection/Path 유틸만 재사용해 option_id까지 포함한 목록을 직접 조회한다.
+    List<OrderDTO> cartList = new java.util.ArrayList<OrderDTO>();
+    {
+        java.sql.Connection con = null;
+        java.sql.PreparedStatement pstmt = null;
+        java.sql.ResultSet rs = null;
+        try {
+            dbcon.DbConnection dbconn = dbcon.DbConnection.getInstance();
+            con = dbconn.getConn(new java.io.File(dbcon.Path.DATABASE_PROPERTIES));
+            String sql = "select po.OPTION_ID, po.OPTION_NAME, po.PRICE, po.DISCOUNT, sc.QUANTITY "
+                       + "from shopping_cart sc join product_option po on sc.OPTION_ID = po.OPTION_ID "
+                       + "where po.STOCKQUANTITY != 0 and sc.CLIENT_NO = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, clientNo);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                OrderDTO oDTO = new OrderDTO();
+                oDTO.setOrderID(rs.getString("OPTION_ID"));
+                oDTO.setPrdName(rs.getString("OPTION_NAME"));
+                oDTO.setPrice(rs.getInt("PRICE"));
+                oDTO.setDiscount(rs.getInt("DISCOUNT"));
+                oDTO.setQuantity(rs.getInt("QUANTITY"));
+                cartList.add(oDTO);
+            }
+        } finally {
+            dbcon.DbConnection.getInstance().dbClose(rs, pstmt, con);
+        }
+    }
 
     int subtotal = 0;
     for (OrderDTO item : cartList) {
@@ -47,6 +77,23 @@
               <div class="flex-1">
                 <h4 class="font-bold text-on-surface">${item.prdName}</h4>
                 <p class="text-body-sm text-on-surface-variant mb-2"><fmt:formatNumber value="${itemUnitPrice}" type="number"/>원 x ${item.quantity}개</p>
+
+                <%-- 수량 조절: orderID 필드에 옵션ID를 담아서 넘겨받음(CartDAO 참고) --%>
+                <div class="flex items-center gap-3">
+                  <div class="flex items-center border border-outline-variant bg-white rounded-lg">
+                    <a class="p-1 hover:bg-surface-container transition-colors inline-block"
+                       href="${pageContext.request.contextPath}/cartUpdate.jsp?optionNo=${item.orderID}&amp;quantity=${item.quantity - 1}">
+                      <span class="material-symbols-outlined text-[18px]">remove</span>
+                    </a>
+                    <span class="px-4 text-body-sm font-bold">${item.quantity}</span>
+                    <a class="p-1 hover:bg-surface-container transition-colors inline-block"
+                       href="${pageContext.request.contextPath}/cartUpdate.jsp?optionNo=${item.orderID}&amp;quantity=${item.quantity + 1}">
+                      <span class="material-symbols-outlined text-[18px]">add</span>
+                    </a>
+                  </div>
+                  <a class="text-on-surface-variant hover:text-error text-body-sm underline"
+                     href="${pageContext.request.contextPath}/cartDelete.jsp?optionNo=${item.orderID}">삭제</a>
+                </div>
               </div>
               <div class="text-right">
                 <p class="font-bold text-on-surface text-lg"><fmt:formatNumber value="${itemUnitPrice * item.quantity}" type="number"/>원</p>
