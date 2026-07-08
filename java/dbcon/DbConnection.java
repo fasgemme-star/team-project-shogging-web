@@ -73,9 +73,6 @@ public class DbConnection {
 		String id = prop.getProperty("id");
 		String pw = prop.getProperty("pw");
 
-		System.out.println("url = " + url);
-		System.out.println("id = " + id);
-		System.out.println("pw = " + pw);
 		con = DriverManager.getConnection(url, id, pw);
 
 		return con;
