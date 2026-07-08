@@ -38,9 +38,14 @@ public class OrderManagementService {
 		return oList;
 	}// getOrderList
 	
-	public OrderDTO getOrderDetail(String orderID) {
-		OrderDTO oDTO = new OrderDTO();
-		return oDTO;
+	public ClaimDTO getOrderDetail(String orderID, int i) {
+		ClaimDTO cDTO = new ClaimDTO();
+		try {
+			cDTO = oDAO.selectClaimDetail(orderID, i);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cDTO;
 	}// getOrderDetail
 	
 	
