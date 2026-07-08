@@ -119,15 +119,64 @@ public class OrderDAO {
 	//-----------
 	// 결제 버튼
 	
-	public int insertPayment(OrderDTO orderDTO) {
-		return 0;
-	}// insertPayment
-	
-	public String insertOrder(OrderDTO orderDTO) {
-        return null;
-    }// insertOrder
-	
-       
+	public int insertOrder(OrderDTO oDTO) throws SQLException {
+		DbConnection dbcon = DbConnection.getInstance();
+		Connection con = null;
+		PreparedStatement pstmtMaxId = null;
+		PreparedStatement pstmtPayment = null;
+		PreparedStatement pstmtOrder = null;
+		ResultSet rs = null;
+		int result = 0;
+		String queryMaxID = "SELECT MAX(order_ID) FROM orders";
+		String queryPayment = "	insert into payment(paymentid, order_id, payment_type, payment_date) values(?, ?, ?, ?)	";
+		String queryOrder = "	insert into orders(order_id, ORDER_DATE, TOTAL_AMOUNT, ORDER_STATUS, CLIENT_NO) values(?, ?, ?, ?)	";
+		try {
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+			con.setAutoCommit(false);
+			
+			String orderID = null;
+			pstmtMaxId = con.prepareStatement(queryMaxID);
+			rs = pstmtMaxId.executeQuery();
+			if (rs.next()) {
+				orderID = rs.getString(1);
+			}
+			
+			String next = "O000001";
+			if (orderID != null && orderID.startsWith("O")) {
+				try {
+					int num = Integer.parseInt(orderID.substring(1));
+					num++;
+					next = String.format("O%06d", num);
+				} catch (NumberFormatException e) {
+					next = oDTO.getPrdID(); 
+				}
+			}
 
+			pstmtOrder = con.prepareStatement(queryOrder);
+			pstmtOrder.setString(1, oDTO.getOrderID());
+			pstmtOrder.setString(2, oDTO.getOrderDate());
+			pstmtOrder.setInt(3, oDTO.getTotalAmount());
+			pstmtOrder.setString(4, oDTO.getOrderStatus());
+			pstmtOrder.setString(4, oDTO.getClientID());
+			
+			result += pstmtOrder.executeUpdate();
+			
+			pstmtPayment = con.prepareStatement(queryPayment);
+			pstmtPayment.setString(1, oDTO.getPaymentKey());
+			pstmtPayment.setString(2, oDTO.getOrderID());
+			pstmtPayment.setString(3, oDTO.getPaymentType());
+			pstmtPayment.setString(4, oDTO.getPaymentDate());
+			
+			result += pstmtPayment.executeUpdate();
+
+			
+		} finally {
+			dbcon.dbClose(rs, pstmtMaxId, null);
+			dbcon.dbClose(null, pstmtOrder, null);
+			dbcon.dbClose(null, pstmtPayment, con);
+		} 
+		
+		return result;
+	}// insertPayment
 	
 }
