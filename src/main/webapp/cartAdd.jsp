@@ -36,25 +36,33 @@
     }
 
     // ---- CartService 메소드 연결 ----
-    // 같은 옵션이 장바구니에 이미 있으면(=이전에 담은 적 있으면) 새 행을 또 insert 하지 않고
-    // 기존 수량에 더해서 update 한다. (그냥 매번 insert만 하면 같은 상품이 여러 줄로 쪼개져
-    // 들어가서 "수량 조절/담은 개수"가 실제 화면과 안 맞아 보이는 문제가 생긴다.)
+    // 주의(JSP-only 수정): 기존엔 "이미 담겨있는지"를 옵션 '이름' 문자열로 비교해서,
+    // 서로 다른 상품인데 옵션명이 같으면(예: "1kg") 잘못 매칭되어 엉뚱한 option_id로
+    // UPDATE를 시도 -> 수정된 행이 0개 -> "담기 실패"로 표시되는 버그가 있었음.
+    // 이름 대신 실제 option_id로 정확히 조회해서 이미 담긴 수량을 확인하도록 수정.
     CartDTO cartDTO = new CartDTO();
     cartDTO.setClientNo(clientNo);
     cartDTO.setPrdID(prdID);
 
-    ProductDTO optionInfo = pdService.getProductInfo(prdID);
-    String optionName = (optionInfo != null) ? optionInfo.getOptionName() : null;
-
     boolean alreadyInCart = false;
-    if (optionName != null) {
-        List<OrderDTO> existingCart = cartService.getCartList(clientNo);
-        for (OrderDTO item : existingCart) {
-            if (optionName.equals(item.getPrdName())) {
-                quantity += item.getQuantity();
+    {
+        java.sql.Connection con = null;
+        java.sql.PreparedStatement pstmt = null;
+        java.sql.ResultSet rs = null;
+        try {
+            dbcon.DbConnection dbconn = dbcon.DbConnection.getInstance();
+            con = dbconn.getConn(new java.io.File(dbcon.Path.DATABASE_PROPERTIES));
+            pstmt = con.prepareStatement(
+                "select quantity from shopping_cart where client_no = ? and option_id = ?");
+            pstmt.setString(1, clientNo);
+            pstmt.setString(2, prdID);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                quantity += rs.getInt("quantity");
                 alreadyInCart = true;
-                break;
             }
+        } finally {
+            dbcon.DbConnection.getInstance().dbClose(rs, pstmt, con);
         }
     }
     cartDTO.setQuantity(quantity);
