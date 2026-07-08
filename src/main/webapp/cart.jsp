@@ -47,6 +47,23 @@
               <div class="flex-1">
                 <h4 class="font-bold text-on-surface">${item.prdName}</h4>
                 <p class="text-body-sm text-on-surface-variant mb-2"><fmt:formatNumber value="${itemUnitPrice}" type="number"/>원 x ${item.quantity}개</p>
+
+                <%-- 수량 조절: orderID 필드에 옵션ID를 담아서 넘겨받음(CartDAO 참고) --%>
+                <div class="flex items-center gap-3">
+                  <div class="flex items-center border border-outline-variant bg-white rounded-lg">
+                    <a class="p-1 hover:bg-surface-container transition-colors inline-block"
+                       href="${pageContext.request.contextPath}/cartUpdate.jsp?optionNo=${item.orderID}&amp;quantity=${item.quantity - 1}">
+                      <span class="material-symbols-outlined text-[18px]">remove</span>
+                    </a>
+                    <span class="px-4 text-body-sm font-bold">${item.quantity}</span>
+                    <a class="p-1 hover:bg-surface-container transition-colors inline-block"
+                       href="${pageContext.request.contextPath}/cartUpdate.jsp?optionNo=${item.orderID}&amp;quantity=${item.quantity + 1}">
+                      <span class="material-symbols-outlined text-[18px]">add</span>
+                    </a>
+                  </div>
+                  <a class="text-on-surface-variant hover:text-error text-body-sm underline"
+                     href="${pageContext.request.contextPath}/cartDelete.jsp?optionNo=${item.orderID}">삭제</a>
+                </div>
               </div>
               <div class="text-right">
                 <p class="font-bold text-on-surface text-lg"><fmt:formatNumber value="${itemUnitPrice * item.quantity}" type="number"/>원</p>

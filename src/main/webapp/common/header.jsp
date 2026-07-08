@@ -64,8 +64,8 @@
   </nav>
 
   <div class="flex items-center gap-gutter-sm">
-    <form class="relative hidden lg:block mr-4" action="${pageContext.request.contextPath}/search.jsp" method="get">
-      <input class="bg-surface-container-low border border-outline-variant rounded-full py-2 px-6 w-64 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-body-sm"
+    <form class="relative block mr-4" action="${pageContext.request.contextPath}/search.jsp" method="get">
+      <input class="bg-surface-container-low border border-outline-variant rounded-full py-2 px-6 w-36 md:w-64 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-body-sm"
              id="search-input" name="keyword" placeholder="검색어를 입력해주세요" type="text"/>
       <button type="submit" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant bg-transparent border-0">search</button>
     </form>
