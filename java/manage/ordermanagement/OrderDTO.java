@@ -29,4 +29,5 @@ public class OrderDTO {
 	private int discountPrice;
 	private int totalAmount;
 	private String ClaimID;
+	private String claimName;
 }
