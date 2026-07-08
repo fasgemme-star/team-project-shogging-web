@@ -161,36 +161,34 @@ $(function(){
 		ClientService cs = new ClientService();
 		
 		String keyword = request.getParameter("keyword");
-		if (keyword != null) {
-			rDTO.setKeyword(keyword.trim());
+		if(keyword == null){
+		    keyword = "";
 		}
+		rDTO.setKeyword(keyword);
 		
-		String tempPage = request.getParameter("currentPage");
 		int currentPage = 1;
-		
-		if (tempPage != null && !tempPage.trim().isEmpty()) {
-			try {
-				currentPage = Integer.parseInt(tempPage);
-			} catch (NumberFormatException nfe) {
-				currentPage = 1;
-			}
+		try{
+		    currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}catch(Exception e){
+		    currentPage = 1;
 		}
 		
 		int pageScale = 10;
-		//int allTotalCnt = cs.getTotalCount();
-		//int totalCnt = cs.getRangeCount(rDTO);
-		int totalCnt = cs.getTotalCount();
-		int pageCnt = (int)Math.ceil((double)totalCnt / pageScale);
+		int total = cs.getTotalCount();
+		int totalCnt = cs.getRangeCount(rDTO);
+		int pageCnt = (int)Math.ceil((double)totalCnt/pageScale);
 		
-		if (currentPage < 1) {
-			currentPage = 1;
+		if(pageCnt == 0){
+		    pageCnt = 1;
+		}
+		if(currentPage < 1){
+		    currentPage = 1;
+		}
+		if(currentPage > pageCnt){
+		    currentPage = pageCnt;
 		}
 		
-		if (pageCnt > 0 && currentPage > pageCnt) {
-			currentPage = pageCnt;
-		}
-		
-		int startNum = (currentPage - 1) * pageScale + 1;
+		int startNum = (currentPage-1) * pageScale + 1;
 		int endNum = currentPage * pageScale;
 		
 		rDTO.setStartNum(startNum);
@@ -201,10 +199,10 @@ $(function(){
 		List<ClientDTO> clientList = cs.getClientList(rDTO);
 		
 		pageContext.setAttribute("clientList", clientList);
-		//pageContext.setAttribute("allTotalCnt", allTotalCnt);
-		pageContext.setAttribute("currentPage", currentPage);
 		pageContext.setAttribute("rDTO", rDTO);
+		pageContext.setAttribute("currentPage", currentPage);
 		pageContext.setAttribute("newCount", cs.getNewCount());
+		pageContext.setAttribute("total", total);
 		%>
 
 		<!-- 메인 -->
@@ -226,7 +224,7 @@ $(function(){
 						<div class="summary-icon">👥</div>
 						<div>
 							<div class="summary-title">전체 사용자</div>
-							<div class="summary-count">${ rDTO.totalCnt }명</div>
+							<div class="summary-count">${ total }명</div>
 						</div>
 					</div>
 
@@ -284,12 +282,13 @@ $(function(){
 								</c:forEach>
 							</tbody>
 						</table>
+						
 						<div id="divPagination-wrap" style="text-align:center">
-						<c:if test="${rDTO.pageCnt > 0}">
+						<c:if test="${rDTO.totalCnt > 0}">
 						    <c:forEach var="i" begin="1" end="${rDTO.pageCnt}">
 						        <c:choose>
 						            <c:when test="${i == currentPage}">
-						                <b>[${i}]</b>
+						                [${i}]
 						            </c:when>
 						            <c:otherwise>
 						                <a href="adminUsers.jsp?currentPage=${i}&keyword=${param.keyword}">
