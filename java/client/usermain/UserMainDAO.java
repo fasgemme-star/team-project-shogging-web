@@ -38,7 +38,7 @@ public class UserMainDAO {
         try {
             con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
             
-            String sql = " SELECT pi.url, po.OPTION_ID, "
+            String sql = " SELECT pi.url, p.PRODUCT_ID, po.OPTION_ID, "
                        + " p.PRODUCT_NAME, po.OPTION_NAME, p.SHORTINFO, "
                        + " po.DISCOUNT, po.PRICE, "
                        + " SUM(od.QUANTITY) sales_count "
@@ -46,7 +46,7 @@ public class UserMainDAO {
                        + " INNER JOIN PRODUCT_OPTION po ON od.OPTION_ID = po.OPTION_ID "
                        + " INNER JOIN PRODUCT p ON po.PRODUCT_ID = p.PRODUCT_ID "
                        + " LEFT JOIN PRODUCT_IMAGE pi ON pi.PRODUCT_ID = p.PRODUCT_ID AND pi.IMAGE_TYPE='THUMB' "
-                       + " GROUP BY pi.url, po.OPTION_ID, p.PRODUCT_NAME, p.SHORTINFO, po.DISCOUNT, po.OPTION_NAME, po.PRICE "
+                       + " GROUP BY pi.URL, p.PRODUCT_ID,po.OPTION_ID, p.PRODUCT_NAME, p.SHORTINFO, po.DISCOUNT, po.OPTION_NAME, po.PRICE "
                        + " ORDER BY sales_count DESC ";
             
             pstmt = con.prepareStatement(sql);
@@ -55,6 +55,7 @@ public class UserMainDAO {
             while (rs.next()) {
                 ProductDTO pDTO = new ProductDTO();
                 pDTO.setUrl(rs.getString("URL"));
+                pDTO.setPrdID(rs.getString("PRODUCT_ID"));
                 pDTO.setOptionNo(rs.getString("OPTION_ID"));
                 pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
                 pDTO.setDiscount(rs.getInt("DISCOUNT"));
@@ -88,7 +89,7 @@ public class UserMainDAO {
         try {
             con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
             
-            String sql = " SELECT pi.url, po.OPTION_ID, "
+            String sql = " SELECT pi.url,p.PRODUCT_ID, po.OPTION_ID, "
                        + " p.PRODUCT_NAME, po.OPTION_NAME, po.DISCOUNT, po.PRICE, p.SHORTINFO "
                        + " FROM PRODUCT p "
                        + " INNER JOIN PRODUCT_OPTION po ON p.PRODUCT_ID = po.PRODUCT_ID "
@@ -103,6 +104,7 @@ public class UserMainDAO {
                 ProductDTO pDTO = new ProductDTO();
                 pDTO.setUrl(rs.getString("URL"));
                 pDTO.setOptionNo(rs.getString("OPTION_ID"));
+                pDTO.setPrdID(rs.getString("PRODUCT_ID"));
                 pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
                 pDTO.setDiscount(rs.getInt("DISCOUNT"));
                 pDTO.setPrice(rs.getInt("PRICE"));
@@ -139,7 +141,7 @@ public class UserMainDAO {
                        + " FROM ( "
                        + "   SELECT A.*, ROWNUM RN "
                        + "   FROM ( "
-                       + "     SELECT po.OPTION_ID, p.PRODUCT_NAME, po.OPTION_NAME, p.SHORTINFO, po.PRICE, po.DISCOUNT, pi.URL "
+                       + "     SELECT p.PRODUCT_ID, po.OPTION_ID, p.PRODUCT_NAME, po.OPTION_NAME, p.SHORTINFO, po.PRICE, po.DISCOUNT, pi.URL "
                        + "     FROM PRODUCT p "
                        + "     INNER JOIN PRODUCT_OPTION po ON p.PRODUCT_ID = po.PRODUCT_ID "
                        + "     INNER JOIN CATEGORY c ON p.CATEGORY_ID = c.CATEGORY_ID "
@@ -163,6 +165,7 @@ public class UserMainDAO {
                 ProductDTO pDTO = new ProductDTO();
                 pDTO.setUrl(rs.getString("URL"));
                 pDTO.setOptionNo(rs.getString("OPTION_ID"));
+                pDTO.setPrdID(rs.getString("PRODUCT_ID"));
                 pDTO.setPrdName(rs.getString("PRODUCT_NAME"));
                 pDTO.setOptionName(rs.getString("OPTION_NAME"));
                 pDTO.setDiscount(rs.getInt("DISCOUNT"));
