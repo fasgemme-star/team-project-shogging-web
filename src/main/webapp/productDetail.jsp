@@ -2,6 +2,8 @@
 <%@ page import="client.productDetail.ProductDTO" %>
 <jsp:useBean id="pdService" class="client.productDetail.ProductDetailService" scope="page"/>
 <%
+    // 주의: ProductDetailDAO.selectProductInfo()는 실제로 OPTION_ID(옵션번호) 기준으로 조회한다.
+    // (PRODUCT_ID를 넘기면 매칭되는 행이 없어 상세페이지가 비어 보인다.)
     String optionNo = request.getParameter("optionNo");
 
     int quantity = 1;
@@ -34,7 +36,7 @@
   <div class="flex flex-col md:flex-row gap-gutter-md">
     <div class="flex-1">
       <img class="w-full aspect-square object-cover rounded-2xl bg-surface-container"
-           src="${not empty product.url ? product.url : product.img}" alt="${product.prdName}"
+           src="${product.url}" alt="${product.prdName}"
            onerror="this.src='${pageContext.request.contextPath}/images/imgbanner1.png'"/>
     </div>
     <div class="flex-1 py-4">
