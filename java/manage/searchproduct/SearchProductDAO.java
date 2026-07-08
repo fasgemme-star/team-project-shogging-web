@@ -57,75 +57,76 @@ public class SearchProductDAO {
 		return rDTO;
 	}// selectTotalCount
 	
-	public int selectChoicedCount(RangeDTO rDTO) throws SQLException {
-		DbConnection dbcon = DbConnection.getInstance();
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        int result = 0;
-        StringBuilder query = new StringBuilder();
-        
-        query.append("	    select p.* from( ")
-		.append("	select rownum n , t.*	")
-		.append("	from ( 	SELECT count(1) total_cnt FROM PRODUCT_OPTION  po join product p on po.product_id=p.product_id	")
-		.append("	WHERE 1=1	");
-		
-	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
-	        query.append(" AND instr(option_name, ? ) != 0 ");
-	    }
-	    if (rDTO.getCategory() != null&& rDTO.getCategory().equals("과일") && !rDTO.getCategory().isEmpty()) {
-	    	query.append(" AND category_id = 'CAT000001' ");
-	    }
-	    if (rDTO.getCategory() != null&& rDTO.getCategory().equals("채소") && !rDTO.getCategory().isEmpty()) {
-	    	query.append(" AND category_id = 'CAT000002' ");
-	    }
-	    if (rDTO.getStatus() != null && rDTO.getStatus().equals("판매중") && !rDTO.getStatus().isEmpty()) {
-            query.append("AND STOCKQUANTITY != 0 ");
-        }
-	    if (rDTO.getStatus() != null && rDTO.getStatus().equals("품절") && !rDTO.getStatus().isEmpty()) {
-	    	query.append("AND  STOCKQUANTITY = 0 ");
-	    }
-	    if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty() && 
-	    		rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
-	            query.append("AND PRODUCT_INPUT_DATE BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD') + 1 ");
-	        }
-	    query.append("	order by PRODUCT_INPUT_DATE desc) t ) p	")
-	    .append("	where n between ? and ?	");
-	    
-	    try {
-            con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
-            pstmt = con.prepareStatement(query.toString());
+		public int selectChoicedCount(RangeDTO rDTO) throws SQLException {
 
-            // 3. 파라미터 매핑 (paramIndex 가변 증가 방식)
-            int paramIndex = 1;
-            
-            if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
-                pstmt.setString(paramIndex++, rDTO.getKeyword());
-            }
-         
-            if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty() && 
-            		rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
-            	pstmt.setString(paramIndex++, rDTO.getStartDate());
-            	pstmt.setString(paramIndex++, rDTO.getEndDate());
-            }
-            pstmt.setInt(paramIndex++, rDTO.getStartNum());
-            pstmt.setInt(paramIndex++, rDTO.getEndNum());
+		    DbConnection dbcon = DbConnection.getInstance();
+		    Connection con = null;
+		    PreparedStatement pstmt = null;
+		    ResultSet rs = null;
 
-            // 4. 쿼리 실행 및 결과 담기
-            rs = pstmt.executeQuery();
+		    int result = 0;
 
-            
-            while (rs.next()) {
-               result = rs.getInt("total_cnt");
-                
-            }
-        } finally {
-            // 5. 자원 해제
-            dbcon.dbClose(rs, pstmt, con);
-        }
- 
-	    return result;
-	}
+		    StringBuilder query = new StringBuilder();
+
+		    query.append("SELECT COUNT(1) total_cnt ");
+		    query.append("FROM PRODUCT_OPTION po ");
+		    query.append("JOIN PRODUCT p ON po.PRODUCT_ID = p.PRODUCT_ID ");
+		    query.append("WHERE 1=1 ");
+
+		    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
+		        query.append(" AND instr(option_name, ?) != 0 ");
+		    }
+
+		    if (rDTO.getCategory() != null && !rDTO.getCategory().isEmpty()) {
+		        if (rDTO.getCategory().equals("과일")) {
+		            query.append(" AND category_id='CAT000001' ");
+		        }
+		        if (rDTO.getCategory().equals("채소")) {
+		            query.append(" AND category_id='CAT000002' ");
+		        }
+		    }
+
+		    if ("판매중".equals(rDTO.getStatus())) {
+		        query.append(" AND STOCKQUANTITY != 0 ");
+		    }
+		    if ("품절".equals(rDTO.getStatus())) {
+		        query.append(" AND STOCKQUANTITY = 0 ");
+		    }
+		    if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty()
+		        && rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
+
+		        query.append(
+		            " AND PRODUCT_INPUT_DATE BETWEEN TO_DATE(?, 'YYYY-MM-DD') "
+		          + " AND TO_DATE(?, 'YYYY-MM-DD') + 1 "
+		        );
+		    }
+
+		    try {
+		        con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+		        pstmt = con.prepareStatement(query.toString());
+
+		        int idx = 1;
+
+		        if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
+		            pstmt.setString(idx++, rDTO.getKeyword());
+		        }
+		        if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty()
+		            && rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
+
+		            pstmt.setString(idx++, rDTO.getStartDate());
+		            pstmt.setString(idx++, rDTO.getEndDate());
+		        }
+
+		        rs = pstmt.executeQuery();
+
+		        if(rs.next()) {
+		            result = rs.getInt("total_cnt");
+		        }
+		    } finally {
+		        dbcon.dbClose(rs, pstmt, con);
+		    }
+		    return result;
+		}
 		
 	public List<ProductDTO> selectSearchProduct(RangeDTO rDTO) throws SQLException{
 		List<ProductDTO> pList = new ArrayList<ProductDTO>();

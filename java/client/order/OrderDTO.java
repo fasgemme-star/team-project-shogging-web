@@ -12,6 +12,11 @@ import lombok.ToString;
 @Setter
 @ToString
 public class OrderDTO {
+	private String paymentKey;
+	private String paymentType;
+	private String paymentDate;
+	
+	
 	private String clientID;
 	private String clientName;
 	private String phone;

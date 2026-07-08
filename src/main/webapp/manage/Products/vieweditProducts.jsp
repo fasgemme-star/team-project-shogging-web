@@ -15,6 +15,7 @@
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <link href="../css/dashboard.css" rel="stylesheet">
 <link href="../css/vieweditProducts.css" rel="stylesheet">
+<link href="../css/pagination.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script>
@@ -212,7 +213,15 @@ function closeEditModal(){
 		List<ProductDTO> productList = sps.searchItem(rDTO);
 		request.setAttribute("productList", productList);
 		
-		int totalCount = sps.getSelectedCount(rDTO);
+		RangeDTO countDTO = new RangeDTO();
+
+		countDTO.setKeyword(keyword);
+		countDTO.setCategory(category);
+		countDTO.setStatus(status);
+		countDTO.setStartDate(startDate);
+		countDTO.setEndDate(endDate);
+
+		int totalCount = sps.getSelectedCount(countDTO);
 
 		RangeDTO saleDTO = new RangeDTO();
 		saleDTO.setKeyword(keyword);
@@ -233,6 +242,16 @@ function closeEditModal(){
 		String period = request.getParameter("period");
 		int soldoutCount = sps.getSelectedCount(soldDTO);
 		int totalPage = (int)Math.ceil((double)totalCount / pageSize);
+		
+		int pageBlock = 3;
+		int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
+		int endPage = startPage + pageBlock - 1;
+		if(endPage > totalPage){
+		    endPage = totalPage;
+		}
+
+		request.setAttribute("startPage", startPage);
+		request.setAttribute("endPage", endPage);
 		
 		request.setAttribute("totalCount", totalCount);
 		request.setAttribute("onSaleCount", onSaleCount);
@@ -383,21 +402,36 @@ function closeEditModal(){
 					</tbody>
 				</table>
 
-				<div id="divPagination-wrap" style="text-align:center">
-			    <c:if test="${totalPage > 1}">
-			        <c:forEach var="i" begin="1" end="${totalPage}">
-			            <c:choose>
-			                <c:when test="${i == currentPage}">
-			                    [${i}]
-			                </c:when>
-			                <c:otherwise>
-			                    <a href="vieweditProducts.jsp?page=${i}&pageSize=${pageSize}&keyword=${param.keyword}&status=${param.status}&category=${param.category}&startDate=${param.startDate}&endDate=${param.endDate}&period=${param.period}">
-			                        [${i}]
-			                    </a>
-			                </c:otherwise>
-			            </c:choose>
-			        </c:forEach>
-			    </c:if>
+				<div id="divPagination-wrap" class="pagination" style="text-align:center">
+				<c:if test="${totalPage > 0}">
+				    <!-- 이전 그룹 -->
+				    <c:if test="${startPage > 1}">
+				        <a class="page" href="vieweditProducts.jsp?page=${startPage-1}&pageSize=${pageSize}&keyword=${param.keyword}&status=${param.status}&category=${param.category}&startDate=${param.startDate}&endDate=${param.endDate}&period=${param.period}">
+				            ◀
+				        </a>
+				    </c:if>
+				
+				    <!-- 페이지 번호 -->
+				    <c:forEach var="i" begin="${startPage}" end="${endPage}">
+				        <c:choose>
+				            <c:when test="${i == currentPage}">
+				                <span class="page active">${i}</span>
+				            </c:when>
+				            <c:otherwise>
+				                <a class="page" href="vieweditProducts.jsp?page=${i}&pageSize=${pageSize}&keyword=${param.keyword}&status=${param.status}&category=${param.category}&startDate=${param.startDate}&endDate=${param.endDate}&period=${param.period}">
+				                    ${i}
+				                </a>
+				            </c:otherwise>
+				        </c:choose>
+				    </c:forEach>
+				
+				    <!-- 다음 그룹 -->
+				    <c:if test="${endPage < totalPage}">
+				        <a class="page" href="vieweditProducts.jsp?page=${endPage+1}&pageSize=${pageSize}&keyword=${param.keyword}&status=${param.status}&category=${param.category}&startDate=${param.startDate}&endDate=${param.endDate}&period=${param.period}">
+				            ▶
+				        </a>
+				    </c:if>
+				</c:if>
 				</div>
 
 				<form id="deleteForm" method="post" action="deleteProduct.jsp"></form>

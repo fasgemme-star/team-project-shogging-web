@@ -50,7 +50,18 @@ public class OrderService {
 	    return 0;
 	}// calculateTotalPrice
 
-	public String processPayment(OrderDTO oDTO) {
-	    return "";
+	/**
+	 * @param oDTO
+	 * @return 2 일때만 성공
+	 */
+	public int processPayment(OrderDTO oDTO) {
+		int cnt = 0;
+		try {
+			cnt += oDAO.insertOrder(oDTO);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    return cnt;
 	}// processPayment
 }
