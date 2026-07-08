@@ -84,7 +84,6 @@ private static ProductDetailDAO pdDAO;
 
 	        	pDTO.setUrl(rs.getNString("URL"));
 	        	
-	        	
 
 	        }
 
