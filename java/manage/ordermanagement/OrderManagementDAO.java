@@ -49,7 +49,7 @@ public class OrderManagementDAO {
 		 * ); } query.append("ORDER BY PRODUCT_ID DESC");
 		 */
 	    query.append("SELECT order_details_id, order_id, delivery_status, order_date, client_no, ");
-	    query.append("       option_id, option_name, price, discount_price, quantity, total_amount, claim_id ");
+	    query.append("       option_id, option_name, price, discount_price, quantity, total_amount, claim_id, claim_type ");
 	    query.append("FROM ( ");
 	    query.append("    SELECT ROWNUM n, t.* ");
 	    query.append("    FROM ( ");
@@ -58,7 +58,7 @@ public class OrderManagementDAO {
 	    query.append("        SELECT od.order_details_id, o.order_id, o.delivery_status, o.order_date,o.client_no, ");
 	    query.append("               po.option_id, po.option_name, po.price, ");
 	    query.append("               po.price*(1 - po.discount * 0.01) discount_price, ");
-	    query.append("               od.quantity, o.total_amount, c.claim_id ");
+	    query.append("               od.quantity, o.total_amount, c.claim_id, c.claim_type  ");
 	    query.append("        FROM orders o ");
 	    query.append("        JOIN order_details od ON o.order_id = od.order_id ");
 	    query.append("        JOIN product_option po ON po.option_id = od.option_id ");
@@ -116,6 +116,7 @@ public class OrderManagementDAO {
                 oDTO.setQuantity(rs.getInt("quantity")); 
                 oDTO.setTotalAmount(rs.getInt("total_amount")); 
                 oDTO.setClaimID(rs.getString("claim_id")); 
+                oDTO.setClaimName(rs.getString("claim_type"));
                 
                 oList.add(oDTO);
             }
