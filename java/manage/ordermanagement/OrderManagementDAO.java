@@ -219,7 +219,7 @@ public class OrderManagementDAO {
 	
 	/**
 	 * @param OrderDetailid 주문상세ID
-	 * @param i 0: 반품, 1: 취소
+	 * @param i 0: 반품/교환, 1: 취소
 	 * @return
 	 * @throws SQLException 
 	 */
