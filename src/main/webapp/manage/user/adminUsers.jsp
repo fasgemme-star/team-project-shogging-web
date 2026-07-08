@@ -196,6 +196,13 @@ $(function(){
 		rDTO.setTotalCnt(totalCnt);
 		rDTO.setPageCnt(pageCnt);
 		
+		int pageBlock = 3;
+	    int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
+	    int endPage = startPage + pageBlock - 1;
+	    if(endPage > pageCnt){
+	        endPage = pageCnt;
+	    }
+		
 		List<ClientDTO> clientList = cs.getClientList(rDTO);
 		
 		pageContext.setAttribute("clientList", clientList);
@@ -203,6 +210,8 @@ $(function(){
 		pageContext.setAttribute("currentPage", currentPage);
 		pageContext.setAttribute("newCount", cs.getNewCount());
 		pageContext.setAttribute("total", total);
+		pageContext.setAttribute("startPage", startPage);
+		pageContext.setAttribute("endPage", endPage);
 		%>
 
 		<!-- 메인 -->
@@ -283,20 +292,39 @@ $(function(){
 							</tbody>
 						</table>
 						
-						<div id="divPagination-wrap" style="text-align:center">
+						<div id="divPagination-wrap" class="pagination" style="text-align:center">
 						<c:if test="${rDTO.totalCnt > 0}">
-						    <c:forEach var="i" begin="1" end="${rDTO.pageCnt}">
+						
+						    <!-- 이전 그룹 -->
+						    <c:if test="${startPage > 1}">
+						        <a class="page"
+						           href="adminUsers.jsp?currentPage=${startPage-1}&keyword=${param.keyword}">
+						            ◀
+						        </a>
+						    </c:if>
+						
+						    <!-- 페이지 번호 -->
+						    <c:forEach var="i" begin="${startPage}" end="${endPage}">
 						        <c:choose>
 						            <c:when test="${i == currentPage}">
-						                [${i}]
+						                <span class="page active">${i}</span>
 						            </c:when>
 						            <c:otherwise>
-						                <a href="adminUsers.jsp?currentPage=${i}&keyword=${param.keyword}">
-						                    [${i}]
+						                <a class="page"
+						                   href="adminUsers.jsp?currentPage=${i}&keyword=${param.keyword}">
+						                    ${i}
 						                </a>
 						            </c:otherwise>
 						        </c:choose>
 						    </c:forEach>
+						
+						    <!-- 다음 그룹 -->
+						    <c:if test="${endPage < rDTO.pageCnt}">
+						        <a class="page"
+						           href="adminUsers.jsp?currentPage=${endPage+1}&keyword=${param.keyword}">
+						            ▶
+						        </a>
+						    </c:if>
 						</c:if>
 						</div>
 					</div>
