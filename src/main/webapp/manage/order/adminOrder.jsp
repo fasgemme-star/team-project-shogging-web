@@ -15,6 +15,7 @@
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <link href="../css/dashboard.css" rel="stylesheet">
 <link href="../css/order.css" rel="stylesheet">
+<link href="../css/pagination.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script type="text/javascript">
@@ -107,45 +108,72 @@ $(function(){
     $(".cancel-btn").on("click", function(){
         const claimID = $(this).data("claim-id");
         $.ajax({
-            url: "../claimDetail.jsp",
-            type: "GET",
-            data: { claimID: claimID },
-            success: function(res){
-                const data = JSON.parse(res);
-                
+            url:"cancelDetail.jsp",
+            type:"GET",
+            dataType:"json",
+            data:{
+                claimID:claimID
+            },
+            success:function(data){
                 $("#claimID").text(data.claimID);
                 $("#requestDate").text(data.requestDate);
                 $("#clientName").text(data.clientName);
-                $("#clientTel").text(data.tel);
+                $("#clientTel").text(data.clientTel);
+                $("#claimType").text(data.claimType);
 
-                let productHtml = `
+                let html="";
+                $.each(data.products,function(i,item){
+                    html += `
                     <tr>
-                        <td>1</td>
-                        <td>${data.product.optionID}</td>
-                        <td>${data.product.prdName}</td>
-                        <td>${data.status}</td>
+                        <td>${i+1}</td>
+                        <td>${item.orderID}</td>
+                        <td>${item.prdName}</td>
+                        <td>${item.price}</td>
+                        <td>${item.quantity}</td>
                     </tr>
-                `;
-                $("#claimProductBody").html(productHtml);
-                $("#reasonDetail").val(data.reasonDetail || "");
+                    `;
+                });
+                $("#cancelProductBody").html(html);
 
-                let imgHtml = "";
-
-                if(data.images && data.images.length > 0){
-                    data.images.forEach(function(img){
-                        imgHtml += `
-                            <img src="../upload/${img}"
-                                 style="width:120px;height:120px;
-                                        margin:5px;
-                                        border:1px solid #ddd;">
-                        `;
-                    });
-                } else {
-                    imgHtml = "<p>이미지 없음</p>";
-                }
-                $("#claimImageArea").html(imgHtml);
                 new bootstrap.Modal(
                     document.getElementById("cancelModal")
+                ).show();
+            }
+        });
+    });
+    
+    $(".exchange-btn").on("click", function(){
+        const claimID=$(this).data("claim-id");
+        $.ajax({
+            url:"exchangeDetail.jsp",
+            type:"GET",
+            dataType:"json",
+            data:{
+                claimID:claimID
+            },
+            success:function(data){
+                $("#exchangeClaimID").text(data.claimID);
+                $("#exchangeRequestDate").text(data.requestDate);
+                $("#exchangeClientName").text(data.clientName);
+                $("#exchangeClientTel").text(data.clientTel);
+                $("#exchangeReason").text(data.reason);
+                $("#exchangeReasonDetail").text(data.reasonDetail);
+                let html="";
+                $.each(data.products,function(i,item){
+                    html += `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td>${item.claimStatus}</td>
+                        <td>${item.prdID}</td>
+                        <td>${item.price}</td>
+                        <td>${item.prdName}</td>
+                        <td>${item.quantity}</td>
+                    </tr>
+                    `;
+                });
+                $("#exchangeProductBody").html(html);
+                new bootstrap.Modal(
+                    document.getElementById("exchangeModal")
                 ).show();
             }
         });
@@ -168,35 +196,67 @@ $(function(){
 		String startDate = request.getParameter("startDate");
 		String endDate = request.getParameter("endDate");
 		
-		if(startDate == null || startDate.equals("")) startDate = null;
-		if(endDate == null || endDate.equals("")) endDate = null;
+		if(startDate == null || startDate.equals("")) {
+		    startDate = null;
+		}
+		if(endDate == null || endDate.equals("")) {
+		    endDate = null;
+		}
 		
-		String pageParam = request.getParameter("page");
+		String pageParam = request.getParameter("currentPage");
 		String pageSizeParam = request.getParameter("pageSize");
-		
 		int currentPage = 1;
 		int pageSize = 20;
 		
-		if (pageParam != null && !pageParam.isEmpty()) {
-			currentPage = Integer.parseInt(pageParam);
+		if(pageParam != null && !pageParam.isEmpty()) {
+		    currentPage = Integer.parseInt(pageParam);
+		}
+		if(pageSizeParam != null && !pageSizeParam.isEmpty()) {
+		    pageSize = Integer.parseInt(pageSizeParam);
 		}
 		
-		if (pageSizeParam != null && !pageSizeParam.isEmpty()) {
-			pageSize = Integer.parseInt(pageSizeParam);
-		}
-		
-		if(keyword != null && !keyword.equals("")){
+		if(keyword != null && !keyword.isEmpty()) {
 		    rDTO.setKeyword(keyword);
 		}
-
-		if(delivery_status != null && !delivery_status.equals("")){
+		if(delivery_status != null && !delivery_status.isEmpty()) {
 		    rDTO.setDelivery_status(delivery_status);
 		}
 		
-		//rDTO.setKeyword(keyword);
-		//rDTO.setDelivery_status(delivery_status);
 		rDTO.setStartDate(startDate);
 		rDTO.setEndDate(endDate);
+		
+		OrderManagementService oms = new OrderManagementService();
+		RangeDTO countDTO = new RangeDTO();
+		
+		if(keyword != null && !keyword.isEmpty()) {
+		    countDTO.setKeyword(keyword);
+		}
+		if(delivery_status != null && !delivery_status.isEmpty()) {
+		    countDTO.setDelivery_status(delivery_status);
+		}
+		
+		countDTO.setStartDate(startDate);
+		countDTO.setEndDate(endDate);
+		countDTO.setStartNum(1);
+		countDTO.setEndNum(999999);
+		
+		List<OrderDTO> countList = new ArrayList<>();
+		try {
+		    countList = oms.getOrderList(countDTO);
+		} catch(Exception e) {
+		    e.printStackTrace();
+		}
+		
+		int totalCount = countList.size();
+		int totalPage = (int)Math.ceil((double)totalCount / pageSize);
+		
+		int pageBlock = 4;
+		int startPage = ((currentPage - 1) / pageBlock) * pageBlock + 1;
+		int endPage = startPage + pageBlock - 1;
+
+		if(endPage > totalPage){
+		    endPage = totalPage;
+		}
 		
 		int startNum = (currentPage - 1) * pageSize + 1;
 		int endNum = currentPage * pageSize;
@@ -204,22 +264,25 @@ $(function(){
 		rDTO.setStartNum(startNum);
 		rDTO.setEndNum(endNum);
 		
-		OrderManagementService oms = new OrderManagementService();
 		List<OrderDTO> orderList = new ArrayList<>();
+		
 		try {
 		    orderList = oms.getOrderList(rDTO);
-		} catch (Exception e) {
+		} catch(Exception e) {
 		    orderList = new ArrayList<>();
-		    throw new RuntimeException("주문 목록 조회 중 오류 발생", e);
+		    throw new RuntimeException(
+		        "주문 목록 조회 중 오류 발생",e
+		    );
 		}
-		
-		int totalCount = oms.totalCount(rDTO);
-		int totalPage = (int)Math.ceil((double)totalCount / pageSize);
-		
+
 		request.setAttribute("orderList", orderList);
 		request.setAttribute("currentPage", currentPage);
 		request.setAttribute("pageSize", pageSize);
 		request.setAttribute("totalPage", totalPage);
+		request.setAttribute("totalCount", totalCount);
+		request.setAttribute("startPage", startPage);
+		request.setAttribute("endPage", endPage);
+		
 		%>
 
 		<!-- 메인 -->
@@ -318,42 +381,57 @@ $(function(){
 								</c:if>
 							</td>
 							<td>
-								<c:choose>
-									<c:when test="${not empty order.claimID}">
-										<button type="button" class="cancel-btn" data-claim-id="${order.claimID}">
-											클레임 상세
-										</button>
-									</c:when>
-									<c:otherwise>
-										-
-									</c:otherwise>
-								</c:choose>
+							<c:choose>
+							    <c:when test="${empty order.claimID}">
+							        -
+							    </c:when>
+							    <c:when test="${order.claimName eq '취소'}">
+							        <button type="button" class="cancel-btn" data-claim-id="${order.claimID}">취소 요청</button>
+							    </c:when>
+							    <c:when test="${order.claimName eq '교환'}">
+							        <button type="button" class="exchange-btn" data-claim-id="${order.claimID}">교환 요청</button>
+							    </c:when>
+							    <c:when test="${order.claimName eq '반품'}">
+							        <button type="button" class="exchange-btn" data-claim-id="${order.claimID}">반품 요청</button>
+							    </c:when>
+							</c:choose>
 							</td>
 						</tr>
 					</c:forEach>
 					</tbody>
 				</table>
 				
-				<div style="text-align:center; margin-top:20px;">
-				<c:if test="${totalPage > 1}">
-				    <c:forEach var="i" begin="1" end="${totalPage}">
+				<div id="divPagination-wrap" class="pagination" style="text-align:center">
+				<c:if test="${totalCount > 0}">
+				    <!-- 이전 그룹 -->
+				    <c:if test="${startPage > 1}">
+				        <a class="page"
+				           href="adminOrder.jsp?currentPage=${startPage-1}&pageSize=${pageSize}&keyword=${param.keyword}&orderStatus=${param.orderStatus}&startDate=${param.startDate}&endDate=${param.endDate}">
+				            ◀
+				        </a>
+				    </c:if>
+				
+				    <c:forEach var="i" begin="${startPage}" end="${endPage}">
 				        <c:choose>
 				            <c:when test="${i == currentPage}">
-				                <b>[${i}]</b>
+				                <span class="page active">${i}</span>
 				            </c:when>
 				            <c:otherwise>
-				                <a href="adminOrder.jsp?
-				                    page=${i}
-				                    &pageSize=${pageSize}
-				                    &keyword=${param.keyword}
-				                    &orderStatus=${param.orderStatus}
-				                    &startDate=${param.startDate}
-				                    &endDate=${param.endDate}">
-				                    [${i}]
+				                <a class="page"
+				                   href="adminOrder.jsp?currentPage=${i}&pageSize=${pageSize}&keyword=${param.keyword}&orderStatus=${param.orderStatus}&startDate=${param.startDate}&endDate=${param.endDate}">
+				                    ${i}
 				                </a>
 				            </c:otherwise>
 				        </c:choose>
 				    </c:forEach>
+				
+				    <!-- 다음 그룹 -->
+				    <c:if test="${endPage < totalPage}">
+				        <a class="page"
+				           href="adminOrder.jsp?currentPage=${endPage+1}&pageSize=${pageSize}&keyword=${param.keyword}&orderStatus=${param.orderStatus}&startDate=${param.startDate}&endDate=${param.endDate}">
+				            ▶
+				        </a>
+				    </c:if>
 				</c:if>
 				</div>
 
@@ -385,12 +463,13 @@ $(function(){
 						    <td id="requestDate"></td>
 						</tr>
 						<tr>
-						    <th colspan="2">클레임 상태</th>
-						    <td id="claimStatus"></td>
+						    <th>클레임 상태</th>
+						    <td id="claimType"></td>
+						    <th colspan="2"></th>
 						</tr>
 						<tr>
 						    <th>구매자 이름</th>
-						    <td id="clientID"></td>
+						    <td id="clientName"></td>
 						    <th>구매자 연락처</th>
 						    <td id="clientTel"></td>
 						</tr>
@@ -407,13 +486,13 @@ $(function(){
 								<th>취소수량</th>
 							</tr>
 						</thead>
-						<tbody id="claimProductBody"></tbody>
+						<tbody id="cancelProductBody"></tbody>
 					</table>
 				</div>
 
 				<div class="modal-footer">
-					<button class="btn btn-danger">취소완료 처리</button>
-					<button class="btn btn-secondary" data-bs-dismiss="modal">취소거절 처리</button>
+					<button class="btn btn-danger">취소 완료</button>
+					<button class="btn btn-secondary" data-bs-dismiss="modal">취소 거절</button>
 				</div>
 			</div>
 		</div>
@@ -432,15 +511,15 @@ $(function(){
 					<table class="table table-bordered">
 				    <tr>
 				        <th>클레임번호</th>
-				        <td id="claimID"></td>
+				        <td id="exchangeClaimID"></td>
 				        <th>반품요청일시</th>
-				        <td id="requestDate"></td>
+				        <td id="exchangeRequestDate"></td>
 				    </tr>
 				    <tr>
 				        <th>구매자이름</th>
-				        <td id="clientName"></td>
+				        <td id="exchangeClientName"></td>
 				        <th>구매자연락처</th>
-				        <td id="clientTel"></td>
+				        <td id="exchangeClientTel"></td>
 				    </tr>
 					</table>
 					<h6>반품요청 상품</h6>
@@ -455,16 +534,16 @@ $(function(){
 					            <th>수량</th>
 					        </tr>
 					    </thead>
-					    <tbody id="claimProductBody"></tbody>
+					    <tbody id="exchangeProductBody"></tbody>
 					</table>
 					<h6>반품 정보</h6>
 					<table class="table table-bordered">
 						<tr>
 							<th>반품 사유</th>
 				        	<td>
-				        		<div id="prdName"></div>
-				        		<div id="reason"></div>
-				        		<div id="reasonDetail"></div>
+				        		<div id="exchangePrdName"></div>
+				        		<div id="exchangeReason"></div>
+				        		<div id="exchangeReasonDetail"></div>
 				        		<div id="claimImage"></div>
 				        	</td>
 						</tr>
