@@ -58,7 +58,7 @@ public class ClientService {
 	public int getRangeCount(RangeDTO rDTO) {
 		int cnt=0;
 		try {
-			cDAO.selectClientCount(rDTO);
+			cnt=cDAO.selectClientCount(rDTO);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
