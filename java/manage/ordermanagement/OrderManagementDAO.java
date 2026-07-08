@@ -128,7 +128,7 @@ public class OrderManagementDAO {
 		
 		return oList;
 	}// selectOrderList
-		
+			
 	public int updateDeliveryStatus(String orderID) throws SQLException {
 		DbConnection dbcon = DbConnection.getInstance();
 		Connection con = null;
