@@ -2,56 +2,53 @@
 <%@ page import="manage.ordermanagement.*" %>
 <%
 String claimID = request.getParameter("claimID");
+
 OrderManagementService oms = new OrderManagementService();
-ClaimDTO cDTO = oms.getClaimDetail(claimID,0);
+ClaimDTO cDTO = oms.getClaimDetail(claimID, 0);
+
 StringBuilder json = new StringBuilder();
 
 json.append("{");
 
 json.append("\"claimID\":\"")
-    .append(cDTO.getClaimID())
-    .append("\",");
+.append(cDTO.getClaimID())
+.append("\",");
 
 json.append("\"requestDate\":\"")
-    .append(cDTO.getRequestDate())
-    .append("\",");
-
-json.append("\"claimType\":\"")
-    .append(cDTO.getClaimType())
-    .append("\",");
+.append(cDTO.getRequestDate())
+.append("\",");
 
 json.append("\"clientName\":\"")
-    .append(cDTO.getClientName())
-    .append("\",");
+.append(cDTO.getClientName())
+.append("\",");
 
 json.append("\"clientTel\":\"")
-    .append(cDTO.getClientTel())
-    .append("\",");
+.append(cDTO.getClientTel())
+.append("\",");
 
-json.append("\"claimType\":\"")
-    .append(cDTO.getClaimType())
-    .append("\",");
+json.append("\"claimStatus\":\"")
+.append(cDTO.getClaimStatus())
+.append("\",");
 
-json.append("\"product\":{");
+json.append("\"products\":[{");
 
-json.append("\"optionID\":\"")
-    .append(cDTO.getOptionID())
-    .append("\",");
+json.append("\"order_detail_ID\":\"")
+.append(cDTO.getOrder_detail_ID())
+.append("\",");
 
 json.append("\"prdName\":\"")
-    .append(cDTO.getPrdName())
-    .append("\",");
+.append(cDTO.getPrdName())
+.append("\",");
 
 json.append("\"price\":")
-    .append(cDTO.getPrice())
-    .append(",");
+.append(cDTO.getPrice())
+.append(",");
 
 json.append("\"quantity\":")
-    .append(cDTO.getQuantity());
+.append(cDTO.getQuantity());
 
-json.append("}");
+json.append("}]");
 json.append("}");
 
 out.print(json.toString());
-
 %>

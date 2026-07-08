@@ -29,14 +29,29 @@ $(function(){
     });
 
     resetBtn.on("click", function(){
-        $(".date-btn").removeClass("active");
-        $(".date-btn").eq(2).addClass("active");
+        const form = document.getElementById("searchForm");
+        $("#keyword").val("");
+        $("#category").val("");
+        $("#orderStatus").val("");
         $("#startDate").val("");
         $("#endDate").val("");
-        $("#orderStatus").val("");
-        $("#category").val("");
+        $("#period").val("all");
+        $("#pageSize").val("20");
+        $(".date-btn").removeClass("active");
+
         allCheck.prop("checked", false);
         $("#orderTableBody input[type=checkbox]").prop("checked", false);
+
+        let pageInput = form.querySelector("input[name='page']");
+
+        if (!pageInput) {
+            pageInput = document.createElement("input");
+            pageInput.type = "hidden";
+            pageInput.name = "page";
+            form.appendChild(pageInput);
+        }
+        pageInput.value = "1";
+        form.submit();
     });
 
     allCheck.on("change", function(){
@@ -80,23 +95,29 @@ $(function(){
     });
 
     $("#deliveryBtn").on("click", function(){
-        const orderIDs = $("#orderTableBody input[type=checkbox]:checked")
-            .map(function(){ return this.value; }).get();
+    	const orderIDs = [];
 
-        if(orderIDs.length === 0){
-            alert("선택된 주문이 없습니다.");
+        $("#orderTableBody input[type=checkbox]:checked").each(function(){
+            const status = $(this).closest("tr").find(".delivery-status").text().trim();
+            if (status === "배송중") {
+                orderIDs.push(this.value);
+            }
+        });
+
+        if (orderIDs.length === 0) {
+            alert("배송중인 주문만 배송처리할 수 있습니다.");
             return;
         }
 
         $.ajax({
-            url: "../deliveryProcess.jsp",
+            url: "deliveryProcess.jsp",
             type: "POST",
             traditional: true,
             data: {
                 orderIDs: orderIDs
             },
             success: function(res){
-                alert("배송처리 완료: " + res + "건");
+                alert("배송처리 완료: "+res+"건");
                 location.reload();
             },
             error: function(){
@@ -107,37 +128,41 @@ $(function(){
 
     $(".cancel-btn").on("click", function(){
         const claimID = $(this).data("claim-id");
+
         $.ajax({
-            url:"cancelDetail.jsp",
-            type:"GET",
-            dataType:"json",
-            data:{
-                claimID:claimID
+            url: "cancelDetail.jsp",
+            type: "GET",
+            dataType: "json",
+            data: {
+                claimID: claimID
             },
-            success:function(data){
+            success: function(data){
+            	$("#cancelModal").data("claim-id", data.claimID);
                 $("#claimID").text(data.claimID);
                 $("#requestDate").text(data.requestDate);
                 $("#clientName").text(data.clientName);
                 $("#clientTel").text(data.clientTel);
-                $("#claimType").text(data.claimType);
+                $("#claimStatus").text(data.claimStatus);
 
-                let html="";
-                $.each(data.products,function(i,item){
-                    html += `
-                    <tr>
-                        <td>${i+1}</td>
-                        <td>${item.orderID}</td>
-                        <td>${item.prdName}</td>
-                        <td>${item.price}</td>
-                        <td>${item.quantity}</td>
-                    </tr>
-                    `;
+                let html = "";
+                $.each(data.products, function(i, item){
+                    html += "<tr>"
+                          + "<td>" + (i + 1) + "</td>"
+                          + "<td>" + (item.order_detail_ID === "null" ? "-" : item.order_detail_ID) + "</td>"
+                          + "<td>" + item.prdName + "</td>"
+                          + "<td>" + item.price + "</td>"
+                          + "<td>" + item.quantity + "</td>"
+                          + "</tr>";
                 });
-                $("#cancelProductBody").html(html);
 
+                $("#cancelProductBody").html(html);
+                
                 new bootstrap.Modal(
                     document.getElementById("cancelModal")
                 ).show();
+            },
+            error: function(xhr, status, error){
+                alert("취소 상세 조회 실패");
             }
         });
     });
@@ -152,29 +177,172 @@ $(function(){
                 claimID:claimID
             },
             success:function(data){
+            	$("#exchangeModal").data("claim-id", data.claimID);
                 $("#exchangeClaimID").text(data.claimID);
                 $("#exchangeRequestDate").text(data.requestDate);
                 $("#exchangeClientName").text(data.clientName);
                 $("#exchangeClientTel").text(data.clientTel);
-                $("#exchangeReason").text(data.reason);
+                $("#exchangePrdName").text(data.products[0].prdName);
+                $("#exchangeReason").text("반품 사유 : "+data.reason);
                 $("#exchangeReasonDetail").text(data.reasonDetail);
-                let html="";
-                $.each(data.products,function(i,item){
-                    html += `
-                    <tr>
-                        <td>${i+1}</td>
-                        <td>${item.claimStatus}</td>
-                        <td>${item.prdID}</td>
-                        <td>${item.price}</td>
-                        <td>${item.prdName}</td>
-                        <td>${item.quantity}</td>
-                    </tr>
-                    `;
+                
+                let imageHtml = "";
+                if (data.img && data.img.length > 0) {
+                    $.each(data.img, function(i, imageName){
+                        imageHtml += "<img src='../upload/" + imageName + "' "
+                                  + "alt='반품 요청 이미지' "
+                                  + "style='width:150px; height:150px; object-fit:cover; margin-right:10px;'>";
+                    });
+                } else {
+                    imageHtml = "첨부 이미지가 없습니다.";
+                }
+
+                $("#claimImage").html(imageHtml);
+                
+                let html = "";
+                $.each(data.products, function(i, item){
+                    html += "<tr>"
+                          + "<td>" + (i + 1) + "</td>"
+                          + "<td>" + (item.claimStatus === "null" ? "-" : item.claimStatus) + "</td>"
+                          + "<td>" + item.optionID + "</td>"
+                          + "<td>" + item.price + "</td>"
+                          + "<td>" + item.prdName + "</td>"
+                          + "<td>" + item.quantity + "</td>"
+                          + "</tr>";
                 });
                 $("#exchangeProductBody").html(html);
                 new bootstrap.Modal(
                     document.getElementById("exchangeModal")
                 ).show();
+            }
+        });
+    });
+    
+    $("#exchangeCompleteBtn").on("click", function(){
+        const claimID = $("#exchangeModal").data("claim-id");
+        if (!claimID) {
+            alert("클레임 번호를 찾을 수 없습니다.");
+            return;
+        }
+        $.ajax({
+            url: "claimProcess.jsp",
+            type: "POST",
+            dataType: "json",
+            data: {
+                claimID: claimID,
+                result: "처리완료"
+            },
+            success: function(data){
+                if (data.success) {
+                    alert("교환/반품 처리가 완료되었습니다.");
+                    bootstrap.Modal.getInstance(
+                        document.getElementById("exchangeModal")
+                    ).hide();
+                    location.reload();
+                } else {
+                    alert("교환/반품 처리에 실패했습니다.");
+                }
+            },
+            error: function(xhr){
+                console.log(xhr.responseText);
+                alert("교환/반품 처리 중 오류가 발생했습니다.");
+            }
+        });
+    });
+
+    $("#exchangeRejectBtn").on("click", function(){
+        const claimID = $("#exchangeModal").data("claim-id");
+        if (!claimID) {
+            alert("클레임 번호를 찾을 수 없습니다.");
+            return;
+        }
+        $.ajax({
+            url: "claimProcess.jsp",
+            type: "POST",
+            dataType: "json",
+            data: {
+                claimID: claimID,
+                result: "거절"
+            },
+            success: function(data){
+                if (data.success) {
+                    alert("교환/반품 요청을 거절했습니다.");
+                    bootstrap.Modal.getInstance(
+                        document.getElementById("exchangeModal")
+                    ).hide();
+                    location.reload();
+                } else {
+                    alert("교환/반품 거절 처리에 실패했습니다.");
+                }
+            },
+            error: function(xhr){
+                console.log(xhr.responseText);
+                alert("교환/반품 거절 중 오류가 발생했습니다.");
+            }
+        });
+    });
+    
+    $("#cancelCompleteBtn").on("click", function(){
+        const claimID = $("#cancelModal").data("claim-id");
+        if (!claimID) {
+            alert("클레임 번호를 찾을 수 없습니다.");
+            return;
+        }
+        $.ajax({
+            url: "claimProcess.jsp",
+            type: "POST",
+            dataType: "json",
+            data: {
+                claimID: claimID,
+                result: "처리완료"
+            },
+            success: function(data){
+                if (data.success) {
+                    alert("취소 처리가 완료되었습니다.");
+                    bootstrap.Modal.getInstance(
+                        document.getElementById("cancelModal")
+                    ).hide();
+                    location.reload();
+                } else {
+                    alert("취소 처리에 실패했습니다.");
+                }
+            },
+            error: function(xhr){
+                console.log(xhr.responseText);
+                alert("취소 처리 중 오류가 발생했습니다.");
+            }
+        });
+    });
+
+    $("#cancelRejectBtn").on("click", function(){
+        const claimID = $("#cancelModal").data("claim-id");
+        if (!claimID) {
+            alert("클레임 번호를 찾을 수 없습니다.");
+            return;
+        }
+        $.ajax({
+            url: "claimProcess.jsp",
+            type: "POST",
+            dataType: "json",
+            data: {
+                claimID: claimID,
+                result: "취소거절"
+            },
+            success: function(data){
+                if (data.success) {
+                    alert("취소 요청을 거절했습니다.");
+
+                    bootstrap.Modal.getInstance(
+                        document.getElementById("cancelModal")
+                    ).hide();
+                    location.reload();
+                } else {
+                    alert("취소 거절 처리에 실패했습니다.");
+                }
+            },
+            error: function(xhr){
+                console.log(xhr.responseText);
+                alert("취소 거절 처리 중 오류가 발생했습니다.");
             }
         });
     });
@@ -195,6 +363,11 @@ $(function(){
 		String delivery_status = request.getParameter("orderStatus");
 		String startDate = request.getParameter("startDate");
 		String endDate = request.getParameter("endDate");
+		String status = request.getParameter("status");
+		if (status == null) {
+		    status = "";
+		}
+		rDTO.setDelivery_status(status);
 		
 		if(startDate == null || startDate.equals("")) {
 		    startDate = null;
@@ -313,20 +486,20 @@ $(function(){
 
 					<div class="search-row">
 						<label>처리상태</label><select id="orderStatus" name="orderStatus">
-							<option value="">전체</option>
-							<option value="paid">결제완료</option>
-							<option value="ready">배송준비중</option>
-							<option value="delivery">배송중</option>
-							<option value="complete">배송완료</option>
-							<option value="cancel">취소요청</option>
+						    <option value="" <%= status.equals("") ? "selected" : "" %>>전체</option>
+						    <option value="paid" <%= status.equals("paid") ? "selected" : "" %>>결제완료</option>
+						    <option value="ready" <%= status.equals("ready") ? "selected" : "" %>>배송대기</option>
+						    <option value="delivery" <%= status.equals("delivery") ? "selected" : "" %>>배송중</option>
+						    <option value="complete" <%= status.equals("complete") ? "selected" : "" %>>배송완료</option>
+						    <option value="cancel" <%= status.equals("cancel") ? "selected" : "" %>>취소요청</option>
 						</select>
 					</div>
 
 					<div class="search-row">
 						<label>상품구분</label><select id="category">
 							<option value="">전체</option>
-							<option value="vegetable">채소</option>
-							<option value="fruit">과일</option>
+							<option>채소</option>
+							<option>과일</option>
 						</select>
 					</div>
 
@@ -377,7 +550,7 @@ $(function(){
 								${order.orderStatus}
 								<c:if test="${not empty order.deliveryStatus}">
 								<br>
-								<span>${order.deliveryStatus}</span>
+								<span class="delivery-status">${order.deliveryStatus}</span>
 								</c:if>
 							</td>
 							<td>
@@ -436,7 +609,7 @@ $(function(){
 				</div>
 
 				<div class="bottom-btn">
-					<button type="button" id="deliveryBtn" data-order-no="202506200001">배송처리</button>
+					<button type="button" id="deliveryBtn">배송처리</button>
 				</div>
 
 			</div>
@@ -464,7 +637,7 @@ $(function(){
 						</tr>
 						<tr>
 						    <th>클레임 상태</th>
-						    <td id="claimType"></td>
+						    <td id="claimStatus"></td>
 						    <th colspan="2"></th>
 						</tr>
 						<tr>
@@ -491,8 +664,8 @@ $(function(){
 				</div>
 
 				<div class="modal-footer">
-					<button class="btn btn-danger">취소 완료</button>
-					<button class="btn btn-secondary" data-bs-dismiss="modal">취소 거절</button>
+				    <button type="button" class="btn btn-danger" id="cancelCompleteBtn">취소 완료</button>
+				    <button type="button" class="btn btn-secondary" id="cancelRejectBtn">취소 거절</button>
 				</div>
 			</div>
 		</div>
@@ -528,7 +701,7 @@ $(function(){
 					        <tr>
 					            <th>No</th>
 					            <th>클레임상태</th>
-					            <th>상품번호</th>
+					            <th>옵션번호?</th>
 					            <th>가격</th>
 					            <th>상품명</th>
 					            <th>수량</th>
@@ -541,17 +714,18 @@ $(function(){
 						<tr>
 							<th>반품 사유</th>
 				        	<td>
-				        		<div id="exchangePrdName"></div>
-				        		<div id="exchangeReason"></div>
-				        		<div id="exchangeReasonDetail"></div>
-				        		<div id="claimImage"></div>
+				        		<div id="exchangePrdName" style="font-weight:bold; color:#009652; font-size:23px; margin-bottom:10px; margin-left: 3px;"></div>
+								<div id="exchangeReason" style="font-weight:bold;; margin-bottom:8px; margin-left: 3px;"></div>
+								<div id="exchangeReasonDetail" style="padding:10px; border:1px solid #ddd; border-radius:5px; 
+									background:#f8f9fa; white-space:pre-wrap; margin-bottom:12px;"></div>
+								<div id="claimImage" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
 				        	</td>
 						</tr>
 					</table>
 
 					<div class="modal-footer">
-						<button class="btn btn-primary">교환/반품 완료</button>
-						<button class="btn btn-secondary" data-bs-dismiss="modal">교환/반품 거절</button>
+						<button type="button" class="btn btn-primary" id="exchangeCompleteBtn">교환/반품 완료</button>
+						<button type="button" class="btn btn-secondary" id="exchangeRejectBtn">교환/반품 거절</button>
 					</div>
 				</div>
 			</div>
