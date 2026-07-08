@@ -376,17 +376,22 @@ $(function(){
 				</div>
 
 				<div class="modal-body">
+					<h6>취소접수 정보</h6>
 					<table class="table table-bordered">
 						<tr>
-						    <th>클레임번호</th>
+						    <th>클레임 번호</th>
 						    <td id="claimID"></td>
-						    <th>취소요청일시</th>
+						    <th>취소요청 일시</th>
 						    <td id="requestDate"></td>
 						</tr>
 						<tr>
-						    <th>클레임상태</th>
+						    <th colspan="2">클레임 상태</th>
 						    <td id="claimStatus"></td>
-						    <th>구매자연락처</th>
+						</tr>
+						<tr>
+						    <th>구매자 이름</th>
+						    <td id="clientID"></td>
+						    <th>구매자 연락처</th>
 						    <td id="clientTel"></td>
 						</tr>
 					</table>
@@ -396,9 +401,9 @@ $(function(){
 						<thead>
 							<tr>
 								<th>No</th>
-								<th>상품코드</th>
+								<th>개별주문번호</th>
 								<th>상품명</th>
-								<th>단가</th>
+								<th>판매가</th>
 								<th>취소수량</th>
 							</tr>
 						</thead>
@@ -408,13 +413,13 @@ $(function(){
 
 				<div class="modal-footer">
 					<button class="btn btn-danger">취소완료 처리</button>
-					<button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+					<button class="btn btn-secondary" data-bs-dismiss="modal">취소거절 처리</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- 교환 요청 상세 -->
+	<!-- 반품/교환 요청 상세 -->
 	<div class="modal fade" id="exchangeModal" tabindex="-1">
 		<div class="modal-dialog modal-xl">
 			<div class="modal-content">
@@ -423,43 +428,52 @@ $(function(){
 					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
+					<h6>반품접수 정보</h6>
 					<table class="table table-bordered">
 				    <tr>
 				        <th>클레임번호</th>
 				        <td id="claimID"></td>
-				        <th>클레임요청일</th>
+				        <th>반품요청일시</th>
 				        <td id="requestDate"></td>
 				    </tr>
 				    <tr>
-				        <th>주문자ID</th>
+				        <th>구매자이름</th>
 				        <td id="clientName"></td>
-				        <th>연락처</th>
+				        <th>구매자연락처</th>
 				        <td id="clientTel"></td>
 				    </tr>
 					</table>
-					<h6>상품정보</h6>
+					<h6>반품요청 상품</h6>
 					<table class="table table-bordered">
 					    <thead>
 					        <tr>
 					            <th>No</th>
+					            <th>클레임상태</th>
 					            <th>상품번호</th>
+					            <th>가격</th>
 					            <th>상품명</th>
-					            <th>상태</th>
+					            <th>수량</th>
 					        </tr>
 					    </thead>
 					    <tbody id="claimProductBody"></tbody>
 					</table>
-					<div class="mt-3">
-					    <h6>상세사유</h6>
-					    <textarea id="reasonDetail" class="form-control" rows="4" readonly></textarea>
-					</div>
-					<h6>첨부이미지</h6>
-					<div id="claimImageArea"></div>
-					</div>
+					<h6>반품 정보</h6>
+					<table class="table table-bordered">
+						<tr>
+							<th>반품 사유</th>
+				        	<td>
+				        		<div id="prdName"></div>
+				        		<div id="reason"></div>
+				        		<div id="reasonDetail"></div>
+				        		<div id="claimImage"></div>
+				        	</td>
+						</tr>
+					</table>
 
-				<div class="modal-footer">
-					<button class="btn btn-primary">교환승인</button>
-					<button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+					<div class="modal-footer">
+						<button class="btn btn-primary">교환/반품 완료</button>
+						<button class="btn btn-secondary" data-bs-dismiss="modal">교환/반품 거절</button>
+					</div>
 				</div>
 			</div>
 		</div>
