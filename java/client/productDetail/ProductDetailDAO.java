@@ -84,8 +84,7 @@ private static ProductDetailDAO pdDAO;
 
 	        	pDTO.setUrl(rs.getNString("URL"));
 	        	
-	        	System.out.println("PRICE = " + rs.getInt("PRICE"));
-	        	System.out.println("DISCOUNT = " + rs.getInt("DISCOUNT"));
+	        	
 
 	        }
 
