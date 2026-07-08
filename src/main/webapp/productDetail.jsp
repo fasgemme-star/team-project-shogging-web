@@ -2,7 +2,9 @@
 <%@ page import="client.productDetail.ProductDTO" %>
 <jsp:useBean id="pdService" class="client.productDetail.ProductDetailService" scope="page"/>
 <%
-    String prdID = request.getParameter("prdID");
+    // 주의: ProductDetailDAO.selectProductInfo()는 실제로 OPTION_ID(옵션번호) 기준으로 조회한다.
+    // (PRODUCT_ID를 넘기면 매칭되는 행이 없어 상세페이지가 비어 보인다.)
+    String optionNo = request.getParameter("optionNo");
 
     int quantity = 1;
     String qtyParam = request.getParameter("quantity");
@@ -12,10 +14,10 @@
     }
 
     // ---- ProductDetailService 메소드 연결 ----
-    ProductDTO product = (prdID == null) ? null : pdService.getProductInfo(prdID);
+    ProductDTO product = (optionNo == null) ? null : pdService.getProductInfo(optionNo);
 
     request.setAttribute("product", product);
-    request.setAttribute("prdID", prdID);
+    request.setAttribute("optionNo", optionNo);
     request.setAttribute("quantity", quantity);
 %>
 <%@ include file="common/header.jsp" %>
@@ -58,11 +60,11 @@
           <span class="font-bold">수량</span>
           <div class="flex items-center border border-outline-variant bg-white rounded-lg">
             <a class="p-2 hover:bg-surface-container transition-colors inline-block ${quantity <= 1 ? 'opacity-30 pointer-events-none' : ''}"
-               href="productDetail.jsp?prdID=${prdID}&amp;quantity=${quantity - 1}">
+               href="productDetail.jsp?optionNo=${optionNo}&amp;quantity=${quantity - 1}">
               <span class="material-symbols-outlined text-[20px]">remove</span>
             </a>
             <span class="px-6 font-bold">${quantity}</span>
-            <a class="p-2 hover:bg-surface-container transition-colors inline-block" href="productDetail.jsp?prdID=${prdID}&amp;quantity=${quantity + 1}">
+            <a class="p-2 hover:bg-surface-container transition-colors inline-block" href="productDetail.jsp?optionNo=${optionNo}&amp;quantity=${quantity + 1}">
               <span class="material-symbols-outlined text-[20px]">add</span>
             </a>
           </div>
@@ -74,7 +76,7 @@
       </div>
 
       <form method="post" action="cartAdd.jsp">
-        <input type="hidden" name="prdID" value="${prdID}"/>
+        <input type="hidden" name="optionNo" value="${optionNo}"/>
         <input type="hidden" name="quantity" value="${quantity}"/>
         <input type="hidden" name="redirectTo" value="cart.jsp"/>
         <div class="flex gap-4">

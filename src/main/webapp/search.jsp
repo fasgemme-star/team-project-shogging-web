@@ -4,7 +4,24 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:useBean id="psService" class="client.productSearch.ProductSearchService" scope="page"/>
 <%
+    request.setCharacterEncoding("UTF-8");
+
+    // ---- 검색어(keyword) 한글 깨짐 방지 ----
+    // Tomcat 기본 설정(server.xml URIEncoding 미설정)에서는 GET 방식 쿼리스트링을
+    // ISO-8859-1로 디코딩해버려서 request.getParameter()로 받은 한글 검색어가 깨지고,
+    // 그 결과 DB 검색 조건이 일치하지 않아 "검색 결과 없음"으로 나온다.
+    // 원본 쿼리스트링을 직접 읽어 UTF-8로 재디코딩하면 서버 설정과 무관하게 항상 정상 동작한다.
     String keyword = request.getParameter("keyword");
+    String rawQuery = request.getQueryString();
+    if (rawQuery != null) {
+        for (String pair : rawQuery.split("&")) {
+            int eq = pair.indexOf('=');
+            if (eq > 0 && "keyword".equals(pair.substring(0, eq))) {
+                keyword = java.net.URLDecoder.decode(pair.substring(eq + 1), "UTF-8");
+                break;
+            }
+        }
+    }
     if (keyword == null) keyword = "";
     keyword = keyword.trim();
 

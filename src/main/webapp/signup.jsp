@@ -2,6 +2,7 @@
 <%@ page import="client.signup.ClientDTO" %>
 <jsp:useBean id="signupService" class="client.signup.SignupService" scope="page"/>
 <%
+    request.setCharacterEncoding("UTF-8");
     String mode = request.getParameter("mode");
     String dupCheckMsg = null;
     String errorMsg = null;

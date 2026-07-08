@@ -2,6 +2,7 @@
 <%@ page import="client.cart.CartDTO" %>
 <jsp:useBean id="cartService" class="client.cart.CartService" scope="page"/>
 <%
+    request.setCharacterEncoding("UTF-8");
     String clientNo = (String) session.getAttribute("clientNo");
     String prdID = request.getParameter("prdID");
     String redirectTo = request.getParameter("redirectTo");

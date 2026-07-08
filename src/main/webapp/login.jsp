@@ -2,6 +2,7 @@
 <%@ page import="client.signup.ClientDTO" %>
 <jsp:useBean id="loginService" class="client.login.LoginService" scope="page"/>
 <%
+    request.setCharacterEncoding("UTF-8");
     String errorMsg = null;
 
     if ("POST".equalsIgnoreCase(request.getMethod())) {
@@ -61,9 +62,9 @@
     </form>
 
     <div class="flex justify-center gap-4 mt-8 text-body-sm text-on-surface-variant">
-      <a class="hover:text-primary" href="javascript:void(0)" onclick="showToast('준비 중입니다.')">아이디 찾기</a>
+      <a class="hover:text-primary" href="findId.jsp">아이디 찾기</a>
       <span class="text-surface-variant">|</span>
-      <a class="hover:text-primary" href="javascript:void(0)" onclick="showToast('준비 중입니다.')">비밀번호 찾기</a>
+      <a class="hover:text-primary" href="findPw.jsp">비밀번호 찾기</a>
     </div>
   </div>
 </section>
