@@ -8,12 +8,12 @@ pageEncoding="UTF-8"%>
 <%
 request.setCharacterEncoding("UTF-8");
 
-String priceParam = request.getParameter("price");
-String minPurchaseParam = request.getParameter("minPurchase");
-String maxPurchaseParam = request.getParameter("maxPurchase");
-String discountParam = request.getParameter("discount");
-String weightParam = request.getParameter("weight");
-String quantityParam = request.getParameter("quantity");
+String priceParam = request.getParameter("price");//가격
+String minPurchaseParam = request.getParameter("minPurchase");//최소구매수량
+String maxPurchaseParam = request.getParameter("maxPurchase");//최대구매수량
+String discountParam = request.getParameter("discount");//할인율
+String weightParam = request.getParameter("weight");//무게
+String quantityParam = request.getParameter("quantity");//판매수량
 
 int price = (priceParam == null || priceParam.trim().isEmpty()) ? 0 : Integer.parseInt(priceParam);
 int minPurchase = (minPurchaseParam == null || minPurchaseParam.trim().isEmpty()) ? 1 : Integer.parseInt(minPurchaseParam);
@@ -24,23 +24,25 @@ int quantity = (quantityParam == null || quantityParam.trim().isEmpty()) ? 0 : I
 
 ProductDTO pDTO = new ProductDTO();
 
-pDTO.setCategory(request.getParameter("category"));
-pDTO.setPrdName(request.getParameter("prdName"));
-pDTO.setPrdDescription(request.getParameter("prdDescription"));
+pDTO.setCategory(request.getParameter("category"));//카테고리
+pDTO.setPrdName(request.getParameter("prdName"));//상품명
+pDTO.setPrdType(request.getParameter("prdType"));//상품타입
+pDTO.setPrdDescription(request.getParameter("prdDescription"));//상품설명
 
 pDTO.setPrice(price);
 pDTO.setMinPurchae(minPurchase);
 pDTO.setMaxPurchase(maxPurchase);
 pDTO.setDiscount(discount);
 
-pDTO.setManufacturer(request.getParameter("manufacturer"));
-pDTO.setOrigin(request.getParameter("origin"));
-pDTO.setUnderAgePurchase(request.getParameter("underAgePurchase"));
-pDTO.setWeight(weight);
-pDTO.setExpirationDate(request.getParameter("expirationDate"));
-pDTO.setStorageType(request.getParameter("storageType"));
-pDTO.setSalesUnit(request.getParameter("salesUnit"));
-pDTO.setAdditionalInfo(request.getParameter("additionalInfo"));
+pDTO.setManufacturer(request.getParameter("manufacturer"));//제조사
+pDTO.setOrigin(request.getParameter("origin"));//원산지
+pDTO.setUnderAgePurchase(request.getParameter("underAgePurchase"));//미성년자구매
+pDTO.setWeight(weight);//무게
+pDTO.setExpirationDate(request.getParameter("expirationDate"));//유통기한
+pDTO.setStorageType(request.getParameter("storageType"));//보관방법
+pDTO.setSalesUnit(request.getParameter("salesUnit"));//판매단위
+pDTO.setNotice(request.getParameter("notice"));//주의사항
+pDTO.setAdditionalInfo(request.getParameter("additionalInfo"));//추가정보->x description
 pDTO.setQuantity(quantity);
 
 List<ImageDTO> imgList = new ArrayList<ImageDTO>();
@@ -51,19 +53,19 @@ String descImg = request.getParameter("descImg");
 String detailImg = request.getParameter("detailImg");
 
 if (thumbImg != null && !thumbImg.trim().isEmpty()) {
-imgList.add(new ImageDTO("THUMB", thumbImg));
+	imgList.add(new ImageDTO("THUMB", thumbImg));
 }
 
 if (mainImg != null && !mainImg.trim().isEmpty()) {
-imgList.add(new ImageDTO("MAIN", mainImg));
+	imgList.add(new ImageDTO("MAIN", mainImg));
 }
 
 if (descImg != null && !descImg.trim().isEmpty()) {
-imgList.add(new ImageDTO("CONTENT", descImg));
+	imgList.add(new ImageDTO("CONTENT", descImg));
 }
 
 if (detailImg != null && !detailImg.trim().isEmpty()) {
-imgList.add(new ImageDTO("DETAIL", detailImg));
+	imgList.add(new ImageDTO("DETAIL", detailImg));
 }
 
 AddProductService service = new AddProductService();
@@ -71,8 +73,8 @@ AddProductService service = new AddProductService();
 int result = service.addProduct(pDTO, imgList);
 
 if (result > 0) {
-response.sendRedirect("addProduct.jsp");
-return;
+	response.sendRedirect("addProduct.jsp");
+	return;
 }
 %>
 
