@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="client.productDetail.ProductDTO" %>
+<%@ page import="client.inquiry.InquiryDTO" %>
 <jsp:useBean id="pdService" class="client.productDetail.ProductDetailService" scope="page"/>
+<jsp:useBean id="pdInquiryService" class="client.prdInquiry.PrdInquiryService" scope="page"/>
 <%
     // 주의: ProductDetailDAO.selectProductInfo()는 실제로 OPTION_ID(옵션번호) 기준으로 조회한다.
     // (PRODUCT_ID를 넘기면 매칭되는 행이 없어 상세페이지가 비어 보인다.)
@@ -16,9 +18,15 @@
     // ---- ProductDetailService 메소드 연결 ----
     ProductDTO product = (optionNo == null) ? null : pdService.getProductInfo(optionNo);
 
+    // ---- 상품 문의 목록 (PrdInquiryService) ----
+    java.util.List<InquiryDTO> prdInquiryList = (product == null)
+            ? new java.util.ArrayList<InquiryDTO>()
+            : pdInquiryService.getInquiryList(product.getPrdID());
+
     request.setAttribute("product", product);
     request.setAttribute("optionNo", optionNo);
     request.setAttribute("quantity", quantity);
+    request.setAttribute("prdInquiryList", prdInquiryList);
 %>
 <%@ include file="common/header.jsp" %>
 
@@ -86,9 +94,137 @@
     </div>
   </div>
 
+  <%-- ===================== 상품 탭 (상품설명 / 상세정보 / 문의하기) ===================== --%>
+  <section class="mt-20 border-t border-surface-variant">
+    <div class="flex justify-center items-center border-b border-surface-variant gap-12 md:gap-20">
+      <button class="tab-btn py-4 text-body-sm tracking-wider sub-tab-active" onclick="switchDetailTab(event, 'tab-info')">상품설명</button>
+      <button class="tab-btn py-4 text-body-sm tracking-wider text-on-surface-variant hover:text-primary transition-colors" onclick="switchDetailTab(event, 'tab-spec')">상세정보</button>
+      <button class="tab-btn py-4 text-body-sm tracking-wider text-on-surface-variant hover:text-primary transition-colors" onclick="switchDetailTab(event, 'tab-qna')">문의하기 (${fn:length(prdInquiryList)})</button>
+    </div>
+
+    <div class="py-12">
+
+      <%-- 상품설명 --%>
+      <div class="tab-content-detail" id="tab-info">
+        <div class="max-w-3xl mx-auto text-center">
+          <h3 class="text-headline-md font-headline-md text-on-surface mb-6">${product.prdName}, 이렇게 좋아요</h3>
+          <p class="text-body-md text-on-surface-variant leading-relaxed mb-12">${product.shortInfo}</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+            <div class="bg-surface-container rounded-xl p-8 border border-outline-variant">
+              <span class="material-symbols-outlined text-primary text-4xl mb-4">eco</span>
+              <h4 class="text-headline-sm font-headline-sm mb-2">엄선된 산지 직송</h4>
+              <p class="text-on-surface-variant text-body-sm">믿을 수 있는 산지에서 정성껏 재배한 상품만 선별해 소개합니다.</p>
+            </div>
+            <div class="bg-surface-container rounded-xl p-8 border border-outline-variant">
+              <span class="material-symbols-outlined text-primary text-4xl mb-4">local_shipping</span>
+              <h4 class="text-headline-sm font-headline-sm mb-2">신선 배송</h4>
+              <p class="text-on-surface-variant text-body-sm">주문 즉시 콜드체인으로 포장해 신선함을 그대로 전달해 드립니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <%-- 상세정보 --%>
+      <div class="tab-content-detail hidden" id="tab-spec">
+        <div class="max-w-3xl mx-auto">
+          <table class="w-full text-body-sm">
+            <tbody>
+              <tr class="border-b border-surface-variant">
+                <th class="text-left py-4 w-40 text-on-surface-variant font-medium">원산지</th>
+                <td class="py-4">${empty product.origin ? '정보 없음' : product.origin}</td>
+              </tr>
+              <tr class="border-b border-surface-variant">
+                <th class="text-left py-4 text-on-surface-variant font-medium">제조사</th>
+                <td class="py-4">${empty product.manufacturer ? '정보 없음' : product.manufacturer}</td>
+              </tr>
+              <tr class="border-b border-surface-variant">
+                <th class="text-left py-4 text-on-surface-variant font-medium">단위</th>
+                <td class="py-4">${empty product.unit ? '정보 없음' : product.unit}</td>
+              </tr>
+              <tr class="border-b border-surface-variant">
+                <th class="text-left py-4 text-on-surface-variant font-medium">구매 수량</th>
+                <td class="py-4">최소 ${product.minPurchase}개 · 최대 ${product.maxPurchase}개</td>
+              </tr>
+              <tr class="border-b border-surface-variant">
+                <th class="text-left py-4 text-on-surface-variant font-medium">청소년 구매</th>
+                <td class="py-4">${product.underagePurchase == 1 ? '구매 가능' : '구매 제한'}</td>
+              </tr>
+              <tr>
+                <th class="text-left py-4 text-on-surface-variant font-medium align-top">유의사항</th>
+                <td class="py-4">${empty product.notification ? '정보 없음' : product.notification}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <%-- 문의하기 --%>
+      <div class="tab-content-detail hidden" id="tab-qna">
+        <div class="max-w-3xl mx-auto">
+          <c:choose>
+            <c:when test="${empty prdInquiryList}">
+              <div class="flex flex-col items-center justify-center py-16 text-center">
+                <span class="material-symbols-outlined text-outline-variant text-6xl mb-4">quiz</span>
+                <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">등록된 문의가 없습니다.</h3>
+                <p class="text-on-surface-variant text-body-md">이 상품에 대해 궁금한 점을 남겨주세요.</p>
+              </div>
+            </c:when>
+            <c:otherwise>
+              <div class="divide-y divide-surface-variant border-y border-surface-variant mb-10">
+                <c:forEach var="iq" items="${prdInquiryList}">
+                  <div class="py-4 flex items-center justify-between gap-4">
+                    <div>
+                      <p class="font-bold">${iq.inquiryTitle}</p>
+                      <p class="text-on-surface-variant text-body-sm mt-1"><fmt:formatDate value="${iq.inquiryDate}" pattern="yyyy.MM.dd"/></p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-body-sm ${iq.answerStatus == '답변완료' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}">${iq.answerStatus}</span>
+                  </div>
+                </c:forEach>
+              </div>
+            </c:otherwise>
+          </c:choose>
+
+          <c:choose>
+            <c:when test="${not empty sessionScope.clientNo}">
+              <form method="post" action="prdInquiryAdd.jsp" class="bg-surface-container-low rounded-xl p-6 border border-surface-variant space-y-4">
+                <input type="hidden" name="prdID" value="${product.prdID}"/>
+                <input type="hidden" name="redirectTo" value="productDetail.jsp?optionNo=${optionNo}"/>
+                <input class="w-full border border-outline-variant rounded-lg px-4 py-2" type="text" name="inquiryTitle" placeholder="문의 제목" required/>
+                <textarea class="w-full border border-outline-variant rounded-lg px-4 py-2" name="inquiryContent" rows="4" placeholder="문의 내용을 입력해주세요" required></textarea>
+                <label class="flex items-center gap-2 text-body-sm text-on-surface-variant">
+                  <input type="checkbox" name="inquirySecret" value="Y"/> 비밀글로 등록
+                </label>
+                <button class="bg-primary text-on-primary py-3 px-8 rounded-lg font-bold" type="submit">문의 등록</button>
+              </form>
+            </c:when>
+            <c:otherwise>
+              <div class="text-center py-6 text-on-surface-variant">
+                문의를 남기려면 <a class="text-primary font-bold underline" href="login.jsp?redirectTo=productDetail.jsp?optionNo=${optionNo}">로그인</a>이 필요합니다.
+              </div>
+            </c:otherwise>
+          </c:choose>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   </c:otherwise>
   </c:choose>
 
 </section>
+
+<script>
+  function switchDetailTab(event, tabId) {
+    document.querySelectorAll('.tab-content-detail').forEach(function(el) { el.classList.add('hidden'); });
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.classList.remove('sub-tab-active');
+      btn.classList.add('text-on-surface-variant');
+    });
+    document.getElementById(tabId).classList.remove('hidden');
+    event.currentTarget.classList.add('sub-tab-active');
+    event.currentTarget.classList.remove('text-on-surface-variant');
+  }
+</script>
 
 <%@ include file="common/footer.jsp" %>

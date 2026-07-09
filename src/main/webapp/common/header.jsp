@@ -123,6 +123,7 @@
     <c:choose>
       <c:when test="${not empty sessionScope.clientNo}">
         <span class="text-body-sm text-on-surface-variant hidden md:inline">${sessionScope.clientName}님</span>
+        <a class="material-symbols-outlined p-2 hover:bg-surface-container-low rounded-full transition-all text-on-surface-variant" href="${pageContext.request.contextPath}/myPage.jsp" title="마이페이지">person</a>
         <a class="material-symbols-outlined p-2 hover:bg-surface-container-low rounded-full transition-all text-on-surface-variant" href="${pageContext.request.contextPath}/logout.jsp" title="로그아웃">logout</a>
       </c:when>
       <c:otherwise>
