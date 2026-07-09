@@ -18,15 +18,15 @@
     // ---- ProductDetailService 메소드 연결 ----
     ProductDTO product = (optionNo == null) ? null : pdService.getProductInfo(optionNo);
 
-    /* // ---- 상품 문의 목록 (PrdInquiryService) ----
+    // ---- 상품 문의 목록 (PrdInquiryService) ----
     java.util.List<InquiryDTO> prdInquiryList = (product == null)
             ? new java.util.ArrayList<InquiryDTO>()
-            : pdInquiryService.getInquiryList(product.getOptionNo()); */
+            : pdInquiryService.getInquiryList(product.getOptionNo());
 
     request.setAttribute("product", product);
     request.setAttribute("optionNo", optionNo);
     request.setAttribute("quantity", quantity);
-    /* request.setAttribute("prdInquiryList", prdInquiryList); */
+    request.setAttribute("prdInquiryList", prdInquiryList);
 %>
 <%@ include file="common/header.jsp" %>
 
