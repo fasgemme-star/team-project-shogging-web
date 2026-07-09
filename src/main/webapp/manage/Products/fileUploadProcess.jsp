@@ -1,31 +1,33 @@
-<%@ page language="java" contentType="application/json; charset=UTF-8"
+<%@ page language="java" contentType="text/plain; charset=UTF-8"
 pageEncoding="UTF-8"%>
-<%@ page import="java.io.File"%>
-<%@ page import="com.oreilly.servlet.MultipartRequest"%>
-<%@ page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy"%>
+<%@ page import="java.io.File" %>
+<%@ page import="com.oreilly.servlet.MultipartRequest" %>
+<%@ page import="com.oreilly.servlet.multipart.DefaultFileRenamePolicy" %>
 <%
 request.setCharacterEncoding("UTF-8");
-String uploadPath = application.getRealPath("/upload/product");
 
-File dir = new File(uploadPath);
+String savePath = application.getRealPath("/manage/uploadImgs");
+File saveDir = new File(savePath);
 
-if(!dir.exists()){
-    dir.mkdirs();
+if (!saveDir.exists()) {
+	saveDir.mkdirs();
 }
 
-MultipartRequest multi = new MultipartRequest(request, uploadPath, 10*1024*1024, "UTF-8", new DefaultFileRenamePolicy());
+int maxSize = 10 * 1024 * 1024;
 
-String type = multi.getParameter("imageType");
-String fileName = multi.getFilesystemName("imageFile");
+try {
+	MultipartRequest mr = 
+			new MultipartRequest(request,saveDir.getAbsolutePath(),
+					maxSize,"UTF-8",new DefaultFileRenamePolicy());
 
-String url = "/upload/product/" + fileName;
+	String fileName = mr.getFilesystemName("imageFile");
 
-out.print(
-"{\"type\":\""
-+ type
-+ "\",\"url\":\""
-+ url
-+ "\"}"
-);
+	out.print(fileName);
+
+} catch (Exception e) {
+	e.printStackTrace();
+	response.setStatus(500);
+	out.print("");
+}
 
 %>

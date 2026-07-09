@@ -47,6 +47,8 @@ $(function(){
         let target = $(this).data("target");
         let name = $(this).data("name");
         let type = $(this).data("type");
+        
+        $("#imageFile").val("");
 
         $("#imageFile").data("target", target);
         $("#imageFile").data("name", name);

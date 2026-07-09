@@ -1,4 +1,3 @@
-<%@page import="org.json.simple.JSONArray"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <%@ page import="java.util.ArrayList" %>
@@ -47,9 +46,38 @@ pDTO.setQuantity(quantity);
 
 List<ImageDTO> imgList = new ArrayList<ImageDTO>();
 
-String imageJson = request.getParameter("imageList");
+String thumbImg = request.getParameter("thumbImg");
+String mainImg = request.getParameter("mainImg");
+String descImg = request.getParameter("descImg");
+String detailImg = request.getParameter("detailImg");
 
+if (thumbImg != null && !thumbImg.trim().equals("")) {
+	ImageDTO thumbDTO = new ImageDTO();
+	thumbDTO.setImageType("THUMB");
+	thumbDTO.setUrl(thumbImg);
+	imgList.add(thumbDTO);
+}
 
+if (mainImg != null && !mainImg.trim().equals("")) {
+	ImageDTO mainDTO = new ImageDTO();
+	mainDTO.setImageType("MAIN");
+	mainDTO.setUrl(mainImg);
+	imgList.add(mainDTO);
+}
+
+if (descImg != null && !descImg.trim().equals("")) {
+	ImageDTO descDTO = new ImageDTO();
+	descDTO.setImageType("DESC");
+	descDTO.setUrl(descImg);
+	imgList.add(descDTO);
+}
+
+if (detailImg != null && !detailImg.trim().equals("")) {
+	ImageDTO detailDTO = new ImageDTO();
+	detailDTO.setImageType("DETAIL");
+	detailDTO.setUrl(detailImg);
+	imgList.add(detailDTO);
+}
 
 AddProductService service = new AddProductService();
 
