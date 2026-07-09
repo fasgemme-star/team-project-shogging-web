@@ -46,12 +46,13 @@ public class PrdInquiryDAO {
 
             StringBuilder sql = new StringBuilder();
 
+
             sql.append(" SELECT i.INQUIRY_ID, i.INQUIRY_DATE , i.INQUIRY_TITLE, i.ANSWER_STATUS ");
             sql.append(" FROM INQUIRY i ");
             sql.append(" INNER JOIN  ORDER_DETAILS od ON od.ORDER_DETAILS_ID=i.ORDER_DETAILS_ID ");
             sql.append(" INNER JOIN  PRODUCT_OPTION po.OPTION_ID ON po.=od.OPTION_ID ");
             sql.append(" WHERE i.INQUIRY_CODE='TYP000003' AND po.OPTION_ID=? ");
-            sql.append(" ORDER BY INQUIRY_DATE DESC ");
+
 
             pstmt = con.prepareStatement(sql.toString());
             
@@ -158,13 +159,18 @@ public class PrdInquiryDAO {
 
             StringBuilder sql = new StringBuilder();
 
+            // 주의: 기존 쿼리는 INQUIRY_CODE(문의 유형), PRODUCT_ID(상품), CLIENT_NO(작성자)를
+            // 저장하지 않아서 상품 문의를 등록해도 해당 상품 문의 목록(selectInquiryList)에는
+            // 절대 나타나지 않았다(그 목록은 INQUIRY_CODE='TYP000003' AND PRODUCT_ID로 조회하기 때문).
+            // 세 컬럼을 함께 저장하도록 수정했다.
             sql.append(" INSERT INTO INQUIRY ");
             sql.append(" (INQUIRY_DATE, INQUIRY_TITLE, ");
             sql.append(" INQUIRY_SECRET, INQUIRY_CONTENT, ");
-            sql.append(" ANSWER_STATUS, INQUIRY_STATUS) "); 
+            sql.append(" ANSWER_STATUS, INQUIRY_STATUS, ");
+            sql.append(" INQUIRY_CODE, PRODUCT_ID, CLIENT_NO) ");
             sql.append(" VALUES ");
             sql.append(" (SYSDATE, ?, ?, ?, ");
-            sql.append(" '답변대기', '정상') "); 
+            sql.append(" '답변대기', '정상', 'TYP000003', ?, ?) "); 
             
             pstmt = con.prepareStatement(sql.toString());
             
@@ -172,6 +178,8 @@ public class PrdInquiryDAO {
             pstmt.setString(1, dto.getInquiryTitle());
             pstmt.setString(2, dto.getInquirySecret());
             pstmt.setString(3, dto.getInquiryContent());
+            pstmt.setString(4, dto.getProductId());
+            pstmt.setString(5, dto.getClientNo());
 
             cnt = pstmt.executeUpdate();
 

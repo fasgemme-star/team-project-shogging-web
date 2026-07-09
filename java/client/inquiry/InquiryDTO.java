@@ -22,9 +22,27 @@ public class InquiryDTO {
 	private String inquiryName;
 	private String inquiryType;
 	private String clientNO;
+	private String productId;
+	private String clientNo;
 	
 	public InquiryDTO() {
 		super();
+	}
+
+	public String getProductId() {
+		return productId;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
+	public String getClientNo() {
+		return clientNo;
+	}
+
+	public void setClientNo(String clientNo) {
+		this.clientNo = clientNo;
 	}
 
 	public InquiryDTO(String inquiryId, Date inquiryDate, String inquiryTitle, String inquirySecret,

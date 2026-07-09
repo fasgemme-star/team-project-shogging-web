@@ -18,4 +18,14 @@ public class OrderCheckService {
 	    return oList;
 	}// searchOrderChk
 
+	// 주문 내역 삭제
+	public boolean deleteOrder(String orderId, String clientNo) {
+		try {
+			return oDAO.deleteOrderChk(orderId, clientNo) > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}// deleteOrder
+
 }

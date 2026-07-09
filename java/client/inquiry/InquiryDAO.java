@@ -41,7 +41,7 @@ public class InquiryDAO {
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
-			String sql="SELECT i.INQUIRY_ID, i.INQUIRY_TITLE, i.INQUIRY_DATE, i.ANSWER_STATUS FROM INQUIRY i INNER JOIN INQUIRY_TYPE t ON i.INQUIRY_CODE=t.INQUIRY_CODE WHERE CLIENT_NO =? AND t.INQUIRY_CODE IN ('TYP000001','TYP000002')";
+			String sql="SELECT i.INQUIRY_ID, i.INQUIRY_TITLE, i.INQUIRY_DATE, i.ANSWER_STATUS FROM INQUIRY i INNER JOIN INQUIRY_TYPE t ON i.INQUIRY_CODE=t.INQUIRY_CODE WHERE CLIENT_NO =? AND t.INQUIRY_CODE IN ('TYP000001','TYP000002') AND (i.INQUIRY_STATUS IS NULL OR i.INQUIRY_STATUS <> 'Y') ORDER BY i.INQUIRY_DATE DESC";
 			
 			pstmt=con.prepareStatement(sql);
 			
@@ -119,5 +119,38 @@ public class InquiryDAO {
 			}
 		}
 		return iDTO;
+	}
+
+	//문의 내역 삭제 (본인 글만 삭제 가능하도록 client_no로 소유자 확인, 소프트 삭제)
+	public int deleteInquiry(String inquiryId, String clientNo) {
+
+		int cnt = 0;
+		DbConnection dbcon = DbConnection.getInstance();
+
+		Connection con = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+
+			String sql = "UPDATE INQUIRY SET INQUIRY_STATUS = 'Y' WHERE INQUIRY_ID = ? AND CLIENT_NO = ?";
+
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, inquiryId);
+			pstmt.setString(2, clientNo);
+
+			cnt = pstmt.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				dbcon.dbClose(null, pstmt, con);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return cnt;
 	}
 }//class

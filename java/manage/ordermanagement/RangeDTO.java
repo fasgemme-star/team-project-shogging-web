@@ -17,6 +17,7 @@ public class RangeDTO {
 	private String delivery_status;
 	private String startDate;
 	private String endDate;
+	private String category;
 	
 	public void setDelivery_status(String status) {
 		switch (status) {
