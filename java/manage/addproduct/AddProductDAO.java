@@ -30,6 +30,7 @@ public class AddProductDAO {
 		PreparedStatement pstmtMaxId = null;
 		PreparedStatement pstmtImg = null;
 		PreparedStatement pstmtOption = null;
+		PreparedStatement pstmtAddi = null;
 		ResultSet rs = null;
 		int cnt = 0;
 		String queryMaxID = "SELECT MAX(PRODUCT_ID) FROM product";
@@ -37,6 +38,7 @@ public class AddProductDAO {
 				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		String queryProductOption = "insert into product_option(option_name, PRICE, DISCOUNT, WEIGHT, stockquantity,product_id) values(?, ?, ?, ?, ?, ?)";
 		String queryImg = "insert into PRODUCT_IMAGE(IMAGE_TYPE, URL, PRODUCT_ID) values(?,?,?)";
+		String queryAddi = "insert into ADDITIONAL_INFO(info_content, product_id) values(?,?)";
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			con.setAutoCommit(false);
@@ -88,7 +90,14 @@ public class AddProductDAO {
 			pstmtOption.setInt(5,pDTO.getQuantity());
 			pstmtOption.setString(6,nextProductId);
 			
-			cnt = pstmtOption.executeUpdate();
+			cnt += pstmtOption.executeUpdate();
+			
+			pstmtAddi = con.prepareStatement(queryAddi);
+			pstmtAddi.setString(1,pDTO.getAdditionalInfo());
+			pstmtAddi.setString(2, nextProductId);
+			
+			cnt += pstmtAddi.executeUpdate();
+			
 
 			if (productNo != null && imgList != null && !imgList.isEmpty()) {
 				pstmtImg = con.prepareStatement(queryImg);

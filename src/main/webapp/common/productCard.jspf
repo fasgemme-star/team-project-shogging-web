@@ -7,8 +7,8 @@
   <a href="${pageContext.request.contextPath}/productDetail.jsp?optionNo=${p.optionNo}">
     <div class="relative aspect-[3/4] rounded-xl overflow-hidden mb-4 bg-surface-container">
       <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-           src="${p.url}" alt="${p.prdName}"
-           onerror="this.src='${pageContext.request.contextPath}/${p.prdID }_t.png'"/>
+           src="${pageContext.request.contextPath}/${p.prdID }_t.png" alt="${p.prdName}"
+           onerror="this.src='${pageContext.request.contextPath}/images/imgbanner1.png'"/>
       <c:if test="${p.discount > 0}">
         <span class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded text-label-md">${p.discount}% 할인</span>
       </c:if>

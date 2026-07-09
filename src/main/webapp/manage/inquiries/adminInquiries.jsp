@@ -344,7 +344,7 @@ $(function(){
 
 						<!-- 고객 정보 -->
 						<div class="customer-info">
-							<img src="../images/profile.png" class="profile">
+							<img src="../../images/profile.png" class="profile">
 						<div>
 							<div id="customerName" class="customer-name"></div>
 							<div id="customerId" class="customer-id"></div>
