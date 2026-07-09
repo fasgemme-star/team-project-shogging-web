@@ -11,7 +11,7 @@ public class AddProductService {
 	/**
 	 * @param pDTO
 	 * @param imgList
-	 * @return 3: 성공, 나머지: 실패
+	 * @return 4: 성공, 나머지: 실패
 	 */
 	public int addProduct(ProductDTO pDTO, List<ImageDTO> imgList) {
 		int result=0;
