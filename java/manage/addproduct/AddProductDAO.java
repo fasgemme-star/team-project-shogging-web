@@ -82,7 +82,7 @@ public class AddProductDAO {
 			cnt += pstmtProduct.executeUpdate();
 			
 			pstmtOption = con.prepareStatement(queryProductOption);
-			String optionName = pDTO.getPrdName() + " " + pDTO.getWeight() + "kg";
+			String optionName = pDTO.getPrdName() + " " + pDTO.getWeight();
 			pstmtOption.setString(1,optionName);
 			pstmtOption.setInt(2,pDTO.getPrice());
 			pstmtOption.setInt(3,pDTO.getDiscount());
