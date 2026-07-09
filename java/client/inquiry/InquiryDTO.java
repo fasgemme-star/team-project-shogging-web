@@ -21,33 +21,17 @@ public class InquiryDTO {
 	private String OrderDetailsId;
 	private String inquiryName;
 	private String inquiryType;
-	private String clientNO;
-	private String productId;
 	private String clientNo;
+	private String productId;
+	private String optionNo;
 	
 	public InquiryDTO() {
 		super();
 	}
 
-	public String getProductId() {
-		return productId;
-	}
-
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-
-	public String getClientNo() {
-		return clientNo;
-	}
-
-	public void setClientNo(String clientNo) {
-		this.clientNo = clientNo;
-	}
-
 	public InquiryDTO(String inquiryId, Date inquiryDate, String inquiryTitle, String inquirySecret,
 			String inquiryContent, String answerStatus, String answer, Date answerDate, String orderDetailsId,
-			String inquiryName, String inquiryType, String clientNO) {
+			String inquiryName, String inquiryType, String clientNo, String productId, String optionNo) {
 		super();
 		this.inquiryId = inquiryId;
 		this.inquiryDate = inquiryDate;
@@ -60,8 +44,13 @@ public class InquiryDTO {
 		OrderDetailsId = orderDetailsId;
 		this.inquiryName = inquiryName;
 		this.inquiryType = inquiryType;
-		this.clientNO = clientNO;
+		this.clientNo = clientNo;
+		this.productId = productId;
+		this.optionNo = optionNo;
 	}
+
+	
+
 	
 	
 }
