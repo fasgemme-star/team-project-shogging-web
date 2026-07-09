@@ -121,8 +121,9 @@ private static ProductDetailDAO pdDAO;
 
 	        StringBuilder sql = new StringBuilder();
 
-	        sql.append(" SELECT * ");
-	        sql.append(" FROM PRODUCT_IMAGE ");
+	        sql.append(" SELECT pi.*, p.DISCRIPTION ");
+	        sql.append(" FROM PRODUCT_IMAGE pi ");
+	        sql.append(" INNER JOIN PRODUCT p ON p.PRODUCT_ID=pi.PRODUCT_ID  ");
 	        sql.append(" WHERE IMAGE_TYPE IN ('DETAIL','CONTENT') ");
 	        sql.append(" AND PRODUCT_ID = ( ");
 	        sql.append("     SELECT PRODUCT_ID ");
@@ -143,6 +144,7 @@ private static ProductDetailDAO pdDAO;
 	        	pDTO.setUrl(rs.getString("URL"));
 	        	pDTO.setImageType(rs.getString("IMAGE_TYPE"));
 	        	pDTO.setOptionNo(rs.getString("OPTION_ID"));
+	        	pDTO.setDescription(rs.getString("DISCRIPTION"));
 
 	        }
 
