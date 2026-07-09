@@ -33,20 +33,43 @@ public class ProductDTO {
 	private String url;          
 	private String imageType;
 	private String optionNo;
+	private String info;
 	public ProductDTO() {
 		super();
 	}
-	@Override
-	public String toString() {
-		return "ProductDTO [prdID=" + prdID + ", prdName=" + prdName + ", optionName=" + optionName + ", shortInfo="
-				+ shortInfo + ", prdType=" + prdType + ", price=" + price + ", notification=" + notification
-				+ ", description=" + description + ", discount=" + discount + ", manufacturer=" + manufacturer
-				+ ", storageType=" + storageType + ", origin=" + origin + ", underagePurchase=" + underagePurchase
-				+ ", weight=" + weight + ", expirationDate=" + expirationDate + ", unit=" + unit + ", minPurchase="
-				+ minPurchase + ", maxPurchase=" + maxPurchase + ", productInputDate=" + productInputDate
-				+ ", categoryName=" + categoryName + ", img=" + img + ", url=" + url + ", imageType=" + imageType
-				+ ", optionNo=" + optionNo + "]";
+	public ProductDTO(String prdID, String prdName, String optionName, String shortInfo, String prdType, int price,
+			String notification, String description, int discount, String manufacturer, String storageType,
+			String origin, String underagePurchase, int weight, Date expirationDate, String unit, int minPurchase,
+			int maxPurchase, Date productInputDate, String categoryName, String img, String url, String imageType,
+			String optionNo, String info) {
+		super();
+		this.prdID = prdID;
+		this.prdName = prdName;
+		this.optionName = optionName;
+		this.shortInfo = shortInfo;
+		this.prdType = prdType;
+		this.price = price;
+		this.notification = notification;
+		this.description = description;
+		this.discount = discount;
+		this.manufacturer = manufacturer;
+		this.storageType = storageType;
+		this.origin = origin;
+		this.underagePurchase = underagePurchase;
+		this.weight = weight;
+		this.expirationDate = expirationDate;
+		this.unit = unit;
+		this.minPurchase = minPurchase;
+		this.maxPurchase = maxPurchase;
+		this.productInputDate = productInputDate;
+		this.categoryName = categoryName;
+		this.img = img;
+		this.url = url;
+		this.imageType = imageType;
+		this.optionNo = optionNo;
+		this.info = info;
 	}
+	
 	
 	
 	

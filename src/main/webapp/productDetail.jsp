@@ -119,7 +119,9 @@ request.setAttribute("product2", product2);
       <div class="tab-content-detail" id="tab-info">
         <div class="max-w-3xl mx-auto text-center">
           <h3 class="text-headline-md font-headline-md text-on-surface mb-6">${product.prdName}, 이렇게 좋아요</h3><br>
-			<p class="text-body-md text-on-surface-variant leading-relaxed mb-12">${product2.description}</p><br>
+          <h3 class="text-headline-md font-headline-md text-on-surface mb-6">${product2.description}</h3><br>
+          <h3 class="text-headline-md font-headline-md text-on-surface mb-6">${product2.info}</h3><br>
+			<%-- <p class="text-body-md text-on-surface-variant leading-relaxed mb-12">${product2.description}</p><br> --%>
 			
           <img class="w-full aspect-square object-cover rounded-2xl bg-surface-container"
            src="${pageContext.request.contextPath}/${product.prdID}_c.png" alt="${product.prdName}"

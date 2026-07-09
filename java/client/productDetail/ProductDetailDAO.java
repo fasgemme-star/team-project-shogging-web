@@ -121,11 +121,14 @@ private static ProductDetailDAO pdDAO;
 
 	        StringBuilder sql = new StringBuilder();
 
-	        sql.append(" SELECT pi.PRODUCT_IMG_ID, pi.URL, pi.IMAGE_TYPE, po.OPTION_ID, p.DESCRIPTION ");
+	        sql.append(" SELECT po.OPTION_ID, p.DESCRIPTION, ");
+	        sql.append("        (SELECT LISTAGG(ai.INFO_CONTENT, '<br>') WITHIN GROUP(ORDER BY ai.ADDITIONAL_ID) ");
+	        sql.append("         FROM ADDITIONAL_INFO ai WHERE ai.PRODUCT_ID = p.PRODUCT_ID) AS INFO_CONTENT, ");
+	        sql.append("        (SELECT MAX(pi.PRODUCT_IMG_ID) FROM PRODUCT_IMAGE pi WHERE pi.PRODUCT_ID = p.PRODUCT_ID AND pi.IMAGE_TYPE IN ('DETAIL', 'CONTENT')) AS PRODUCT_IMG_ID, ");
+	        sql.append("        (SELECT MAX(pi.URL) FROM PRODUCT_IMAGE pi WHERE pi.PRODUCT_ID = p.PRODUCT_ID AND pi.IMAGE_TYPE IN ('DETAIL', 'CONTENT')) AS URL, ");
+	        sql.append("        (SELECT MAX(pi.IMAGE_TYPE) FROM PRODUCT_IMAGE pi WHERE pi.PRODUCT_ID = p.PRODUCT_ID AND pi.IMAGE_TYPE IN ('DETAIL', 'CONTENT')) AS IMAGE_TYPE ");
 	        sql.append(" FROM PRODUCT p ");
 	        sql.append(" INNER JOIN PRODUCT_OPTION po ON p.PRODUCT_ID = po.PRODUCT_ID ");
-	        sql.append(" LEFT OUTER JOIN PRODUCT_IMAGE pi ON p.PRODUCT_ID = pi.PRODUCT_ID ");
-	        sql.append(" AND pi.IMAGE_TYPE IN ('DETAIL', 'CONTENT') "); 
 	        sql.append(" WHERE po.OPTION_ID = ? ");
 
 	        pstmt = con.prepareStatement(sql.toString());
@@ -137,6 +140,7 @@ private static ProductDetailDAO pdDAO;
 
 	        	pDTO = new ProductDTO();
 
+	        	pDTO.setInfo(rs.getString("INFO_CONTENT"));
 	        	pDTO.setImg(rs.getString("PRODUCT_IMG_ID"));
 	        	pDTO.setUrl(rs.getString("URL"));
 	        	pDTO.setImageType(rs.getString("IMAGE_TYPE"));
