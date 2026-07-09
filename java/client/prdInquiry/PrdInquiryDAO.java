@@ -31,6 +31,8 @@ public class PrdInquiryDAO {
 	//상품별 문의 목록 조회
 	public List<InquiryDTO> selectInquiryList(String clientNo) {
 		
+		
+		
 		List<InquiryDTO> list = new ArrayList<>();
 
 		DbConnection dbcon = DbConnection.getInstance();
@@ -47,17 +49,19 @@ public class PrdInquiryDAO {
             StringBuilder sql = new StringBuilder();
 
 
-            sql.append(" SELECT i.INQUIRY_ID, i.INQUIRY_DATE , i.INQUIRY_TITLE, i.INQUIRY_CONTENT,i.ANSWER_STATUS ");
+            sql.append(" SELECT i.INQUIRY_ID, i.INQUIRY_DATE, i.INQUIRY_TITLE, i.INQUIRY_CONTENT, i.ANSWER_STATUS ");
             sql.append(" FROM INQUIRY i ");
-//            sql.append(" INNER JOIN  ORDER_DETAILS od ON od.ORDER_DETAILS_ID=i.ORDER_DETAILS_ID ");
-//            sql.append(" INNER JOIN  PRODUCT_OPTION po ON po.OPTION_ID=od.OPTION_ID ");
-            sql.append(" WHERE i.INQUIRY_CODE='TYP000003' AND i.CLIENT_NO=? ");
+//            sql.append(" LEFT JOIN ORDERS o ON o.CLIENT_NO = i.CLIENT_NO ");
+//            sql.append(" LEFT JOIN ORDER_DETAILS od ON od.ORDER_ID = o.ORDER_ID ");
+//            sql.append(" LEFT JOIN PRODUCT_OPTION po ON po.OPTION_ID = od.OPTION_ID  ");
+            sql.append(" WHERE i.INQUIRY_CODE = 'TYP000003' AND i.CLIENT_NO = ? ");
             sql.append(" ORDER BY i.INQUIRY_DATE DESC ");
 
 
             pstmt = con.prepareStatement(sql.toString());
             
             pstmt.setString(1, clientNo);
+//            pstmt.setString(2, optionNo);
 
             rs = pstmt.executeQuery();
 

@@ -39,7 +39,8 @@
 
     // ---- 1:1 문의 내역 (InquiryService) ----
     /* List<InquiryDTO> inquiryList = mpInquiryService.getInquiryList(clientNo); */
-    java.util.List<InquiryDTO> prdInquiryList = (clientNo == null)
+    String optionNo=request.getParameter("optionNo");
+    java.util.List<InquiryDTO> prdInquiryList = (clientNo == null )
             ? new java.util.ArrayList<InquiryDTO>()
             : pdInquiryService.getInquiryList(clientNo);
     

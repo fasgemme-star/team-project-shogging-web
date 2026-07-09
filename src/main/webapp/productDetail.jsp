@@ -20,9 +20,12 @@
 
     // ---- 상품 문의 목록 (PrdInquiryService) ----
     String clientNo = (String) session.getAttribute("clientNo");
-    java.util.List<InquiryDTO> prdInquiryList = (clientNo == null)
-            ? new java.util.ArrayList<InquiryDTO>()
-            : pdInquiryService.getInquiryList(clientNo);
+
+
+	java.util.List<InquiryDTO> prdInquiryList = (clientNo == null )
+	? new java.util.ArrayList<InquiryDTO>()
+	: pdInquiryService.getInquiryList(clientNo);
+
     
 
     
