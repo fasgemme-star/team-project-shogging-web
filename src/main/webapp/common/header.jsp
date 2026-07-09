@@ -1,6 +1,54 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
+<%@ page import="dbcon.DbConnection" %>
+<%@ page import="dbcon.Path" %>
+<%
+    // ---- 사이드바 카테고리 목록 DB 연동 ----
+    // 새 자바 클래스 없이, header.jsp 안에서 직접 CATEGORY 테이블을 조회해 카테고리명 리스트만 뽑는다.
+    // ※ 컬럼명(CATEGORY_NAME)이 실제 테이블과 다르면 아래 SQL과 rs.getString(...) 부분만 맞춰서 수정하면 됨.
+    List<String> sideCategoryList = new ArrayList<String>();
+    DbConnection headerDbcon = DbConnection.getInstance();
+
+    Connection headerCon = null;
+    PreparedStatement headerPstmt = null;
+    ResultSet headerRs = null;
+
+    try {
+        headerCon = headerDbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+
+        String sideCategorySql = " SELECT CATEGORY_NAME "
+                                + " FROM CATEGORY "
+                                + " ORDER BY CATEGORY_ID ";
+
+        headerPstmt = headerCon.prepareStatement(sideCategorySql);
+        headerRs = headerPstmt.executeQuery();
+
+        while (headerRs.next()) {
+            sideCategoryList.add(headerRs.getString("CATEGORY_NAME"));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            headerDbcon.dbClose(headerRs, headerPstmt, headerCon);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    request.setAttribute("sideCategoryList", sideCategoryList);
+
+    // 카테고리별로 순서대로 돌려쓸 아이콘 (CATEGORY 테이블에 아이콘 컬럼이 없으므로 고정 배열을 순환)
+    String[] sideCategoryIcons = { "eco", "psychology_alt", "egg_alt", "local_florist", "nutrition", "spa" };
+    request.setAttribute("sideCategoryIcons", sideCategoryIcons);
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -93,24 +141,19 @@
       <p class="text-body-sm text-on-surface-variant">신선한 채소를 만나보세요</p>
     </div>
     <div class="flex flex-col gap-1">
-      <a class="category-btn flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-transform hover:translate-x-1" href="${pageContext.request.contextPath}/category.jsp?category=잎채소">
-        <span class="material-symbols-outlined">eco</span> 잎채소
-      </a>
-      <a class="category-btn flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-transform hover:translate-x-1" href="${pageContext.request.contextPath}/category.jsp?category=뿌리채소">
-        <span class="material-symbols-outlined">psychology_alt</span> 뿌리채소
-      </a>
-      <a class="category-btn flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-transform hover:translate-x-1" href="${pageContext.request.contextPath}/category.jsp?category=열매채소">
-        <span class="material-symbols-outlined">egg_alt</span> 열매채소
-      </a>
-      <a class="category-btn flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-transform hover:translate-x-1" href="${pageContext.request.contextPath}/category.jsp?category=버섯류">
-        <span class="material-symbols-outlined">nature</span> 버섯류
-      </a>
-      <a class="category-btn flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-transform hover:translate-x-1" href="${pageContext.request.contextPath}/category.jsp?category=나물류">
-        <span class="material-symbols-outlined">grass</span> 나물류
-      </a>
-      <a class="category-btn flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-transform hover:translate-x-1" href="${pageContext.request.contextPath}/category.jsp?category=특수채소">
-        <span class="material-symbols-outlined">compost</span> 특수채소
-      </a>
+      <c:choose>
+        <c:when test="${empty sideCategoryList}">
+          <p class="text-body-sm text-on-surface-variant px-2 py-4">등록된 카테고리가 없습니다.</p>
+        </c:when>
+        <c:otherwise>
+          <c:forEach var="cat" items="${sideCategoryList}" varStatus="status">
+            <a class="category-btn flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container rounded-lg transition-transform hover:translate-x-1"
+               href="${pageContext.request.contextPath}/category.jsp?category=${cat}">
+              <span class="material-symbols-outlined">${sideCategoryIcons[status.index % fn:length(sideCategoryIcons)]}</span> ${cat}
+            </a>
+          </c:forEach>
+        </c:otherwise>
+      </c:choose>
     </div>
   </div>
   <button class="absolute top-4 right-4 material-symbols-outlined" onclick="toggleSidebar()">close</button>
