@@ -111,6 +111,28 @@ public class CartDAO {
 		} // end finally
 		return cnt;
 	}// clearCart
+
+	// 주문 완료 후 장바구니 전체 비우기 (품절상품 조건 없이 회원의 장바구니를 전부 삭제)
+	// 주의: deleteCartAll()은 이름과 달리 option_id가 있어야만(그것도 품절상품만) 지워지는 메소드라
+	// 결제 완료 후 장바구니를 비우는 용도로는 쓸 수 없어서 별도로 추가함.
+	public int deleteCartByClient(String clientNo) throws SQLException {
+		DbConnection dbcon = DbConnection.getInstance();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int cnt = 0;
+		String query = "delete from shopping_cart where client_no = ?";
+		try {
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+			pstmt = con.prepareStatement(query);
+
+			pstmt.setString(1, clientNo);
+			cnt = pstmt.executeUpdate();
+
+		} finally {
+			dbcon.dbClose(null, pstmt, con);
+		}
+		return cnt;
+	}// deleteCartByClient
 	
 	public List<OrderDTO> selectCart(String id) throws SQLException{
 		List<OrderDTO> oList = new ArrayList<OrderDTO>();
@@ -122,7 +144,9 @@ public class CartDAO {
 		
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
-			String query = "	select option_name, price, discount, quantity  from shopping_cart sc join product_option po on sc.OPTION_ID=po.OPTION_ID where STOCKQUANTITY != 0 and client_no = ?	";
+			// 주의: option_id 를 SELECT 하지 않으면 주문 생성(order_details insert) 시 어떤 옵션을
+			// 주문했는지 알 수 없어서 결제하기가 실제 주문으로 이어지지 못한다. (option_id 추가로 수정)
+			String query = "	select po.OPTION_ID, option_name, price, discount, quantity  from shopping_cart sc join product_option po on sc.OPTION_ID=po.OPTION_ID where STOCKQUANTITY != 0 and client_no = ?	";
 			
 			pstmt = con.prepareStatement(query);
 			pstmt.setString(1, id);
@@ -131,6 +155,7 @@ public class CartDAO {
 			
 			while (rs.next()) {
 				oDTO = new OrderDTO();
+				oDTO.setOptionId(rs.getString("OPTION_ID"));
 				oDTO.setPrdName(rs.getString("option_name"));
 				oDTO.setPrice(rs.getInt("price"));
 				oDTO.setDiscount(rs.getInt("discount"));

@@ -1,6 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="client.cart.CartDTO" %>
+<%@ page import="java.util.List" %>
+<%@ page import="client.cart.OrderDTO" %>
 <jsp:useBean id="cartService" class="client.cart.CartService" scope="page"/>
+<jsp:useBean id="orderService" class="client.order.OrderService" scope="page"/>
 <%
     String clientNo = (String) session.getAttribute("clientNo");
     if (clientNo == null) {
@@ -13,15 +15,36 @@
         return;
     }
 
-    // ---- CartService 메소드 연결 ----
-    // 주의: client.order.OrderService 의 processPayment/getOrder 등은 아직 내용이 비어있어서(구현체 없음)
-    // 실제 결제 연동이나 주문(ORDERS) 테이블 등록은 여기서 할 수 없다.
-    // 또한 CartService.clearCart()는 이름과 달리 clientNo+prdID 두 조건이 다 있어야 지워지는데,
-    // CartService.getCartList()가 돌려주는 목록에는 prdID(option_id)가 채워지지 않아
-    // 지금은 장바구니가 실제로는 비워지지 않을 수 있다. (CartDAO.selectCart() SQL에 option_id 컬럼 추가 필요)
-    CartDTO cartDTO = new CartDTO();
-    cartDTO.setClientNo(clientNo);
-    cartService.clearCart(cartDTO);
+    // ---- 장바구니 항목 재조회 + 결제 금액 재계산 (checkout.jsp와 동일한 방식, 위·변조 방지를 위해 서버에서 다시 계산) ----
+    List<OrderDTO> cartList = cartService.getCartList(clientNo);
+
+    if (cartList == null || cartList.isEmpty()) {
+        session.setAttribute("toastMsg", "장바구니가 비어 있습니다.");
+        response.sendRedirect(request.getContextPath() + "/cart.jsp");
+        return;
+    }
+
+    int subtotal = 0;
+    for (OrderDTO item : cartList) {
+        int unitPrice = item.getDiscount() > 0
+                ? item.getPrice() * (100 - item.getDiscount()) / 100
+                : item.getPrice();
+        subtotal += unitPrice * item.getQuantity();
+    }
+    int deliveryFee = subtotal >= 30000 ? 0 : 3000;
+    int total = subtotal + deliveryFee;
+
+    // ---- OrderService: 실제 주문(ORDERS/ORDER_DETAILS) 생성 ----
+    String orderId = orderService.placeOrder(clientNo, total, cartList);
+
+    if (orderId == null) {
+        session.setAttribute("toastMsg", "주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+        response.sendRedirect(request.getContextPath() + "/cart.jsp");
+        return;
+    }
+
+    // ---- 주문이 정상 생성된 경우에만 장바구니 비우기 ----
+    cartService.clearAllCart(clientNo);
 
     session.setAttribute("toastMsg", "주문이 완료되었습니다!");
     response.sendRedirect(request.getContextPath() + "/orderSuccess.jsp");

@@ -39,9 +39,14 @@ public class DeliveryChgDAO {
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			
-			String sql="SELECT DELIVERY_POSTCODE,DELIVERY_ADDR,FIRST_DESTINATION "
+			// 주의: 기존 쿼리는 DELIVERY_ID, RECIPIENT, RECIPIENT_PHONE 을 SELECT 하지 않아서
+			// DTO의 deliveryID/recipient/recipientPhone 이 항상 null 이었고,
+			// 그 결과 myPage.jsp의 삭제 폼(hidden name="deliveryId")에 빈 값이 들어가
+			// deliveryDelete.jsp에서 항상 "삭제 실패" 처리가 되던 문제가 있었다. (컬럼 추가로 수정)
+			String sql="SELECT DELIVERY_ID, DELIVERY_POSTCODE, DELIVERY_ADDR, RECIPIENT, RECIPIENT_PHONE, FIRST_DESTINATION "
 					+ "FROM DELIVERY_DESTINATION "
-					+ "WHERE CLIENT_NO=?";
+					+ "WHERE CLIENT_NO=? "
+					+ "ORDER BY FIRST_DESTINATION DESC, DELIVERY_ID DESC";
 			
 			pstmt=con.prepareStatement(sql);
 			
@@ -51,8 +56,11 @@ public class DeliveryChgDAO {
 			
 			while(rs.next()) {
 				DeliveryDTO dDTO=new DeliveryDTO();
+				dDTO.setDeliveryID(rs.getString("DELIVERY_ID"));
 				dDTO.setDeliveryPost(rs.getString("DELIVERY_POSTCODE"));
 				dDTO.setDeliveryAddr(rs.getString("DELIVERY_ADDR"));
+				dDTO.setRecipient(rs.getString("RECIPIENT"));
+				dDTO.setRecipientPhone(rs.getString("RECIPIENT_PHONE"));
 				dDTO.setFirstDestination("Y".equals(rs.getString("FIRST_DESTINATION")));
 				
 				list.add(dDTO);

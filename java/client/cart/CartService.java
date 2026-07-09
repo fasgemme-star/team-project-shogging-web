@@ -74,6 +74,17 @@ public class CartService {
 		return result;
 	}// deleteCart
 
+	// 결제 완료 후 장바구니 전체 비우기
+	public int clearAllCart(String clientNo) {
+		int result = 0;
+		try {
+			result = cDAO.deleteCartByClient(clientNo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}// clearAllCart
+
 
 	public List<DeliveryDTO> getDelivery(String clientNo) {
 		List<DeliveryDTO> dList = new ArrayList<DeliveryDTO>();

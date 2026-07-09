@@ -44,7 +44,7 @@
   <div class="flex flex-col md:flex-row gap-gutter-md">
     <div class="flex-1">
       <img class="w-full aspect-square object-cover rounded-2xl bg-surface-container"
-           src="${product.url}" alt="${product.prdName}"
+           src="${pageContext.request.contextPath}/${product.prdID}_t.png" alt="${product.prdName}"
            onerror="this.src='${pageContext.request.contextPath}/images/imgbanner1.png'"/>
     </div>
     <div class="flex-1 py-4">

@@ -118,65 +118,92 @@ public class OrderDAO {
 	// 주문서 페이지
 	//-----------
 	// 결제 버튼
-	
-	public int insertOrder(OrderDTO oDTO) throws SQLException {
+	/**
+	 * 실제 주문 생성: ORDERS 1건 + ORDER_DETAILS N건(장바구니 항목 수만큼) INSERT.
+	 * 주의: 기존 코드는
+	 *   1) insert문 컬럼 5개(order_id, order_date, total_amount, order_status, client_no)에 값이 4개뿐이라 실행 시 SQL 오류가 나고,
+	 *   2) 존재하지 않는 컬럼명(ORDER_STATUS, 실제로는 DELIVERY_STATUS)을 사용했으며,
+	 *   3) ORDER_DETAILS(주문 상세/품목)는 아예 INSERT하지 않아서
+	 *   결제를 눌러도 실제 주문이 저장되지 않고(마이페이지 주문내역에 절대 나타나지 않음) 있었다.
+	 * @return 생성된 order_id (실패 시 null)
+	 */
+	public String insertOrder(String clientNo, int totalAmount, List<client.cart.OrderDTO> items) throws SQLException {
 		DbConnection dbcon = DbConnection.getInstance();
 		Connection con = null;
 		PreparedStatement pstmtMaxId = null;
-		PreparedStatement pstmtPayment = null;
 		PreparedStatement pstmtOrder = null;
+		PreparedStatement pstmtDetail = null;
 		ResultSet rs = null;
-		int result = 0;
-		String queryMaxID = "SELECT MAX(order_ID) FROM orders";
-		String queryPayment = "	insert into payment(paymentid, order_id, payment_type, payment_date) values(?, ?, ?, ?)	";
-		String queryOrder = "	insert into orders(order_id, ORDER_DATE, TOTAL_AMOUNT, ORDER_STATUS, CLIENT_NO) values(?, ?, ?, ?)	";
+		String queryMaxID = "SELECT MAX(order_id) FROM orders";
+		String queryOrder = "INSERT INTO orders(order_id, order_date, total_amount, delivery_status, client_no) VALUES (?, SYSDATE, ?, ?, ?)";
+		String queryDetail = "INSERT INTO order_details(order_id, option_id, quantity) VALUES (?, ?, ?)";
+		String nextOrderId = null;
+
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 			con.setAutoCommit(false);
-			
-			String orderID = null;
+
+			String maxId = null;
 			pstmtMaxId = con.prepareStatement(queryMaxID);
 			rs = pstmtMaxId.executeQuery();
 			if (rs.next()) {
-				orderID = rs.getString(1);
+				maxId = rs.getString(1);
 			}
-			
-			String next = "O000001";
-			if (orderID != null && orderID.startsWith("O")) {
+
+			nextOrderId = "O000001";
+			if (maxId != null && maxId.startsWith("O")) {
 				try {
-					int num = Integer.parseInt(orderID.substring(1));
+					int num = Integer.parseInt(maxId.substring(1));
 					num++;
-					next = String.format("O%06d", num);
+					nextOrderId = String.format("O%06d", num);
 				} catch (NumberFormatException e) {
-					next = oDTO.getPrdID(); 
+					nextOrderId = "O000001";
 				}
 			}
 
 			pstmtOrder = con.prepareStatement(queryOrder);
-			pstmtOrder.setString(1, oDTO.getOrderID());
-			pstmtOrder.setString(2, oDTO.getOrderDate());
-			pstmtOrder.setInt(3, oDTO.getTotalAmount());
-			pstmtOrder.setString(4, oDTO.getOrderStatus());
-			pstmtOrder.setString(4, oDTO.getClientID());
-			
-			result += pstmtOrder.executeUpdate();
-			
-			pstmtPayment = con.prepareStatement(queryPayment);
-			pstmtPayment.setString(1, oDTO.getPaymentKey());
-			pstmtPayment.setString(2, oDTO.getOrderID());
-			pstmtPayment.setString(3, oDTO.getPaymentType());
-			pstmtPayment.setString(4, oDTO.getPaymentDate());
-			
-			result += pstmtPayment.executeUpdate();
+			pstmtOrder.setString(1, nextOrderId);
+			pstmtOrder.setInt(2, totalAmount);
+			pstmtOrder.setString(3, "결제완료");
+			pstmtOrder.setString(4, clientNo);
+			pstmtOrder.executeUpdate();
 
-			
+			if (items != null && !items.isEmpty()) {
+				pstmtDetail = con.prepareStatement(queryDetail);
+				for (client.cart.OrderDTO item : items) {
+					pstmtDetail.setString(1, nextOrderId);
+					pstmtDetail.setString(2, item.getOptionId());
+					pstmtDetail.setInt(3, item.getQuantity());
+					pstmtDetail.addBatch();
+				}
+				pstmtDetail.executeBatch();
+			}
+
+			con.commit();
+
+		} catch (SQLException e) {
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
+			}
+			throw e;
 		} finally {
+			if (con != null) {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException e) {
+					// ignore
+				}
+			}
 			dbcon.dbClose(rs, pstmtMaxId, null);
 			dbcon.dbClose(null, pstmtOrder, null);
-			dbcon.dbClose(null, pstmtPayment, con);
-		} 
-		
-		return result;
-	}// insertPayment
+			dbcon.dbClose(null, pstmtDetail, con);
+		}
+
+		return nextOrderId;
+	}// insertOrder
 	
 }

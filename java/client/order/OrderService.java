@@ -51,17 +51,17 @@ public class OrderService {
 	}// calculateTotalPrice
 
 	/**
-	 * @param oDTO
-	 * @return 2 일때만 성공
+	 * 결제하기: 장바구니 항목들을 실제 ORDERS/ORDER_DETAILS 로 저장한다.
+	 * 주의: 기존 processPayment(OrderDTO)는 존재하지 않는 컬럼/틀린 파라미터 개수로 항상 SQL 오류가 났고
+	 * ORDER_DETAILS(주문 품목)는 저장하지도 않아서, 결제를 눌러도 마이페이지 주문내역에 절대 나타나지 않았다.
+	 * @return 생성된 order_id (실패 시 null)
 	 */
-	public int processPayment(OrderDTO oDTO) {
-		int cnt = 0;
+	public String placeOrder(String clientNo, int totalAmount, List<client.cart.OrderDTO> items) {
 		try {
-			cnt += oDAO.insertOrder(oDTO);
+			return oDAO.insertOrder(clientNo, totalAmount, items);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
-	    return cnt;
-	}// processPayment
+	}// placeOrder
 }
