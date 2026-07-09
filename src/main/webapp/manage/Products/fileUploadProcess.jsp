@@ -9,6 +9,8 @@ request.setCharacterEncoding("UTF-8");
 String savePath = application.getRealPath("/manage/uploadImgs");
 File saveDir = new File(savePath);
 
+//File saveDir=new File("C:/dev/images");
+
 if (!saveDir.exists()) {
 	saveDir.mkdirs();
 }
