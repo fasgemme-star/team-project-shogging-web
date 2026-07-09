@@ -33,8 +33,8 @@ public class AddProductDAO {
 		ResultSet rs = null;
 		int cnt = 0;
 		String queryMaxID = "SELECT MAX(PRODUCT_ID) FROM product";
-		String queryProduct = "INSERT INTO product(PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, DESCRIPTION, MIN_PURCHASE, MAX_PURCHASE, MANUFACTURER, ORIGIN, UNDERAGE_PURCHASE, EXPIRATION_DATE, STORAGE_TYPE, UNIT, NOTICE) "
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String queryProduct = "INSERT INTO product(PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, DESCRIPTION, MIN_PURCHASE, MAX_PURCHASE, MANUFACTURER, ORIGIN, UNDERAGE_PURCHASE, EXPIRATION_DATE, STORAGE_TYPE, UNIT, NOTICE, shortInfo) "
+				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		String queryProductOption = "insert into product_option(option_name, PRICE, DISCOUNT, WEIGHT, stockquantity,product_id) values(?, ?, ?, ?, ?, ?)";
 		String queryImg = "insert into PRODUCT_IMAGE(IMAGE_TYPE, URL, PRODUCT_ID) values(?,?,?)";
 		try {
@@ -75,6 +75,7 @@ public class AddProductDAO {
 			pstmtProduct.setString(11, pDTO.getStorageType());
 			pstmtProduct.setString(12, pDTO.getSalesUnit());
 			pstmtProduct.setString(13, pDTO.getNotice());
+			pstmtProduct.setString(14, pDTO.getShortInfo());
 
 			cnt += pstmtProduct.executeUpdate();
 			

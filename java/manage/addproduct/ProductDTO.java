@@ -31,6 +31,7 @@ public class ProductDTO {
 	private String additionalInfo;
 	private String notice;
 	private String prdType;
+	private String shortInfo;
 	
 
 }
