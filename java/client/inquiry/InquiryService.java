@@ -17,4 +17,8 @@ public class InquiryService {
 	public InquiryDTO getInquiryDetail(String inquiryId) {
 		return iqDAO.selectDetail(inquiryId);
 	}
+	//문의 내역 삭제
+	public boolean deleteInquiry(String inquiryId, String clientNo) {
+		return iqDAO.deleteInquiry(inquiryId, clientNo) > 0;
+	}
 }

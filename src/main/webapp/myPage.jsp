@@ -115,7 +115,13 @@
                     <p class="font-bold mt-2">${o.prdName}</p>
                     <p class="text-on-surface-variant text-body-sm">주문번호: ${o.orderID}</p>
                   </div>
-                  <p class="font-bold text-headline-sm text-primary"><fmt:formatNumber value="${unitPrice}" type="number"/>원</p>
+                  <div class="flex items-center gap-4">
+                    <p class="font-bold text-headline-sm text-primary"><fmt:formatNumber value="${unitPrice}" type="number"/>원</p>
+                    <form method="post" action="orderDelete.jsp" onsubmit="return confirm('이 주문 내역을 삭제할까요?');">
+                      <input type="hidden" name="orderId" value="${o.orderID}"/>
+                      <button type="submit" class="text-error text-body-sm hover:underline">삭제</button>
+                    </form>
+                  </div>
                 </div>
               </c:forEach>
             </div>
@@ -199,7 +205,13 @@
                     <p class="font-bold">${iq.inquiryTitle}</p>
                     <p class="text-on-surface-variant text-body-sm mt-1"><fmt:formatDate value="${iq.inquiryDate}" pattern="yyyy.MM.dd"/></p>
                   </div>
-                  <span class="px-3 py-1 rounded-full text-body-sm ${iq.answerStatus == '답변완료' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}">${iq.answerStatus}</span>
+                  <div class="flex items-center gap-4">
+                    <span class="px-3 py-1 rounded-full text-body-sm ${iq.answerStatus == '답변완료' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}">${iq.answerStatus}</span>
+                    <form method="post" action="inquiryDelete.jsp" onsubmit="return confirm('이 문의 내역을 삭제할까요?');">
+                      <input type="hidden" name="inquiryId" value="${iq.inquiryId}"/>
+                      <button type="submit" class="text-error text-body-sm hover:underline">삭제</button>
+                    </form>
+                  </div>
                 </div>
               </c:forEach>
             </div>

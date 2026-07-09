@@ -100,7 +100,78 @@ public class OrderCheckDAO {
 	    return oList;
 	}// selectOrderChkList
 
+	// 주문 내역 삭제 (본인 주문만 삭제 가능하도록 client_no로 소유자 확인)
+	public int deleteOrderChk(String orderId, String clientNo) throws SQLException {
+		DbConnection dbcon = DbConnection.getInstance();
+		Connection con = null;
+		PreparedStatement pstmtCheck = null;
+		PreparedStatement pstmtClaim = null;
+		PreparedStatement pstmtInquiry = null;
+		PreparedStatement pstmtDetail = null;
+		PreparedStatement pstmtOrder = null;
+		ResultSet rs = null;
+		int cnt = 0;
 
-	
+		try {
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+			con.setAutoCommit(false);
+
+			// 본인 주문이 맞는지 먼저 확인
+			pstmtCheck = con.prepareStatement("SELECT order_id FROM orders WHERE order_id = ? AND client_no = ?");
+			pstmtCheck.setString(1, orderId);
+			pstmtCheck.setString(2, clientNo);
+			rs = pstmtCheck.executeQuery();
+
+			if (rs.next()) {
+				// FK_ORDER_DETAILS_TO_CLAIM: claim이 order_details를 참조하므로 claim부터 삭제
+				pstmtClaim = con.prepareStatement(
+						"DELETE FROM claim WHERE order_details_id IN (SELECT order_details_id FROM order_details WHERE order_id = ?)");
+				pstmtClaim.setString(1, orderId);
+				pstmtClaim.executeUpdate();
+
+				// INQUIRY도 order_details_id를 참조할 수 있어(교환/반품 문의 등) 미리 정리
+				pstmtInquiry = con.prepareStatement(
+						"DELETE FROM inquiry WHERE order_details_id IN (SELECT order_details_id FROM order_details WHERE order_id = ?)");
+				pstmtInquiry.setString(1, orderId);
+				pstmtInquiry.executeUpdate();
+
+				// 자식 테이블(order_details) 삭제 후 orders 삭제
+				pstmtDetail = con.prepareStatement("DELETE FROM order_details WHERE order_id = ?");
+				pstmtDetail.setString(1, orderId);
+				pstmtDetail.executeUpdate();
+
+				pstmtOrder = con.prepareStatement("DELETE FROM orders WHERE order_id = ? AND client_no = ?");
+				pstmtOrder.setString(1, orderId);
+				pstmtOrder.setString(2, clientNo);
+				cnt = pstmtOrder.executeUpdate();
+			}
+
+			con.commit();
+		} catch (SQLException e) {
+			if (con != null) {
+				try {
+					con.rollback();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
+			}
+			throw e;
+		} finally {
+			if (con != null) {
+				try {
+					con.setAutoCommit(true);
+				} catch (SQLException e) {
+					// ignore
+				}
+			}
+			dbcon.dbClose(rs, pstmtCheck, null);
+			dbcon.dbClose(null, pstmtClaim, null);
+			dbcon.dbClose(null, pstmtInquiry, null);
+			dbcon.dbClose(null, pstmtDetail, null);
+			dbcon.dbClose(null, pstmtOrder, con);
+		}
+
+		return cnt;
+	}// deleteOrderChk
 
 }

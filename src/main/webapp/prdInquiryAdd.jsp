@@ -20,9 +20,9 @@
     iDTO.setInquiryTitle(request.getParameter("inquiryTitle"));
     iDTO.setInquiryContent(request.getParameter("inquiryContent"));
     iDTO.setInquirySecret("Y".equals(request.getParameter("inquirySecret")) ? "Y" : "N");
+    iDTO.setProductId(request.getParameter("prdID"));
+    iDTO.setClientNo(clientNo);
 
-    // 참고: PrdInquiryDAO.insertInquiry()는 현재 상품/작성자를 저장하지 않는다(제목/비밀글여부/내용만 저장).
-    // 상품별·회원별로 정확히 연결하려면 DAO의 INSERT문에 PRODUCT_ID, CLIENT_NO 컬럼 반영이 추가로 필요하다.
     boolean result = pdInquiryService.registerInquiry(iDTO);
 
     session.setAttribute("toastMsg", result ? "문의가 등록되었습니다." : "문의 등록에 실패했습니다.");

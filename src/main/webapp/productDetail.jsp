@@ -83,14 +83,22 @@
         </div>
       </div>
 
-      <form method="post" action="cartAdd.jsp">
-        <input type="hidden" name="optionNo" value="${optionNo}"/>
-        <input type="hidden" name="quantity" value="${quantity}"/>
-        <input type="hidden" name="redirectTo" value="cart.jsp"/>
-        <div class="flex gap-4">
-          <button class="flex-1 bg-primary text-on-primary py-4 rounded-lg font-bold text-body-lg" type="submit">장바구니 담기</button>
-        </div>
-      </form>
+      <div class="flex gap-4">
+        <form method="post" action="cartAdd.jsp" class="flex-1">
+          <input type="hidden" name="optionNo" value="${optionNo}"/>
+          <input type="hidden" name="quantity" value="${quantity}"/>
+          <input type="hidden" name="redirectTo" value="cart.jsp"/>
+          <button class="w-full bg-surface-container-high text-on-surface py-4 rounded-lg font-bold text-body-lg border border-outline-variant" type="submit">장바구니 담기</button>
+        </form>
+        <%-- 바로구매: 장바구니에 담은 뒤 order.jsp로 바로 이동. 이 상품이 담겨 있으므로
+             order.jsp에서 만드는 결제 주문명(orderName)이 이 상품명 기준으로 채워진다. --%>
+        <form method="post" action="cartAdd.jsp" class="flex-1">
+          <input type="hidden" name="optionNo" value="${optionNo}"/>
+          <input type="hidden" name="quantity" value="${quantity}"/>
+          <input type="hidden" name="redirectTo" value="order.jsp"/>
+          <button class="w-full bg-primary text-on-primary py-4 rounded-lg font-bold text-body-lg" type="submit">바로구매</button>
+        </form>
+      </div>
     </div>
   </div>
 
