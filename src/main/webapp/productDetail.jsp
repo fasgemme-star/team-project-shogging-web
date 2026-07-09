@@ -18,15 +18,15 @@
     // ---- ProductDetailService 메소드 연결 ----
     ProductDTO product = (optionNo == null) ? null : pdService.getProductInfo(optionNo);
 
-    // ---- 상품 문의 목록 (PrdInquiryService) ----
+    /* // ---- 상품 문의 목록 (PrdInquiryService) ----
     java.util.List<InquiryDTO> prdInquiryList = (product == null)
             ? new java.util.ArrayList<InquiryDTO>()
-            : pdInquiryService.getInquiryList(product.getPrdID());
+            : pdInquiryService.getInquiryList(product.getOptionNo()); */
 
     request.setAttribute("product", product);
     request.setAttribute("optionNo", optionNo);
     request.setAttribute("quantity", quantity);
-    request.setAttribute("prdInquiryList", prdInquiryList);
+    /* request.setAttribute("prdInquiryList", prdInquiryList); */
 %>
 <%@ include file="common/header.jsp" %>
 
@@ -49,7 +49,7 @@
     </div>
     <div class="flex-1 py-4">
       <span class="text-on-surface-variant text-body-sm mb-2 block">샛별배송</span>
-      <h2 class="text-headline-lg font-headline-lg text-on-surface mb-2">${product.prdName}</h2>
+      <h2 class="text-headline-lg font-headline-lg text-on-surface mb-2">${product.prdName}<br>${product.optionName}</h2>
       <p class="text-body-md text-on-surface-variant mb-6">${product.shortInfo}</p>
 
       <c:set var="unitPrice" value="${product.discount > 0 ? (product.price * (100 - product.discount) / 100) : product.price}"/>
@@ -147,7 +147,7 @@
               </tr>
               <tr class="border-b border-surface-variant">
                 <th class="text-left py-4 text-on-surface-variant font-medium">청소년 구매</th>
-                <td class="py-4">${product.underagePurchase == 1 ? '구매 가능' : '구매 제한'}</td>
+                <td class="py-4">${product.underagePurchase == 'N' ? '구매 가능' : '구매 제한'}</td>
               </tr>
               <tr>
                 <th class="text-left py-4 text-on-surface-variant font-medium align-top">유의사항</th>
@@ -199,7 +199,7 @@
             </c:when>
             <c:otherwise>
               <div class="text-center py-6 text-on-surface-variant">
-                문의를 남기려면 <a class="text-primary font-bold underline" href="login.jsp?redirectTo=productDetail.jsp?optionNo=${optionNo}">로그인</a>이 필요합니다.
+                문의를 남기려면 <a class="text-primary font-bold line" href="login.jsp?redirectTo=productDetail.jsp?optionNo=${optionNo}">로그인</a>이 필요합니다.
               </div>
             </c:otherwise>
           </c:choose>

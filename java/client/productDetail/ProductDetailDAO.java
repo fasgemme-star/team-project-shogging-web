@@ -73,7 +73,7 @@ private static ProductDetailDAO pdDAO;
 	        	pDTO.setShortInfo(rs.getString("SHORTINFO"));
 	        	pDTO.setManufacturer(rs.getString("MANUFACTURER"));
 	        	pDTO.setOrigin(rs.getString("ORIGIN"));
-	        	pDTO.setUnderagePurchase(rs.getInt("UNDERAGE_PURCHASE"));
+	        	pDTO.setUnderagePurchase(rs.getString("UNDERAGE_PURCHASE"));
 	        	pDTO.setUnit(rs.getString("UNIT"));
 	        	pDTO.setMinPurchase(rs.getInt("MIN_PURCHASE"));
 	        	pDTO.setMaxPurchase(rs.getInt("MAX_PURCHASE"));
@@ -86,6 +86,8 @@ private static ProductDetailDAO pdDAO;
 	        	
 
 	        }
+	        
+	        
 
 	    } catch(Exception e) {
 	        e.printStackTrace();
@@ -140,7 +142,7 @@ private static ProductDetailDAO pdDAO;
 	        	pDTO.setImg(rs.getString("PRODUCT_IMG_ID"));
 	        	pDTO.setUrl(rs.getString("URL"));
 	        	pDTO.setImageType(rs.getString("IMAGE_TYPE"));
-	        	pDTO.setOptionNo(rs.getString("PRODUCT_ID"));
+	        	pDTO.setOptionNo(rs.getString("OPTION_ID"));
 
 	        }
 
