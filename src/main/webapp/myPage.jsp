@@ -7,7 +7,8 @@
 <%@ page import="client.signup.ClientDTO" %>
 <jsp:useBean id="orderCheckService" class="client.orderCheck.OrderCheckService" scope="page"/>
 <jsp:useBean id="deliveryChgService" class="client.deliveryChg.DeliveryChgService" scope="page"/>
-<jsp:useBean id="mpInquiryService" class="client.inquiry.InquiryService" scope="page"/>
+<%-- <jsp:useBean id="mpInquiryService" class="client.inquiry.InquiryService" scope="page"/> --%>
+<jsp:useBean id="pdInquiryService" class="client.prdInquiry.PrdInquiryService" scope="page"/>
 <jsp:useBean id="changeClientInfoService" class="client.changeClientInfo.ChangeClientInfoService" scope="page"/>
 <%
     request.setCharacterEncoding("UTF-8");
@@ -37,16 +38,25 @@
     List<DeliveryDTO> deliveryList = deliveryChgService.getDeliveryList(clientNo);
 
     // ---- 1:1 문의 내역 (InquiryService) ----
-    List<InquiryDTO> inquiryList = mpInquiryService.getInquiryList(clientNo);
-
+    /* List<InquiryDTO> inquiryList = mpInquiryService.getInquiryList(clientNo); */
+    java.util.List<InquiryDTO> prdInquiryList = (clientNo == null)
+            ? new java.util.ArrayList<InquiryDTO>()
+            : pdInquiryService.getInquiryList(clientNo);
+    
+    String inquiryId = request.getParameter("inquiryId");
+    InquiryDTO prdInquiryDetail = (inquiryId == null)? null : pdInquiryService.getInquiryDetail(inquiryId);
+    
+    
     // ---- 회원 정보 (ChangeClientInfoService) ----
     ClientDTO myInfo = changeClientInfoService.getUserInfo(clientId);
 
     request.setAttribute("tab", tab);
     request.setAttribute("orderList", orderList);
     request.setAttribute("deliveryList", deliveryList);
-    request.setAttribute("inquiryList", inquiryList);
+  /*   request.setAttribute("inquiryList", inquiryList); */
     request.setAttribute("myInfo", myInfo);
+    request.setAttribute("prdInquiryList", prdInquiryList);
+    request.setAttribute("prdInquiryDetail", prdInquiryDetail);
 %>
 <%@ include file="common/header.jsp" %>
 
@@ -183,7 +193,52 @@
     </c:if>
 
     <%-- ---------- 문의내역 ---------- --%>
-    <c:if test="${tab == 'inquiry'}">
+<c:if test="${tab == 'inquiry'}">
+  <c:choose>
+    
+    <c:when test="${not empty prdInquiryDetail}">
+      <div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-6">
+        <div class="p-6 border-b border-surface-variant flex justify-between items-center bg-surface-container-low mb-6 rounded-lg">
+          <h2 class="font-headline-sm text-headline-sm flex items-center">
+            <span class="material-symbols-outlined mr-2 text-primary">quiz</span>문의 상세 보기
+          </h2>
+          <a href="myPage.jsp?tab=inquiry" class="bg-surface-container text-on-surface px-4 py-2 rounded-lg font-bold text-body-sm hover:bg-surface-container-high flex items-center">
+            <span class="material-symbols-outlined text-body-sm mr-1">arrow_back</span>목록으로
+          </a>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <span class="px-3 py-1 rounded-full text-body-sm ${prdInquiryDetail.answerStatus == '답변완료' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}">
+              ${prdInquiryDetail.answerStatus}
+            </span>
+            <h3 class="text-xl font-bold mt-2">${prdInquiryDetail.inquiryTitle}</h3>
+            <p class="text-on-surface-variant text-body-sm mt-1">
+              작성일: <fmt:formatDate value="${prdInquiryDetail.inquiryDate}" pattern="yyyy.MM.dd HH:mm"/>
+            </p>
+          </div>
+          
+          <div class="border-t border-surface-variant pt-4">
+            <p class="text-body-sm text-on-surface-variant mb-1 font-bold">문의 내용</p>
+            <div class="bg-surface-container rounded-lg p-4 text-on-surface min-h-[120px] whitespace-pre-wrap">${prdInquiryDetail.inquiryContent}</div>
+          </div>
+          
+          <c:if test="${not empty prdInquiryDetail.answer}">
+            <div class="border-t border-surface-variant pt-4 bg-secondary-container/10 p-4 rounded-lg">
+              <p class="text-body-sm text-secondary font-bold mb-1 flex items-center">
+                <span class="material-symbols-outlined text-sm mr-1">reply</span>운영자 답변
+              </p>
+              <div class="text-on-surface whitespace-pre-wrap">${prdInquiryDetail.answer}</div>
+              <p class="text-on-surface-variant text-body-xs mt-2 text-right">
+                답변일: <fmt:formatDate value="${prdInquiryDetail.answerDate}" pattern="yyyy.MM.dd HH:mm"/>
+              </p>
+            </div>
+          </c:if>
+        </div>
+      </div>
+    </c:when>
+
+    <c:otherwise>
       <div class="bg-surface-container-lowest border border-surface-variant rounded-xl overflow-hidden">
         <div class="p-6 border-b border-surface-variant">
           <h2 class="font-headline-sm text-headline-sm flex items-center">
@@ -191,7 +246,7 @@
           </h2>
         </div>
         <c:choose>
-          <c:when test="${empty inquiryList}">
+          <c:when test="${empty prdInquiryList}">
             <div class="p-16 text-center text-on-surface-variant">
               <span class="material-symbols-outlined text-6xl text-outline-variant mb-4 block">quiz</span>
               문의 내역이 없습니다.
@@ -199,16 +254,20 @@
           </c:when>
           <c:otherwise>
             <div class="divide-y divide-surface-variant">
-              <c:forEach var="iq" items="${inquiryList}">
+              <c:forEach var="prdiq" items="${prdInquiryList}">
                 <div class="p-6 flex items-center justify-between gap-4">
                   <div>
-                    <p class="font-bold">${iq.inquiryTitle}</p>
-                    <p class="text-on-surface-variant text-body-sm mt-1"><fmt:formatDate value="${iq.inquiryDate}" pattern="yyyy.MM.dd"/></p>
+                    <p class="font-bold">
+                      <a href="myPage.jsp?tab=inquiry&inquiryId=${prdiq.inquiryId}" class="text-primary hover:underline">
+                        ${prdiq.inquiryTitle}
+                      </a>
+                    </p>
+                    <p class="text-on-surface-variant text-body-sm mt-1"><fmt:formatDate value="${prdiq.inquiryDate}" pattern="yyyy.MM.dd"/></p>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span class="px-3 py-1 rounded-full text-body-sm ${iq.answerStatus == '답변완료' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}">${iq.answerStatus}</span>
+                    <span class="px-3 py-1 rounded-full text-body-sm ${prdiq.answerStatus == '답변완료' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}">${prdiq.answerStatus}</span>
                     <form method="post" action="inquiryDelete.jsp" onsubmit="return confirm('이 문의 내역을 삭제할까요?');">
-                      <input type="hidden" name="inquiryId" value="${iq.inquiryId}"/>
+                      <input type="hidden" name="inquiryId" value="${prdiq.inquiryId}"/>
                       <button type="submit" class="text-error text-body-sm hover:underline">삭제</button>
                     </form>
                   </div>
@@ -218,7 +277,10 @@
           </c:otherwise>
         </c:choose>
       </div>
-    </c:if>
+    </c:otherwise>
+
+  </c:choose>
+</c:if>
 
     <%-- ---------- 개인정보 수정 ---------- --%>
     <c:if test="${tab == 'info'}">

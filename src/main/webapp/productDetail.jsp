@@ -2,7 +2,7 @@
 <%@ page import="client.productDetail.ProductDTO" %>
 <%@ page import="client.inquiry.InquiryDTO" %>
 <jsp:useBean id="pdService" class="client.productDetail.ProductDetailService" scope="page"/>
-<jsp:useBean id="pdInquiryService" class="client.prdInquiry.PrdInquiryService" scope="page"/>
+<jsp:useBean id="pdInquiryService" class="client.prdInquiry.PrdInquiryService" scope="page"/> 
 <%
     // 주의: ProductDetailDAO.selectProductInfo()는 실제로 OPTION_ID(옵션번호) 기준으로 조회한다.
     // (PRODUCT_ID를 넘기면 매칭되는 행이 없어 상세페이지가 비어 보인다.)
@@ -19,14 +19,17 @@
     ProductDTO product = (optionNo == null) ? null : pdService.getProductInfo(optionNo);
 
     // ---- 상품 문의 목록 (PrdInquiryService) ----
-    java.util.List<InquiryDTO> prdInquiryList = (product == null)
+    String clientNo = (String) session.getAttribute("clientNo");
+    java.util.List<InquiryDTO> prdInquiryList = (clientNo == null)
             ? new java.util.ArrayList<InquiryDTO>()
-            : pdInquiryService.getInquiryList(product.getOptionNo());
+            : pdInquiryService.getInquiryList(clientNo);
+    
 
+    
     request.setAttribute("product", product);
     request.setAttribute("optionNo", optionNo);
     request.setAttribute("quantity", quantity);
-    request.setAttribute("prdInquiryList", prdInquiryList);
+  	request.setAttribute("prdInquiryList", prdInquiryList);
 %>
 <%@ include file="common/header.jsp" %>
 
@@ -191,13 +194,41 @@ request.setAttribute("product2", product2);
             </c:when>
             <c:otherwise>
               <div class="divide-y divide-surface-variant border-y border-surface-variant mb-10">
-                <c:forEach var="iq" items="${prdInquiryList}">
-                  <div class="py-4 flex items-center justify-between gap-4">
-                    <div>
-                      <p class="font-bold">${iq.inquiryTitle}</p>
-                      <p class="text-on-surface-variant text-body-sm mt-1"><fmt:formatDate value="${iq.inquiryDate}" pattern="yyyy.MM.dd"/></p>
+                <c:forEach var="prdiq" items="${prdInquiryList}">
+                  <div class="inquiry-item">
+                    
+                   <div class="py-4 flex items-center justify-between gap-4 cursor-pointer hover:bg-surface-container/30 transition-colors" 
+     onclick="this.closest('.inquiry-item').querySelector('.inquiry-detail').classList.toggle('hidden')">
+                      <div>
+                        <p class="font-bold text-primary hover:underline flex items-center gap-1">
+                          <span class="material-symbols-outlined text-body-md transition-transform duration-200">expand_more</span>
+                          ${prdiq.inquiryTitle}
+                        </p>
+                        <p class="text-on-surface-variant text-body-sm mt-1">
+                          <fmt:formatDate value="${prdiq.inquiryDate}" pattern="yyyy.MM.dd"/>
+                        </p>
+                      </div>
+                      <span class="px-3 py-1 rounded-full text-body-sm ${prdiq.answerStatus == '답변완료' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}">
+                        ${prdiq.answerStatus}
+                      </span>
                     </div>
-                    <span class="px-3 py-1 rounded-full text-body-sm ${iq.answerStatus == '답변완료' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-high text-on-surface-variant'}">${iq.answerStatus}</span>
+
+                    <div class="inquiry-detail hidden bg-surface-container-low px-6 py-4 border-t border-surface-variant/30 space-y-3">
+                      <div>
+                        <p class="text-body-xs font-bold text-primary mb-1">[문의 내용]</p>
+                        <div class="text-body-md text-on-surface whitespace-pre-wrap">${prdiq.inquiryContent}</div>
+                      </div>
+                      
+                      <c:if test="${not empty prdiq.answer}">
+                        <div class="bg-white border border-surface-variant rounded-lg p-4 mt-2">
+                          <p class="text-body-xs font-bold text-secondary mb-1 flex items-center">
+                            <span class="material-symbols-outlined text-body-sm mr-1">reply</span>[운영자 답변]
+                          </p>
+                          <div class="text-body-md text-on-surface whitespace-pre-wrap">${prdiq.answer}</div>
+                        </div>
+                      </c:if>
+                    </div>
+
                   </div>
                 </c:forEach>
               </div>
