@@ -101,7 +101,10 @@
       </div>
     </div>
   </div>
-
+<%
+ProductDTO product2 = (optionNo == null) ? null : pdService.getProductDetail(optionNo);
+request.setAttribute("product2", product2); 
+%>
   <%-- ===================== 상품 탭 (상품설명 / 상세정보 / 문의하기) ===================== --%>
   <section class="mt-20 border-t border-surface-variant">
     <div class="flex justify-center items-center border-b border-surface-variant gap-12 md:gap-20">
@@ -115,8 +118,17 @@
       <%-- 상품설명 --%>
       <div class="tab-content-detail" id="tab-info">
         <div class="max-w-3xl mx-auto text-center">
-          <h3 class="text-headline-md font-headline-md text-on-surface mb-6">${product.prdName}, 이렇게 좋아요</h3>
-          <p class="text-body-md text-on-surface-variant leading-relaxed mb-12">${product.shortInfo}</p>
+          <h3 class="text-headline-md font-headline-md text-on-surface mb-6">${product.prdName}, 이렇게 좋아요</h3><br>
+			<p class="text-body-md text-on-surface-variant leading-relaxed mb-12">${product2.description}</p><br>
+			
+          <img class="w-full aspect-square object-cover rounded-2xl bg-surface-container"
+           src="${pageContext.request.contextPath}/${product.prdID}_c.png" alt="${product.prdName}"
+           onerror="this.src='${pageContext.request.contextPath}/images/imgbanner1.png'"/><br>
+           
+          <img class="w-full aspect-square object-cover rounded-2xl bg-surface-container"
+           src="${pageContext.request.contextPath}/${product.prdID}_c2.png" alt="${product.prdName}"
+           onerror="this.src='${pageContext.request.contextPath}/images/imgbanner1.png'"/><br>
+           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
             <div class="bg-surface-container rounded-xl p-8 border border-outline-variant">
               <span class="material-symbols-outlined text-primary text-4xl mb-4">eco</span>

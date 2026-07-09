@@ -56,8 +56,8 @@ json.append("\"claimStatus\":\"")
 .append(cDTO.getClaimStatus())
 .append("\",");
 
-json.append("\"optionID\":\"")
-.append(cDTO.getOptionID())
+json.append("\"order_detail_ID\":\"")
+.append(cDTO.getOrder_detail_ID())
 .append("\",");
 
 json.append("\"prdName\":\"")

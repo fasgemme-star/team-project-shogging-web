@@ -214,7 +214,7 @@ function openExchangeDetail(btn) {
                 html += "<tr>"
                       + "<td>" + (i + 1) + "</td>"
                       + "<td>" + (item.claimStatus === "null" ? "-" : item.claimStatus) + "</td>"
-                      + "<td>" + item.optionID + "</td>"
+                      + "<td>" + item.order_detail_ID + "</td>"
                       + "<td>" + item.price + "</td>"
                       + "<td>" + item.prdName + "</td>"
                       + "<td>" + item.quantity + "</td>"
@@ -735,7 +735,7 @@ function rejectCancel() {
 					        <tr>
 					            <th>No</th>
 					            <th>클레임상태</th>
-					            <th>옵션번호?</th>
+					            <th>주문 상세 번호</th>
 					            <th>가격</th>
 					            <th>상품명</th>
 					            <th>수량</th>
