@@ -86,7 +86,7 @@ public class AddProductDAO {
 			pstmtOption.setString(1,optionName);
 			pstmtOption.setInt(2,pDTO.getPrice());
 			pstmtOption.setInt(3,pDTO.getDiscount());
-			pstmtOption.setInt(4,pDTO.getWeight());
+			pstmtOption.setString(4,pDTO.getWeight());
 			pstmtOption.setInt(5,pDTO.getQuantity());
 			pstmtOption.setString(6,nextProductId);
 			
