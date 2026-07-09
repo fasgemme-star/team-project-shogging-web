@@ -24,7 +24,7 @@ public class ProductDTO {
 	private String manufacturer;
 	private String origin;
 	private String underAgePurchase;
-	private int weight;
+	private String weight;
 	private String expirationDate;
 	private String storageType;
 	private String salesUnit;
