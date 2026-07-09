@@ -199,7 +199,7 @@ function openExchangeDetail(btn) {
 
             if (data.img && data.img.length > 0) {
                 $.each(data.img, function(i, imageName) {
-                    imageHtml += "<img src='../upload/" + imageName + "' "
+                    imageHtml += "<img src='../../upload/" + imageName + "' "
                               + "alt='반품 요청 이미지' "
                               + "style='width:150px; height:150px; object-fit:cover; margin-right:10px;'>";
                 });
