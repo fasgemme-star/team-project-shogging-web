@@ -50,7 +50,7 @@ public class PrdInquiryDAO {
             sql.append(" SELECT i.INQUIRY_ID, i.INQUIRY_DATE , i.INQUIRY_TITLE, i.ANSWER_STATUS ");
             sql.append(" FROM INQUIRY i ");
             sql.append(" INNER JOIN  ORDER_DETAILS od ON od.ORDER_DETAILS_ID=i.ORDER_DETAILS_ID ");
-            sql.append(" INNER JOIN  PRODUCT_OPTION po.OPTION_ID ON po.=od.OPTION_ID ");
+            sql.append(" INNER JOIN  PRODUCT_OPTION po ON po.OPTION_ID=od.OPTION_ID ");
             sql.append(" WHERE i.INQUIRY_CODE='TYP000003' AND po.OPTION_ID=? ");
 
 
@@ -89,7 +89,7 @@ public class PrdInquiryDAO {
 	//문의 상세 내용 조회 
 	public InquiryDTO selectInquiryDetail(int inquiryId) {
 
-        InquiryDTO iDto = null;
+        InquiryDTO iDTO = null;
 
         DbConnection dbcon = DbConnection.getInstance();
         
@@ -115,7 +115,7 @@ public class PrdInquiryDAO {
 
             if(rs.next()) {
 
-                InquiryDTO iDTO= new InquiryDTO();
+                iDTO= new InquiryDTO();
 
                 iDTO.setInquiryId(rs.getString("INQUIRY_ID"));
                 iDTO.setInquiryDate(rs.getDate("INQUIRY_DATE"));
@@ -138,7 +138,7 @@ public class PrdInquiryDAO {
 			}
 		}
 
-        return iDto;
+        return iDTO;
     }
 	
 	//신규 상품 문의 등록

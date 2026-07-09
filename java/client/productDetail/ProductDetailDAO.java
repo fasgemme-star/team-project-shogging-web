@@ -121,15 +121,12 @@ private static ProductDetailDAO pdDAO;
 
 	        StringBuilder sql = new StringBuilder();
 
-	        sql.append(" SELECT pi.*, p.DISCRIPTION ");
-	        sql.append(" FROM PRODUCT_IMAGE pi ");
-	        sql.append(" INNER JOIN PRODUCT p ON p.PRODUCT_ID=pi.PRODUCT_ID  ");
-	        sql.append(" WHERE IMAGE_TYPE IN ('DETAIL','CONTENT') ");
-	        sql.append(" AND PRODUCT_ID = ( ");
-	        sql.append("     SELECT PRODUCT_ID ");
-	        sql.append("     FROM PRODUCT_OPTION ");
-	        sql.append("     WHERE OPTION_ID = ? ");
-	        sql.append(" ) ");
+	        sql.append(" SELECT pi.PRODUCT_IMG_ID, pi.URL, pi.IMAGE_TYPE, po.OPTION_ID, p.DESCRIPTION ");
+	        sql.append(" FROM PRODUCT p ");
+	        sql.append(" INNER JOIN PRODUCT_OPTION po ON p.PRODUCT_ID = po.PRODUCT_ID ");
+	        sql.append(" LEFT OUTER JOIN PRODUCT_IMAGE pi ON p.PRODUCT_ID = pi.PRODUCT_ID ");
+	        sql.append(" AND pi.IMAGE_TYPE IN ('DETAIL', 'CONTENT') "); 
+	        sql.append(" WHERE po.OPTION_ID = ? ");
 
 	        pstmt = con.prepareStatement(sql.toString());
 	        pstmt.setString(1, optionNO);
@@ -144,7 +141,7 @@ private static ProductDetailDAO pdDAO;
 	        	pDTO.setUrl(rs.getString("URL"));
 	        	pDTO.setImageType(rs.getString("IMAGE_TYPE"));
 	        	pDTO.setOptionNo(rs.getString("OPTION_ID"));
-	        	pDTO.setDescription(rs.getString("DISCRIPTION"));
+	        	pDTO.setDescription(rs.getString("DESCRIPTION"));
 
 	        }
 
