@@ -38,6 +38,10 @@ $(function(){
     $("#productDesc").on("input",function(){
         $("#descCount").text($(this).val().length);
     });
+    
+    $("#shortInfo").on("input",function(){
+        $("#shortCount").text($(this).val().length);
+    });
 
     $(".image-btn").click(function(){
         let target = $(this).data("target");
@@ -66,6 +70,7 @@ $(function(){
             processData:false,
             contentType:false,
             success:function(result){
+            	let imageList = [];
                 let target = $("#imageFile").data("target");
                 let name = $("#imageFile").data("name");
                 $("#"+target).val(result);
@@ -132,8 +137,18 @@ $(function(){
 								<label for="productName">상품명 <span class="required">*</span></label>
 								<div class="input-box">
 									<input type="text" id="productName" name="prdName"
-										maxlength="50" placeholder="상품명을 입력하세요."> <span
-										class="count"> <span id="nameCount">0</span>/50자
+										maxlength="50" placeholder="상품명을 입력하세요.">
+										<span class="count"> <span id="nameCount">0</span>/50자
+									</span>
+								</div>
+							</div>
+							<!-- 상품 한줄 설명 -->
+							<div class="input-row">
+								<label for="productDesc">짧은 소개</label>
+								<div class="input-box">
+									<textarea id="shortInfo" name="shortInfo" maxlength="70"
+										placeholder="소개를 입력하세요."></textarea>
+									<span class="count"><span id="shortCount">0</span>/70자
 									</span>
 								</div>
 							</div>
@@ -199,6 +214,7 @@ $(function(){
 							
 								<!-- 이미지 -->
 								<div class="option-title">이미지</div>
+								<input type="hidden" id="imageList" name="imageList">
 								<table class="image-table">
 									<tr>
 										<th width="60">NO</th>
@@ -271,9 +287,9 @@ $(function(){
 									</div>
 								</div>
 
-								<!-- 무게 -->
+								<!-- 용량 -->
 								<div class="form-row">
-									<label>무게(kg)</label><input type="number" name="weight" min="1">
+									<label>용량</label><input type="text" name="weight" min="1">
 								</div>
 
 								<!-- 유통기한 -->

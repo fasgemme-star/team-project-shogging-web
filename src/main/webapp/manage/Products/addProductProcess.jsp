@@ -1,3 +1,4 @@
+<%@page import="org.json.simple.JSONArray"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <%@ page import="java.util.ArrayList" %>
@@ -12,14 +13,12 @@ String priceParam = request.getParameter("price");//가격
 String minPurchaseParam = request.getParameter("minPurchase");//최소구매수량
 String maxPurchaseParam = request.getParameter("maxPurchase");//최대구매수량
 String discountParam = request.getParameter("discount");//할인율
-String weightParam = request.getParameter("weight");//무게
 String quantityParam = request.getParameter("quantity");//판매수량
 
 int price = (priceParam == null || priceParam.trim().isEmpty()) ? 0 : Integer.parseInt(priceParam);
 int minPurchase = (minPurchaseParam == null || minPurchaseParam.trim().isEmpty()) ? 1 : Integer.parseInt(minPurchaseParam);
 int maxPurchase = (maxPurchaseParam == null || maxPurchaseParam.trim().isEmpty()) ? 999999999 : Integer.parseInt(maxPurchaseParam);
 int discount = (discountParam == null || discountParam.trim().isEmpty()) ? 0 : Integer.parseInt(discountParam);
-int weight = (weightParam == null || weightParam.trim().isEmpty()) ? 0 : Integer.parseInt(weightParam);
 int quantity = (quantityParam == null || quantityParam.trim().isEmpty()) ? 0 : Integer.parseInt(quantityParam);
 
 ProductDTO pDTO = new ProductDTO();
@@ -27,7 +26,8 @@ ProductDTO pDTO = new ProductDTO();
 pDTO.setCategory(request.getParameter("category"));//카테고리
 pDTO.setPrdName(request.getParameter("prdName"));//상품명
 pDTO.setPrdType(request.getParameter("prdType"));//상품타입
-pDTO.setPrdDescription(request.getParameter("prdDescription"));//상품설명
+pDTO.setShortInfo(request.getParameter("shortInfo"));//짧은소개
+pDTO.setPrdDescription(request.getParameter("prdDescription"));//상품설명 -> description
 
 pDTO.setPrice(price);
 pDTO.setMinPurchae(minPurchase);
@@ -37,36 +37,19 @@ pDTO.setDiscount(discount);
 pDTO.setManufacturer(request.getParameter("manufacturer"));//제조사
 pDTO.setOrigin(request.getParameter("origin"));//원산지
 pDTO.setUnderAgePurchase(request.getParameter("underAgePurchase"));//미성년자구매
-pDTO.setWeight(weight);//무게
+pDTO.setWeight(request.getParameter("weight"));//용량
 pDTO.setExpirationDate(request.getParameter("expirationDate"));//유통기한
 pDTO.setStorageType(request.getParameter("storageType"));//보관방법
 pDTO.setSalesUnit(request.getParameter("salesUnit"));//판매단위
 pDTO.setNotice(request.getParameter("notice"));//주의사항
-pDTO.setAdditionalInfo(request.getParameter("additionalInfo"));//추가정보->x description
+pDTO.setAdditionalInfo(request.getParameter("additionalInfo"));//추가정보
 pDTO.setQuantity(quantity);
 
 List<ImageDTO> imgList = new ArrayList<ImageDTO>();
 
-String thumbImg = request.getParameter("thumbImg");
-String mainImg = request.getParameter("mainImg");
-String descImg = request.getParameter("descImg");
-String detailImg = request.getParameter("detailImg");
+String imageJson = request.getParameter("imageList");
 
-if (thumbImg != null && !thumbImg.trim().isEmpty()) {
-	imgList.add(new ImageDTO("THUMB", thumbImg));
-}
 
-if (mainImg != null && !mainImg.trim().isEmpty()) {
-	imgList.add(new ImageDTO("MAIN", mainImg));
-}
-
-if (descImg != null && !descImg.trim().isEmpty()) {
-	imgList.add(new ImageDTO("CONTENT", descImg));
-}
-
-if (detailImg != null && !detailImg.trim().isEmpty()) {
-	imgList.add(new ImageDTO("DETAIL", detailImg));
-}
 
 AddProductService service = new AddProductService();
 
