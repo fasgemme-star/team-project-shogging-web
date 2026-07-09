@@ -29,7 +29,7 @@ public class PrdInquiryDAO {
 	}
 	
 	//상품별 문의 목록 조회
-	public List<InquiryDTO> selectInquiryList(String prdId) {
+	public List<InquiryDTO> selectInquiryList(String optionNo) {
 		
 		List<InquiryDTO> list = new ArrayList<>();
 
@@ -46,13 +46,17 @@ public class PrdInquiryDAO {
 
             StringBuilder sql = new StringBuilder();
 
-            sql.append(" SELECT INQUIRY_ID, INQUIRY_DATE , INQUIRY_TITLE, ANSWER_STATUS ");
-            sql.append(" FROM INQUIRY ");
-            sql.append(" WHERE INQUIRY_CODE='TYP000003' AND PRODUCT_ID = ? ");
-            sql.append(" ORDER BY INQUIRY_DATE DESC ");
+
+            sql.append(" SELECT i.INQUIRY_ID, i.INQUIRY_DATE , i.INQUIRY_TITLE, i.ANSWER_STATUS ");
+            sql.append(" FROM INQUIRY i ");
+            sql.append(" INNER JOIN  ORDER_DETAILS od ON od.ORDER_DETAILS_ID=i.ORDER_DETAILS_ID ");
+            sql.append(" INNER JOIN  PRODUCT_OPTION po.OPTION_ID ON po.=od.OPTION_ID ");
+            sql.append(" WHERE i.INQUIRY_CODE='TYP000003' AND po.OPTION_ID=? ");
+
 
             pstmt = con.prepareStatement(sql.toString());
-            pstmt.setString(1, prdId);
+            
+            pstmt.setString(1, optionNo);
 
             rs = pstmt.executeQuery();
 

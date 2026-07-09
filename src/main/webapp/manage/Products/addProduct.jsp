@@ -110,6 +110,7 @@ $(function(){
 									<option value="">카테고리를 선택하세요.</option>
 									<option value="CAT000001">과일</option>
 									<option value="CAT000002">채소</option>
+									<option value="CAT000003">음료</option>
 								</select> 
 							</div>
 						</div>

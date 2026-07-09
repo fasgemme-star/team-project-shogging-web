@@ -329,6 +329,7 @@ function closeEditModal(){
 								<option value="">전체</option>
 								<option value="과일" <%= "과일".equals(category) ? "selected" : "" %>>과일</option>
 								<option value="채소" <%= "채소".equals(category) ? "selected" : "" %>>채소</option>
+								<option value="음료" <%= "음료".equals(category) ? "selected" : "" %>>음료</option>
 							</select>
 						</div>
 					</div>
@@ -454,10 +455,11 @@ function closeEditModal(){
 			<div class="modal-body">
 				<input type="hidden" id="editProductNo" name="prdID">
 				<div class="form-group">
-					<label>카테고리 <span class="required">*</span></label> <select
-						id="editCategory">
+					<label>카테고리 <span class="required">*</span></label> 
+					<select id="editCategory">
 						<option>채소</option>
 						<option>과일</option>
+						<option>음료</option>
 					</select>
 				</div>
 				<div class="form-group">

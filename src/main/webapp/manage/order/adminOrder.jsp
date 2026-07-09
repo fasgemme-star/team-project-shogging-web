@@ -19,334 +19,353 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script type="text/javascript">
-$(function(){
-    const searchBtn = $("#searchBtn");
-    const resetBtn = $("#resetBtn");
-    const allCheck = $("#allCheck");
+function searchOrder() {
+    $("#searchForm").submit();
+}//searchOrder
 
-    searchBtn.on("click", function(){
-        $("#searchForm").submit();
-    });
+function resetSearch() {
+    const form = document.getElementById("searchForm");
 
-    resetBtn.on("click", function(){
-        const form = document.getElementById("searchForm");
-        $("#keyword").val("");
-        $("#category").val("");
-        $("#orderStatus").val("");
-        $("#startDate").val("");
-        $("#endDate").val("");
-        $("#period").val("all");
-        $("#pageSize").val("20");
-        $(".date-btn").removeClass("active");
+    document.getElementById("category").value = "";
+    document.getElementById("orderStatus").value = "";
+    document.getElementById("startDate").value = "";
+    document.getElementById("endDate").value = "";
+    document.getElementById("period").value = "all";
 
-        allCheck.prop("checked", false);
-        $("#orderTableBody input[type=checkbox]").prop("checked", false);
+    $(".date-btn").removeClass("active");
 
-        let pageInput = form.querySelector("input[name='page']");
+    $("#allCheck").prop("checked", false);
+    $("#orderTableBody input[type='checkbox']").prop("checked", false);
 
-        if (!pageInput) {
-            pageInput = document.createElement("input");
-            pageInput.type = "hidden";
-            pageInput.name = "page";
-            form.appendChild(pageInput);
-        }
-        pageInput.value = "1";
-        form.submit();
-    });
+    let pageInput = form.querySelector("input[name='page']");
 
-    allCheck.on("change", function(){
-        $("#orderTableBody input[type=checkbox]")
-            .prop("checked", this.checked);
-    });
+    if (!pageInput) {
+        pageInput = document.createElement("input");
+        pageInput.type = "hidden";
+        pageInput.name = "page";
+        form.appendChild(pageInput);
+    }
+    pageInput.value = "1";
+    form.submit();
+}//resetSearch
 
-    $("#orderTableBody").on("change", "input[type=checkbox]", function(){
-        const total = $("#orderTableBody input[type=checkbox]").length;
-        const checked = $("#orderTableBody input[type=checkbox]:checked").length;
+function checkAll(check) {
+    $("#orderTableBody input[type='checkbox']")
+        .prop("checked", check.checked);
+}//checkAll
 
-        allCheck.prop("checked", total === checked);
-    });
-    
-    $(".date-btn").on("click", function () {
-        $(".date-btn").removeClass("active");
-        $(this).addClass("active");
+function checkOrder() {
+    let total = $("#orderTableBody input[type='checkbox']").length;
+    let checked = $("#orderTableBody input[type='checkbox']:checked").length;
 
-        const today = new Date();
-        const startDate = new Date();
-        const buttonText = $(this).text().trim();
+    $("#allCheck").prop("checked", total === checked);
+}//checkOrder
 
-        if (buttonText === "오늘") {
-            startDate.setDate(today.getDate());
-        } else if (buttonText === "1주일") {
-            startDate.setDate(today.getDate() - 7);
-        } else if (buttonText === "1개월") {
-            startDate.setMonth(today.getMonth() - 1);
-        } else if (buttonText === "3개월") {
-            startDate.setMonth(today.getMonth() - 3);
-        }
+function formatDate(date) {
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, "0");
+    let day = String(date.getDate()).padStart(2, "0");
 
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const day = String(date.getDate()).padStart(2, "0");
-            return year + "-" + month + "-" + day;
-        }
-        $("#startDate").val(formatDate(startDate));
-        $("#endDate").val(formatDate(today));
-    });
+    return year + "-" + month + "-" + day;
+}//formatDate
 
-    $("#deliveryBtn").on("click", function(){
-    	const orderIDs = [];
+function selectPeriod(btn) {
+    let today = new Date();
+    let startDate = new Date();
+    let endDate = new Date();
+    let period = btn.dataset.period;
 
-        $("#orderTableBody input[type=checkbox]:checked").each(function(){
-            const status = $(this).closest("tr").find(".delivery-status").text().trim();
-            if (status === "배송중") {
-                orderIDs.push(this.value);
-            }
+    if (period === "today") {
+        startDate = new Date(today);
+    } else if (period === "week") {
+        startDate.setDate(today.getDate() - 7);
+    } else if (period === "month") {
+        startDate.setMonth(today.getMonth() - 1);
+    } else if (period === "3month") {
+        startDate.setMonth(today.getMonth() - 3);
+    } else if (period === "all") {
+        document.getElementById("startDate").value = "";
+        document.getElementById("endDate").value = "";
+        document.getElementById("period").value = "all";
+        document.querySelectorAll(".date-btn").forEach(function(item) {
+            item.classList.remove("active");
         });
+        btn.classList.add("active");
+        return;
+    }
 
-        if (orderIDs.length === 0) {
-            alert("배송중인 주문만 배송처리할 수 있습니다.");
-            return;
-        }
-
-        $.ajax({
-            url: "deliveryProcess.jsp",
-            type: "POST",
-            traditional: true,
-            data: {
-                orderIDs: orderIDs
-            },
-            success: function(res){
-                alert("배송처리 완료: "+res+"건");
-                location.reload();
-            },
-            error: function(){
-                alert("배송처리 실패");
-            }
-        });
+    document.getElementById("startDate").value = formatDate(startDate);
+    document.getElementById("endDate").value = formatDate(endDate);
+    document.getElementById("period").value = period;
+    document.querySelectorAll(".date-btn").forEach(function(item) {
+        item.classList.remove("active");
     });
 
-    $(".cancel-btn").on("click", function(){
-        const claimID = $(this).data("claim-id");
+    btn.classList.add("active");
+}//selectPeriod
 
-        $.ajax({
-            url: "cancelDetail.jsp",
-            type: "GET",
-            dataType: "json",
-            data: {
-                claimID: claimID
-            },
-            success: function(data){
-            	$("#cancelModal").data("claim-id", data.claimID);
-                $("#claimID").text(data.claimID);
-                $("#requestDate").text(data.requestDate);
-                $("#clientName").text(data.clientName);
-                $("#clientTel").text(data.clientTel);
-                $("#claimStatus").text(data.claimStatus);
+function processDelivery() {
+    let orderIDs = [];
 
-                let html = "";
-                $.each(data.products, function(i, item){
-                    html += "<tr>"
-                          + "<td>" + (i + 1) + "</td>"
-                          + "<td>" + (item.order_detail_ID === "null" ? "-" : item.order_detail_ID) + "</td>"
-                          + "<td>" + item.prdName + "</td>"
-                          + "<td>" + item.price + "</td>"
-                          + "<td>" + item.quantity + "</td>"
-                          + "</tr>";
+    $("#orderTableBody input[type='checkbox']:checked").each(function () {
+        let status = $(this).closest("tr").find(".delivery-status").text().trim();
+        if (status === "배송중") {
+            orderIDs.push(this.value);
+        }
+    });
+    if (orderIDs.length === 0) {
+        alert("배송중인 주문만 배송처리할 수 있습니다.");
+        return;
+    }
+
+    $.ajax({
+        url: "deliveryProcess.jsp",
+        type: "POST",
+        traditional: true,
+        data: {
+            orderIDs: orderIDs
+        },
+        success: function(res) {
+            alert("배송처리 완료: " + res + "건");
+            location.reload();
+        },
+        error: function() {
+            alert("배송처리 실패");
+        }
+    });
+}//processDelivery
+
+function openCancelDetail(btn) {
+    let claimID = $(btn).data("claim-id");
+
+    $.ajax({
+        url: "cancelDetail.jsp",
+        type: "GET",
+        dataType: "json",
+        data: {
+            claimID: claimID
+        },
+        success: function(data) {
+            $("#cancelModal").data("claim-id", data.claimID);
+            $("#claimID").text(data.claimID);
+            $("#requestDate").text(data.requestDate);
+            $("#clientName").text(data.clientName);
+            $("#clientTel").text(data.clientTel);
+            $("#claimStatus").text(data.claimStatus);
+
+            let html = "";
+            $.each(data.products, function(i, item) {
+                html += "<tr>"
+                      + "<td>" + (i + 1) + "</td>"
+                      + "<td>" + (item.order_detail_ID === "null" ? "-" : item.order_detail_ID) + "</td>"
+                      + "<td>" + item.prdName + "</td>"
+                      + "<td>" + item.price + "</td>"
+                      + "<td>" + item.quantity + "</td>"
+                      + "</tr>";
+            });
+            $("#cancelProductBody").html(html);
+
+            new bootstrap.Modal(
+                document.getElementById("cancelModal")
+            ).show();
+        },
+        error: function() {
+            alert("취소 상세 조회 실패");
+        }
+    });
+}//openCancelDetail
+
+function openExchangeDetail(btn) {
+    let claimID = $(btn).data("claim-id");
+
+    $.ajax({
+        url: "exchangeDetail.jsp",
+        type: "GET",
+        dataType: "json",
+        data: {
+            claimID: claimID
+        },
+        success: function(data) {
+            $("#exchangeModal").data("claim-id", data.claimID);
+            $("#exchangeClaimID").text(data.claimID);
+            $("#exchangeRequestDate").text(data.requestDate);
+            $("#exchangeClientName").text(data.clientName);
+            $("#exchangeClientTel").text(data.clientTel);
+            $("#exchangePrdName").text(data.products[0].prdName);
+            $("#exchangeReason").text("반품 사유 : " + data.reason);
+            $("#exchangeReasonDetail").text(data.reasonDetail);
+
+            let imageHtml = "";
+
+            if (data.img && data.img.length > 0) {
+                $.each(data.img, function(i, imageName) {
+                    imageHtml += "<img src='../upload/" + imageName + "' "
+                              + "alt='반품 요청 이미지' "
+                              + "style='width:150px; height:150px; object-fit:cover; margin-right:10px;'>";
                 });
-
-                $("#cancelProductBody").html(html);
-                
-                new bootstrap.Modal(
-                    document.getElementById("cancelModal")
-                ).show();
-            },
-            error: function(xhr, status, error){
-                alert("취소 상세 조회 실패");
+            } else {
+                imageHtml = "첨부 이미지가 없습니다.";
             }
-        });
-    });
-    
-    $(".exchange-btn").on("click", function(){
-        const claimID=$(this).data("claim-id");
-        $.ajax({
-            url:"exchangeDetail.jsp",
-            type:"GET",
-            dataType:"json",
-            data:{
-                claimID:claimID
-            },
-            success:function(data){
-            	$("#exchangeModal").data("claim-id", data.claimID);
-                $("#exchangeClaimID").text(data.claimID);
-                $("#exchangeRequestDate").text(data.requestDate);
-                $("#exchangeClientName").text(data.clientName);
-                $("#exchangeClientTel").text(data.clientTel);
-                $("#exchangePrdName").text(data.products[0].prdName);
-                $("#exchangeReason").text("반품 사유 : "+data.reason);
-                $("#exchangeReasonDetail").text(data.reasonDetail);
-                
-                let imageHtml = "";
-                if (data.img && data.img.length > 0) {
-                    $.each(data.img, function(i, imageName){
-                        imageHtml += "<img src='../upload/" + imageName + "' "
-                                  + "alt='반품 요청 이미지' "
-                                  + "style='width:150px; height:150px; object-fit:cover; margin-right:10px;'>";
-                    });
-                } else {
-                    imageHtml = "첨부 이미지가 없습니다.";
-                }
 
-                $("#claimImage").html(imageHtml);
-                
-                let html = "";
-                $.each(data.products, function(i, item){
-                    html += "<tr>"
-                          + "<td>" + (i + 1) + "</td>"
-                          + "<td>" + (item.claimStatus === "null" ? "-" : item.claimStatus) + "</td>"
-                          + "<td>" + item.optionID + "</td>"
-                          + "<td>" + item.price + "</td>"
-                          + "<td>" + item.prdName + "</td>"
-                          + "<td>" + item.quantity + "</td>"
-                          + "</tr>";
-                });
-                $("#exchangeProductBody").html(html);
-                new bootstrap.Modal(
+            $("#claimImage").html(imageHtml);
+            let html = "";
+
+            $.each(data.products, function(i, item) {
+                html += "<tr>"
+                      + "<td>" + (i + 1) + "</td>"
+                      + "<td>" + (item.claimStatus === "null" ? "-" : item.claimStatus) + "</td>"
+                      + "<td>" + item.optionID + "</td>"
+                      + "<td>" + item.price + "</td>"
+                      + "<td>" + item.prdName + "</td>"
+                      + "<td>" + item.quantity + "</td>"
+                      + "</tr>";
+            });
+            $("#exchangeProductBody").html(html);
+
+            new bootstrap.Modal(
+                document.getElementById("exchangeModal")
+            ).show();
+        },
+        error: function() {
+            alert("교환 상세 조회 실패");
+        }
+    });
+}//openExchangeDetail
+
+function completeExchange() {
+    let claimID = $("#exchangeModal").data("claim-id");
+
+    if (!claimID) {
+        alert("클레임 번호를 찾을 수 없습니다.");
+        return;
+    }
+
+    $.ajax({
+        url: "claimProcess.jsp",
+        type: "POST",
+        dataType: "json",
+        data: {
+            claimID: claimID,
+            result: "처리완료"
+        },
+        success: function(data) {
+            if (data.success) {
+                alert("교환/반품 처리가 완료되었습니다.");
+                bootstrap.Modal.getInstance(
                     document.getElementById("exchangeModal")
-                ).show();
+                ).hide();
+                location.reload();
+            } else {
+                alert("교환/반품 처리에 실패했습니다.");
             }
-        });
-    });
-    
-    $("#exchangeCompleteBtn").on("click", function(){
-        const claimID = $("#exchangeModal").data("claim-id");
-        if (!claimID) {
-            alert("클레임 번호를 찾을 수 없습니다.");
-            return;
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            alert("교환/반품 처리 중 오류가 발생했습니다.");
         }
-        $.ajax({
-            url: "claimProcess.jsp",
-            type: "POST",
-            dataType: "json",
-            data: {
-                claimID: claimID,
-                result: "처리완료"
-            },
-            success: function(data){
-                if (data.success) {
-                    alert("교환/반품 처리가 완료되었습니다.");
-                    bootstrap.Modal.getInstance(
-                        document.getElementById("exchangeModal")
-                    ).hide();
-                    location.reload();
-                } else {
-                    alert("교환/반품 처리에 실패했습니다.");
-                }
-            },
-            error: function(xhr){
-                console.log(xhr.responseText);
-                alert("교환/반품 처리 중 오류가 발생했습니다.");
-            }
-        });
     });
+}//completeExchange
 
-    $("#exchangeRejectBtn").on("click", function(){
-        const claimID = $("#exchangeModal").data("claim-id");
-        if (!claimID) {
-            alert("클레임 번호를 찾을 수 없습니다.");
-            return;
-        }
-        $.ajax({
-            url: "claimProcess.jsp",
-            type: "POST",
-            dataType: "json",
-            data: {
-                claimID: claimID,
-                result: "거절"
-            },
-            success: function(data){
-                if (data.success) {
-                    alert("교환/반품 요청을 거절했습니다.");
-                    bootstrap.Modal.getInstance(
-                        document.getElementById("exchangeModal")
-                    ).hide();
-                    location.reload();
-                } else {
-                    alert("교환/반품 거절 처리에 실패했습니다.");
-                }
-            },
-            error: function(xhr){
-                console.log(xhr.responseText);
-                alert("교환/반품 거절 중 오류가 발생했습니다.");
-            }
-        });
-    });
-    
-    $("#cancelCompleteBtn").on("click", function(){
-        const claimID = $("#cancelModal").data("claim-id");
-        if (!claimID) {
-            alert("클레임 번호를 찾을 수 없습니다.");
-            return;
-        }
-        $.ajax({
-            url: "claimProcess.jsp",
-            type: "POST",
-            dataType: "json",
-            data: {
-                claimID: claimID,
-                result: "처리완료"
-            },
-            success: function(data){
-                if (data.success) {
-                    alert("취소 처리가 완료되었습니다.");
-                    bootstrap.Modal.getInstance(
-                        document.getElementById("cancelModal")
-                    ).hide();
-                    location.reload();
-                } else {
-                    alert("취소 처리에 실패했습니다.");
-                }
-            },
-            error: function(xhr){
-                console.log(xhr.responseText);
-                alert("취소 처리 중 오류가 발생했습니다.");
-            }
-        });
-    });
+function rejectExchange() {
+    let claimID = $("#exchangeModal").data("claim-id");
 
-    $("#cancelRejectBtn").on("click", function(){
-        const claimID = $("#cancelModal").data("claim-id");
-        if (!claimID) {
-            alert("클레임 번호를 찾을 수 없습니다.");
-            return;
-        }
-        $.ajax({
-            url: "claimProcess.jsp",
-            type: "POST",
-            dataType: "json",
-            data: {
-                claimID: claimID,
-                result: "취소거절"
-            },
-            success: function(data){
-                if (data.success) {
-                    alert("취소 요청을 거절했습니다.");
+    if (!claimID) {
+        alert("클레임 번호를 찾을 수 없습니다.");
+        return;
+    }
 
-                    bootstrap.Modal.getInstance(
-                        document.getElementById("cancelModal")
-                    ).hide();
-                    location.reload();
-                } else {
-                    alert("취소 거절 처리에 실패했습니다.");
-                }
-            },
-            error: function(xhr){
-                console.log(xhr.responseText);
-                alert("취소 거절 처리 중 오류가 발생했습니다.");
+    $.ajax({
+        url: "claimProcess.jsp",
+        type: "POST",
+        dataType: "json",
+        data: {
+            claimID: claimID,
+            result: "거절"
+        },
+        success: function(data) {
+            if (data.success) {
+                alert("교환/반품 요청을 거절했습니다.");
+                bootstrap.Modal.getInstance(
+                    document.getElementById("exchangeModal")
+                ).hide();
+                location.reload();
+            } else {
+                alert("교환/반품 거절 처리에 실패했습니다.");
             }
-        });
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            alert("교환/반품 거절 중 오류가 발생했습니다.");
+        }
     });
-});
+}//rejectExchange
+
+function completeCancel() {
+    let claimID = $("#cancelModal").data("claim-id");
+
+    if (!claimID) {
+        alert("클레임 번호를 찾을 수 없습니다.");
+        return;
+    }
+    $.ajax({
+        url: "claimProcess.jsp",
+        type: "POST",
+        dataType: "json",
+        data: {
+            claimID: claimID,
+            result: "처리완료"
+        },
+        success: function(data) {
+            if (data.success) {
+                alert("취소 처리가 완료되었습니다.");
+                bootstrap.Modal.getInstance(
+                    document.getElementById("cancelModal")
+                ).hide();
+                location.reload();
+            } else {
+                alert("취소 처리에 실패했습니다.");
+            }
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            alert("취소 처리 중 오류가 발생했습니다.");
+        }
+    });
+}//completeCancel
+
+function rejectCancel() {
+    let claimID = $("#cancelModal").data("claim-id");
+
+    if (!claimID) {
+        alert("클레임 번호를 찾을 수 없습니다.");
+        return;
+    }
+    $.ajax({
+        url: "claimProcess.jsp",
+        type: "POST",
+        dataType: "json",
+        data: {
+            claimID: claimID,
+            result: "취소거절"
+        },
+        success: function(data) {
+            if (data.success) {
+                alert("취소 요청을 거절했습니다.");
+                bootstrap.Modal.getInstance(
+                    document.getElementById("cancelModal")
+                ).hide();
+                location.reload();
+            } else {
+                alert("취소 거절 처리에 실패했습니다.");
+            }
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            alert("취소 거절 처리 중 오류가 발생했습니다.");
+        }
+    });
+}//rejectCancel
+
 </script>
 </head>
 
@@ -360,6 +379,7 @@ $(function(){
 		RangeDTO rDTO = new RangeDTO();
 		
 		String keyword = request.getParameter("keyword");
+		String category = request.getParameter("category");
 		String delivery_status = request.getParameter("orderStatus");
 		String startDate = request.getParameter("startDate");
 		String endDate = request.getParameter("endDate");
@@ -379,13 +399,18 @@ $(function(){
 		String pageParam = request.getParameter("currentPage");
 		String pageSizeParam = request.getParameter("pageSize");
 		int currentPage = 1;
-		int pageSize = 20;
+		int pageSize = 15;
 		
 		if(pageParam != null && !pageParam.isEmpty()) {
 		    currentPage = Integer.parseInt(pageParam);
 		}
 		if(pageSizeParam != null && !pageSizeParam.isEmpty()) {
 		    pageSize = Integer.parseInt(pageSizeParam);
+		}
+		if (category == null || "".equals(category) || "전체".equals(category)) {
+		    rDTO.setCategory(null);
+		} else {
+		    rDTO.setCategory(category);
 		}
 		
 		if(keyword != null && !keyword.isEmpty()) {
@@ -397,6 +422,7 @@ $(function(){
 		
 		rDTO.setStartDate(startDate);
 		rDTO.setEndDate(endDate);
+		rDTO.setCategory(category);
 		
 		OrderManagementService oms = new OrderManagementService();
 		RangeDTO countDTO = new RangeDTO();
@@ -433,6 +459,11 @@ $(function(){
 		
 		int startNum = (currentPage - 1) * pageSize + 1;
 		int endNum = currentPage * pageSize;
+		
+		String period = request.getParameter("period");
+		if(period == null || period.equals("")){
+		    period = "all";
+		}
 		
 		rDTO.setStartNum(startNum);
 		rDTO.setEndNum(endNum);
@@ -474,38 +505,41 @@ $(function(){
 
 				<!-- 검색 영역 -->
 				<form action="adminOrder.jsp" method="get" id="searchForm">
+				<input type="hidden" id="period" name="period" value="<%= period %>">
 				<div class="search-box">
 					<div class="search-row">
 						<label>조회기간</label>
-						<button type="button" class="date-btn">오늘</button>
-						<button type="button" class="date-btn">1주일</button>
-						<button type="button" class="date-btn active">1개월</button>
-						<button type="button" class="date-btn">3개월</button>
-						<input type="date" id="startDate" name="startDate"> ~ <input type="date" id="endDate" name="endDate">
+						<button type="button" class="date-btn <%= "today".equals(period) ? "active" : "" %>" data-period="today" onclick="selectPeriod(this)">오늘</button>
+						<button type="button" class="date-btn <%= "week".equals(period) ? "active" : "" %>" data-period="week" onclick="selectPeriod(this)">1주일</button>
+						<button type="button" class="date-btn <%= "month".equals(period) ? "active" : "" %>" data-period="month" onclick="selectPeriod(this)">1개월</button>
+						<button type="button" class="date-btn <%= "3month".equals(period) ? "active" : "" %>" data-period="3month" onclick="selectPeriod(this)">3개월</button>
+						<button type="button" class="date-btn <%= ("all".equals(period)) ? "active" : "" %>" data-period="all" onclick="selectPeriod(this)">전체</button>
+						<input type="date" id="startDate" name="startDate" value="<%= startDate == null ? "" : startDate %>"> ~ <input type="date" id="endDate" name="endDate" value="<%= endDate == null ? "" : endDate %>">
 					</div>
 
 					<div class="search-row">
 						<label>처리상태</label><select id="orderStatus" name="orderStatus">
-						    <option value="" <%= status.equals("") ? "selected" : "" %>>전체</option>
-						    <option value="paid" <%= status.equals("paid") ? "selected" : "" %>>결제완료</option>
-						    <option value="ready" <%= status.equals("ready") ? "selected" : "" %>>배송대기</option>
-						    <option value="delivery" <%= status.equals("delivery") ? "selected" : "" %>>배송중</option>
-						    <option value="complete" <%= status.equals("complete") ? "selected" : "" %>>배송완료</option>
-						    <option value="cancel" <%= status.equals("cancel") ? "selected" : "" %>>취소요청</option>
+						    <option value="" <%= "".equals(delivery_status) ? "selected" : "" %>>전체</option>
+						    <option value="paid" <%= "paid".equals(delivery_status) ? "selected" : "" %>>결제완료</option>
+						    <option value="ready" <%= "ready".equals(delivery_status) ? "selected" : "" %>>배송대기</option>
+						    <option value="delivery" <%= "delivery".equals(delivery_status) ? "selected" : "" %>>배송중</option>
+						    <option value="complete" <%= "complete".equals(delivery_status) ? "selected" : "" %>>배송완료</option>
+						    <option value="cancel" <%= "cancel".equals(delivery_status) ? "selected" : "" %>>취소요청</option>
 						</select>
 					</div>
 
 					<div class="search-row">
-						<label>상품구분</label><select id="category">
+						<label>상품구분</label><select id="category" name="category">
 							<option value="">전체</option>
-							<option>채소</option>
-							<option>과일</option>
+							<option  value="채소" <%= "채소".equals(category) ? "selected" : "" %>>채소</option>
+							<option  value="과일" <%= "과일".equals(category) ? "selected" : "" %>>과일</option>
+							<option  value="음료" <%= "음료".equals(category) ? "selected" : "" %>>음료</option>
 						</select>
 					</div>
 
 					<div class="search-btn-area">
-						<button type="button" id="resetBtn">초기화</button>
-						<button type="button" id="searchBtn">조회</button>
+						<button type="button" id="searchBtn" onclick="searchOrder()">조회</button>
+						<button type="button" id="resetBtn" onclick="resetSearch()">초기화</button>
 					</div>
 
 				</div>
@@ -515,7 +549,7 @@ $(function(){
 				<table class="order-table">
 					<thead>
 						<tr>
-							<th><input type="checkbox" id="allCheck"></th>
+							<th><input type="checkbox" id="allCheck" onchange="checkAll(this)"></th>
 							<th>No.</th>
 							<th>주문번호</th>
 							<th>회원ID</th>
@@ -537,7 +571,7 @@ $(function(){
 					<c:forEach var="order" items="${orderList}" varStatus="status">
 						<tr>
 							<td>
-								<input type="checkbox" name="selectedOrder" value="${order.orderID}">
+								<input type="checkbox" name="selectedOrder" value="${order.orderID}" onchange="checkOrder()">
 							</td>
 							<td>${status.count}</td>
 							<td>${order.orderID}</td>
@@ -559,13 +593,13 @@ $(function(){
 							        -
 							    </c:when>
 							    <c:when test="${order.claimName eq '취소'}">
-							        <button type="button" class="cancel-btn" data-claim-id="${order.claimID}">취소 요청</button>
+							        <button type="button" class="cancel-btn" data-claim-id="${order.claimID}" onclick="openCancelDetail(this)">취소 요청</button>
 							    </c:when>
 							    <c:when test="${order.claimName eq '교환'}">
-							        <button type="button" class="exchange-btn" data-claim-id="${order.claimID}">교환 요청</button>
+							        <button type="button" class="exchange-btn" data-claim-id="${order.claimID}" onclick="openExchangeDetail(this)">교환 요청</button>
 							    </c:when>
 							    <c:when test="${order.claimName eq '반품'}">
-							        <button type="button" class="exchange-btn" data-claim-id="${order.claimID}">반품 요청</button>
+							        <button type="button" class="exchange-btn" data-claim-id="${order.claimID}" onclick="openExchangeDetail(this)">반품 요청</button>
 							    </c:when>
 							</c:choose>
 							</td>
@@ -609,7 +643,7 @@ $(function(){
 				</div>
 
 				<div class="bottom-btn">
-					<button type="button" id="deliveryBtn">배송처리</button>
+					<button type="button" id="deliveryBtn" onclick="processDelivery()">배송처리</button>
 				</div>
 
 			</div>
@@ -664,8 +698,8 @@ $(function(){
 				</div>
 
 				<div class="modal-footer">
-				    <button type="button" class="btn btn-danger" id="cancelCompleteBtn">취소 완료</button>
-				    <button type="button" class="btn btn-secondary" id="cancelRejectBtn">취소 거절</button>
+				    <button type="button" class="btn btn-danger" id="cancelCompleteBtn" onclick="completeCancel()">취소 완료</button>
+				    <button type="button" class="btn btn-secondary" id="cancelRejectBtn" onclick="rejectCancel()">취소 거절</button>
 				</div>
 			</div>
 		</div>
@@ -724,8 +758,8 @@ $(function(){
 					</table>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" id="exchangeCompleteBtn">교환/반품 완료</button>
-						<button type="button" class="btn btn-secondary" id="exchangeRejectBtn">교환/반품 거절</button>
+						<button type="button" class="btn btn-primary" id="exchangeCompleteBtn" onclick="completeExchange()">교환/반품 완료</button>
+						<button type="button" class="btn btn-secondary" id="exchangeRejectBtn" onclick="rejectExchange()">교환/반품 거절</button>
 					</div>
 				</div>
 			</div>
