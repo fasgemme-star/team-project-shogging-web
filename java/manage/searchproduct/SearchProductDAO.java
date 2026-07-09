@@ -71,19 +71,15 @@ public class SearchProductDAO {
 		    query.append("SELECT COUNT(1) total_cnt ");
 		    query.append("FROM PRODUCT_OPTION po ");
 		    query.append("JOIN PRODUCT p ON po.PRODUCT_ID = p.PRODUCT_ID ");
+		    query.append("JOIN category ct ON p.category_id=ct.category_id ");
 		    query.append("WHERE 1=1 ");
 
 		    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
 		        query.append(" AND instr(option_name, ?) != 0 ");
 		    }
 
-		    if (rDTO.getCategory() != null && !rDTO.getCategory().isEmpty()) {
-		        if (rDTO.getCategory().equals("과일")) {
-		            query.append(" AND category_id='CAT000001' ");
-		        }
-		        if (rDTO.getCategory().equals("채소")) {
-		            query.append(" AND category_id='CAT000002' ");
-		        }
+		    if (rDTO.getCategory() != null && !rDTO.getCategory().equals("전체") && !rDTO.getCategory().isEmpty()) {
+		            query.append(" AND category_name= ? ");
 		    }
 
 		    if ("판매중".equals(rDTO.getStatus())) {
@@ -109,6 +105,9 @@ public class SearchProductDAO {
 
 		        if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
 		            pstmt.setString(idx++, rDTO.getKeyword());
+		        }
+		        if (rDTO.getCategory() != null && !rDTO.getCategory().isEmpty()) {
+		        	pstmt.setString(idx++, rDTO.getCategory());
 		        }
 		        if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty()
 		            && rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
@@ -137,17 +136,14 @@ public class SearchProductDAO {
 	    StringBuilder query = new StringBuilder();
 	    query.append("	    select p.* from( ")
 		.append("	select rownum n , t.*	")
-		.append("	from ( 	SELECT OPTION_ID, OPTION_NAME, PRICE, STOCKQUANTITY FROM PRODUCT_OPTION po join product p on po.PRODUCT_ID = p.PRODUCT_ID	")
+		.append("	from ( 	SELECT OPTION_ID, OPTION_NAME, PRICE, STOCKQUANTITY FROM PRODUCT_OPTION po join product p on po.PRODUCT_ID = p.PRODUCT_ID JOIN category ct ON p.category_id=ct.category_id	")
 		.append("	WHERE 1=1	");
 		
 	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().isEmpty()) {
 	        query.append(" AND instr(option_name, ? ) != 0 ");
 	    }
-	    if (rDTO.getCategory() != null&& rDTO.getCategory().equals("과일") && !rDTO.getCategory().isEmpty()) {
-	    	query.append(" AND category_id = 'CAT000001' ");
-	    }
-	    if (rDTO.getCategory() != null&& rDTO.getCategory().equals("채소") && !rDTO.getCategory().isEmpty()) {
-	    	query.append(" AND category_id = 'CAT000002' ");
+	    if (rDTO.getCategory() != null&& !rDTO.getCategory().equals("전체") && !rDTO.getCategory().isEmpty()) {
+	    	query.append(" AND category_name = ? ");
 	    }
 	    if (rDTO.getStatus() != null && rDTO.getStatus().equals("판매중") && !rDTO.getStatus().isEmpty()) {
             query.append("AND STOCKQUANTITY != 0 ");
@@ -172,6 +168,9 @@ public class SearchProductDAO {
             if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
                 pstmt.setString(paramIndex++, rDTO.getKeyword());
             }
+            if (rDTO.getCategory() != null && !rDTO.getCategory().isEmpty()) {
+	        	pstmt.setString(paramIndex++, rDTO.getCategory());
+	        }
          
             if (rDTO.getStartDate() != null && !rDTO.getStartDate().isEmpty() && 
             		rDTO.getEndDate() != null && !rDTO.getEndDate().isEmpty()) {
