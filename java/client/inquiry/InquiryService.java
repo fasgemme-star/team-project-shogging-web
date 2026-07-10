@@ -21,4 +21,13 @@ public class InquiryService {
 	public boolean deleteInquiry(String inquiryId, String clientNo) {
 		return iqDAO.deleteInquiry(inquiryId, clientNo) > 0;
 	}
+	
+	public int insertOrderInquiry(InquiryDTO iDTO) {
+		
+		return insertOrderInquiry(iDTO);
+	}
+	public int insertServiceInquiry(InquiryDTO iDTO) {
+		
+		return insertServiceInquiry(iDTO);
+	}
 }

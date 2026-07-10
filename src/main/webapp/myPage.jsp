@@ -11,7 +11,7 @@
 <jsp:useBean id="pdInquiryService" class="client.prdInquiry.PrdInquiryService" scope="page"/>
 <jsp:useBean id="changeClientInfoService" class="client.changeClientInfo.ChangeClientInfoService" scope="page"/>
 <%
-    request.setCharacterEncoding("UTF-8");
+request.setCharacterEncoding("UTF-8");
 
     // ---- 로그인 확인 ----
     String clientNo = (String) session.getAttribute("clientNo");

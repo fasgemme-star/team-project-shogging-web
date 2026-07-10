@@ -4,36 +4,38 @@
 <jsp:useBean id="pdService" class="client.productDetail.ProductDetailService" scope="page"/>
 <jsp:useBean id="pdInquiryService" class="client.prdInquiry.PrdInquiryService" scope="page"/> 
 <%
-    // 주의: ProductDetailDAO.selectProductInfo()는 실제로 OPTION_ID(옵션번호) 기준으로 조회한다.
-    // (PRODUCT_ID를 넘기면 매칭되는 행이 없어 상세페이지가 비어 보인다.)
-    String optionNo = request.getParameter("optionNo");
+ 
 
-    int quantity = 1;
-    String qtyParam = request.getParameter("quantity");
-    if (qtyParam != null) {
-        try { quantity = Integer.parseInt(qtyParam); } catch (NumberFormatException e) { quantity = 1; }
-        if (quantity < 1) quantity = 1;
-    }
+      // 주의: ProductDetailDAO.selectProductInfo()는 실제로 OPTION_ID(옵션번호) 기준으로 조회한다.
+      // (PRODUCT_ID를 넘기면 매칭되는 행이 없어 상세페이지가 비어 보인다.)
+      String optionNo = request.getParameter("optionNo");
 
-    // ---- ProductDetailService 메소드 연결 ----
-    ProductDTO product = (optionNo == null) ? null : pdService.getProductInfo(optionNo);
+      int quantity = 1;
+      String qtyParam = request.getParameter("quantity");
+      if (qtyParam != null) {
+          try { quantity = Integer.parseInt(qtyParam); } catch (NumberFormatException e) { quantity = 1; }
+          if (quantity < 1) quantity = 1;
+      }
 
-    // ---- 상품 문의 목록 (PrdInquiryService) ----
-    String clientNo = (String) session.getAttribute("clientNo");
+      // ---- ProductDetailService 메소드 연결 ----
+      ProductDTO product = (optionNo == null) ? null : pdService.getProductInfo(optionNo);
+
+      // ---- 상품 문의 목록 (PrdInquiryService) ----
+      String clientNo = (String) session.getAttribute("clientNo");
 
 
-	java.util.List<InquiryDTO> getPrdDetailInquiryList = (optionNo == null )
-	? new java.util.ArrayList<InquiryDTO>()
-	: pdInquiryService.getPrdDetailInquiryList(optionNo);
+  	java.util.List<InquiryDTO> getPrdDetailInquiryList = (optionNo == null )
+  	? new java.util.ArrayList<InquiryDTO>()
+  	: pdInquiryService.getPrdDetailInquiryList(optionNo);
 
-    
+      
 
-    
-    request.setAttribute("product", product);
-    request.setAttribute("optionNo", optionNo);
-    request.setAttribute("quantity", quantity);
-  	request.setAttribute("getPrdDetailInquiryList", getPrdDetailInquiryList);
-%>
+      
+      request.setAttribute("product", product);
+      request.setAttribute("optionNo", optionNo);
+      request.setAttribute("quantity", quantity);
+    request.setAttribute("getPrdDetailInquiryList", getPrdDetailInquiryList);
+ %>
 <%@ include file="common/header.jsp" %>
 
 <section class="max-w-max-width mx-auto py-16 px-margin-desktop" id="detail-view">

@@ -28,7 +28,7 @@ public class InquiryDAO {
 	}
 	
 	//회원별 문의 목록 조회(일대일문의만)
-	public List<InquiryDTO> selectList(String clientId){
+	public List<InquiryDTO> selectList(String clientNo){
 		
 		List<InquiryDTO> list=new ArrayList<InquiryDTO>();
 		DbConnection dbcon = DbConnection.getInstance();
@@ -45,7 +45,7 @@ public class InquiryDAO {
 			
 			pstmt=con.prepareStatement(sql);
 			
-			pstmt.setString(1, clientId);
+			pstmt.setString(1, clientNo);
 			
 			rs=pstmt.executeQuery();
 			

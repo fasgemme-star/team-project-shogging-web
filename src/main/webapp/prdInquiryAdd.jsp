@@ -2,6 +2,8 @@
 <%@ page import="client.inquiry.InquiryDTO" %>
 <jsp:useBean id="pdInquiryService" class="client.prdInquiry.PrdInquiryService" scope="page"/>
 <%
+
+
     request.setCharacterEncoding("UTF-8");
 
     String clientNo = (String) session.getAttribute("clientNo");

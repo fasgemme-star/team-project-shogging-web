@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%-- <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="java.util.List" %>
@@ -10,9 +10,9 @@
 <%@ page import="dbcon.DbConnection" %>
 <%@ page import="dbcon.Path" %>
 <%@ page import="client.inquiry.InquiryDTO" %>
-<jsp:useBean id="ccInquiryService" class="client.inquiry.InquiryService" scope="page"/>
+<jsp:useBean id="InquiryService" class="client.inquiry.InquiryService" scope="page"/>
 <%
-    request.setCharacterEncoding("UTF-8");
+request.setCharacterEncoding("UTF-8");
 
     // ---- 로그인 확인 ----
     String clientNo = (String) session.getAttribute("clientNo");
@@ -23,24 +23,24 @@
         return;
     }
 
-    // ---- 문의 등록 (POST) ----
-/*     if ("POST".equalsIgnoreCase(request.getMethod())) {
-        InquiryDTO writeDTO = new InquiryDTO();
-        writeDTO.setInquiryTitle(request.getParameter("inquiryTitle"));
-        writeDTO.setInquiryContent(request.getParameter("inquiryContent"));
-        writeDTO.setInquirySecret("Y".equals(request.getParameter("inquirySecret")) ? "Y" : "N");
-        writeDTO.setInquiryCode(request.getParameter("inquiryCode"));
-        writeDTO.setClientNo(clientNo);
+   // ---- 문의 등록 (POST) ----
+   //  if ("POST".equalsIgnoreCase(request.getMethod())) {
+     //   InquiryDTO writeDTO = new InquiryDTO();
+     // writeDTO.setInquiryTitle(request.getParameter("inquiryTitle"));
+     //   writeDTO.setInquiryContent(request.getParameter("inquiryContent"));
+     //   writeDTO.setInquirySecret("Y".equals(request.getParameter("inquirySecret")) ? "Y" : "N");
+     //   writeDTO.setInquiryCode(request.getParameter("inquiryCode"));
+     //   writeDTO.setClientNo(clientNo);
 
-        boolean result = ccInquiryService.registerInquiry(writeDTO);
+        String result = InquiryService.insertOrderInquiry(clientNo);
 
         session.setAttribute("toastMsg", result ? "문의가 등록되었습니다." : "문의 등록에 실패했습니다.");
-        response.sendRedirect(request.getContextPath() + "/customerCenter.jsp");
-        return;
-    } */
+       response.sendRedirect(request.getContextPath() + "/customerCenter.jsp");
+       return;
+    //}
 
     // ---- 문의 유형 목록 (INQUIRY_TYPE 테이블에서 일반 1:1 문의에 해당하는 코드만 조회) ----
-    List<String[]> inquiryTypeList = new ArrayList<String[]>();
+     List<String[]> inquiryTypeList = new ArrayList<String[]>();
     DbConnection ccDbcon = DbConnection.getInstance();
 
     Connection ccCon = null;
@@ -69,11 +69,11 @@
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    } 
     request.setAttribute("inquiryTypeList", inquiryTypeList);
 
     // ---- 1:1 문의 내역 ----
-    List<InquiryDTO> inquiryList = ccInquiryService.getInquiryList(clientNo);
+    List<InquiryDTO> inquiryList = ccInquiryService.getInquiryList(clientId);
     request.setAttribute("inquiryList", inquiryList);
 %>
 <%@ include file="common/header.jsp" %>
@@ -83,7 +83,7 @@
     <span class="material-symbols-outlined mr-2 text-primary">support_agent</span>고객센터
   </h2>
 
-  <%-- ===================== 1:1 문의 작성 ===================== --%>
+  ===================== 1:1 문의 작성 =====================
   <div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-6 mb-10">
     <h3 class="font-headline-sm text-headline-sm mb-6 flex items-center">
       <span class="material-symbols-outlined mr-2 text-primary">edit_note</span>1:1 문의
@@ -112,7 +112,7 @@
     </form>
   </div>
 
-  <%-- ===================== 1:1 문의 내역 ===================== --%>
+  ===================== 1:1 문의 내역 =====================
   <div class="bg-surface-container-lowest border border-surface-variant rounded-xl overflow-hidden">
     <div class="p-6 border-b border-surface-variant">
       <h3 class="font-headline-sm text-headline-sm flex items-center">
@@ -151,3 +151,4 @@
 </section>
 
 <%@ include file="common/footer.jsp" %>
+ --%>
