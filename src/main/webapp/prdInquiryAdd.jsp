@@ -5,6 +5,7 @@
     request.setCharacterEncoding("UTF-8");
 
     String clientNo = (String) session.getAttribute("clientNo");
+    String optionNo = request.getParameter("optionNo");
     String redirectTo = request.getParameter("redirectTo");
     if (redirectTo == null || redirectTo.trim().isEmpty()) {
         redirectTo = request.getContextPath() + "/home.jsp";
@@ -22,6 +23,7 @@
     iDTO.setInquirySecret("Y".equals(request.getParameter("inquirySecret")) ? "Y" : "N");
     iDTO.setProductId(request.getParameter("prdID"));
     iDTO.setClientNo(clientNo);
+    iDTO.setClientNo(optionNo);
 
     boolean result = pdInquiryService.registerInquiry(iDTO);
 

@@ -13,9 +13,13 @@ public class PrdInquiryService {
 		piDAO=PrdInquiryDAO.getInstance();
 	}
 	
-	//상품별 문의 목록 조회
+	//상품별 문의 목록 조회(마이페이지)
 	public List<InquiryDTO> getInquiryList(String clientNo){
 		return piDAO.selectInquiryList(clientNo);
+	}
+	//상품별 문의 목록 조회(상품상세페이지)
+	public List<InquiryDTO> getPrdDetailInquiryList(String optionNo){
+		return piDAO.selectPrdDetailInquiryList(optionNo);
 	}
 	//문의 상세 내용 조회
 	public InquiryDTO getInquiryDetail(String inquiryId) {

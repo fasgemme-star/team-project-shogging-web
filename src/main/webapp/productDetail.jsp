@@ -22,9 +22,9 @@
     String clientNo = (String) session.getAttribute("clientNo");
 
 
-	java.util.List<InquiryDTO> prdInquiryList = (clientNo == null )
+	java.util.List<InquiryDTO> getPrdDetailInquiryList = (optionNo == null )
 	? new java.util.ArrayList<InquiryDTO>()
-	: pdInquiryService.getInquiryList(clientNo);
+	: pdInquiryService.getPrdDetailInquiryList(optionNo);
 
     
 
@@ -32,7 +32,7 @@
     request.setAttribute("product", product);
     request.setAttribute("optionNo", optionNo);
     request.setAttribute("quantity", quantity);
-  	request.setAttribute("prdInquiryList", prdInquiryList);
+  	request.setAttribute("getPrdDetailInquiryList", getPrdDetailInquiryList);
 %>
 <%@ include file="common/header.jsp" %>
 
@@ -190,7 +190,7 @@ request.setAttribute("product2", product2);
       <div class="tab-content-detail hidden" id="tab-qna">
         <div class="max-w-3xl mx-auto">
           <c:choose>
-            <c:when test="${empty prdInquiryList}">
+            <c:when test="${empty getPrdDetailInquiryList}">
               <div class="flex flex-col items-center justify-center py-16 text-center">
                 <span class="material-symbols-outlined text-outline-variant text-6xl mb-4">quiz</span>
                 <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">등록된 문의가 없습니다.</h3>
@@ -199,7 +199,7 @@ request.setAttribute("product2", product2);
             </c:when>
             <c:otherwise>
               <div class="divide-y divide-surface-variant border-y border-surface-variant mb-10">
-                <c:forEach var="prdiq" items="${prdInquiryList}">
+                <c:forEach var="prdiq" items="${getPrdDetailInquiryList}">
                   <div class="inquiry-item">
                     
                    <div class="py-4 flex items-center justify-between gap-4 cursor-pointer hover:bg-surface-container/30 transition-colors" 

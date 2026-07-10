@@ -28,7 +28,7 @@ public class PrdInquiryDAO {
 		return piDAO;
 	}
 	
-	//상품별 문의 목록 조회
+	//상품별 문의 목록 조회(마이페이지)
 	public List<InquiryDTO> selectInquiryList(String clientNo) {
 		
 		
@@ -91,6 +91,66 @@ public class PrdInquiryDAO {
 
         return list;
     }
+	//상품별 문의 목록 조회(상세페이지)
+	public List<InquiryDTO> selectPrdDetailInquiryList(String optionNo) {
+		
+		
+		
+		List<InquiryDTO> list = new ArrayList<>();
+		
+		DbConnection dbcon = DbConnection.getInstance();
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		
+		try {
+			
+			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+			
+			StringBuilder sql = new StringBuilder();
+			
+			
+			sql.append(" SELECT i.INQUIRY_ID, i.INQUIRY_DATE, i.INQUIRY_TITLE, i.INQUIRY_CONTENT, i.ANSWER_STATUS ");
+			sql.append(" FROM INQUIRY i ");
+			sql.append(" LEFT JOIN PRODUCT_OPTION po on i.OPTION_ID=po.OPTION_ID  ");
+			sql.append(" WHERE i.INQUIRY_CODE = 'TYP000003' AND po.OPTION_ID=?  ");
+			sql.append(" ORDER BY i.INQUIRY_DATE DESC ");
+			
+			
+			pstmt = con.prepareStatement(sql.toString());
+			
+            pstmt.setString(1, optionNo);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				InquiryDTO iDTO = new InquiryDTO();
+				
+				iDTO.setInquiryId(rs.getString("INQUIRY_ID"));
+				iDTO.setInquiryDate(rs.getDate("INQUIRY_DATE"));
+				iDTO.setInquiryTitle(rs.getString("INQUIRY_TITLE"));
+				iDTO.setAnswerStatus(rs.getString("ANSWER_STATUS"));
+				iDTO.setInquiryContent(rs.getString("INQUIRY_CONTENT"));
+				
+				list.add(iDTO);
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				dbcon.dbClose(rs, pstmt, con);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
     
 	//문의 상세 내용 조회 
 	public InquiryDTO selectInquiryDetail(String inquiryId) {
@@ -173,10 +233,10 @@ public class PrdInquiryDAO {
             sql.append(" (INQUIRY_DATE, INQUIRY_TITLE, ");
             sql.append(" INQUIRY_SECRET, INQUIRY_CONTENT, ");
             sql.append(" ANSWER_STATUS, INQUIRY_STATUS, ");
-            sql.append(" INQUIRY_CODE, CLIENT_NO) ");
+            sql.append(" INQUIRY_CODE, CLIENT_NO , OPTION_ID) ");
             sql.append(" VALUES ");
             sql.append(" (SYSDATE, ?, ?, ?, ");
-            sql.append(" '답변대기','Y', 'TYP000003',?) "); 
+            sql.append(" '답변대기','Y', 'TYP000003',?, ?) "); 
             
             pstmt = con.prepareStatement(sql.toString());
             
@@ -185,6 +245,7 @@ public class PrdInquiryDAO {
             pstmt.setString(2, dto.getInquirySecret());
             pstmt.setString(3, dto.getInquiryContent());
             pstmt.setString(4, dto.getClientNo());
+            pstmt.setString(5, dto.getOptionNo());
 
             cnt = pstmt.executeUpdate();
 
