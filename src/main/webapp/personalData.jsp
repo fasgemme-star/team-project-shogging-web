@@ -5,7 +5,7 @@
     <h1 class="text-3xl font-bold mb-8 border-b-2 border-gray-900 pb-4">개인정보 처리방침</h1>
     
     <div class="prose max-w-none">
-        <p class="mb-6 italic text-gray-600">㈜컬리(이하 “회사”)는 「개인정보 보호법」제30조에 따라 이용자에게 개인정보의 처리와 보호에 관한 절차 및 기준을 안내하고, 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.</p>
+        <p class="mb-6 italic text-gray-600">㈜프레시마켓(이하 “회사”)는 「개인정보 보호법」제30조에 따라 이용자에게 개인정보의 처리와 보호에 관한 절차 및 기준을 안내하고, 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.</p>
 
         <!-- 제1장 -->
         <h2 class="text-2xl font-bold mt-10 mb-4 text-primary">제1장. 개인정보의 처리 목적, 수집 항목, 보유 및 이용기간</h2>
@@ -53,8 +53,8 @@
 
         <h2 class="text-2xl font-bold mt-10 mb-4 text-primary">제7장. 개인정보 보호책임자 및 담당자 안내</h2>
         <div class="bg-gray-50 p-6 rounded-lg border">
-            <p><strong>개인정보 보호책임자:</strong> 인프라 부문장 (privacy@kurlycorp.com)</p>
-            <p><strong>민원처리 담당부서:</strong> 고객서비스팀 (help@kurlycorp.com)</p>
+            <p><strong>개인정보 보호책임자:</strong> 인프라 부문장 (privacy@frashmarket.com)</p>
+            <p><strong>민원처리 담당부서:</strong> 고객서비스팀 (help@frashmarket.com)</p>
             <p><strong>연락처:</strong> 1644-1107</p>
         </div>
 
