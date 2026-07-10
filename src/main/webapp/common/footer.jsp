@@ -9,8 +9,8 @@
       <p class="text-secondary font-body-sm text-body-sm">© 2024 프레시마켓. All rights reserved. 고객센터: 1588-0000</p>
     </div>
     <div class="flex gap-gutter-sm">
-      <a class="text-on-surface-variant hover:text-on-surface transition-colors text-body-sm" href="javascript:void(0)" onclick="showToast('준비 중입니다.')">회사소개</a>
-      <a class="text-on-surface-variant hover:text-on-surface transition-colors text-body-sm" href="javascript:void(0)" onclick="showToast('준비 중입니다.')">이용약관</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors text-body-sm" href="javascript:void(0)" >회사소개</a>
+      <a class="text-on-surface-variant hover:text-on-surface transition-colors text-body-sm" href="javascript:void(0)" >이용약관</a>
       <a class="text-primary font-bold underline text-body-sm" href="${pageContext.request.contextPath}/personalData.jsp">개인정보처리방침</a>
     </div>
   </div>
