@@ -127,9 +127,19 @@ public class ClientDAO {
 	    if (rDTO.getKeyword() != null && !rDTO.getKeyword().trim().isEmpty()) {
 	        query.append("AND  ( instr(CLIENT_NAME, ? ) != 0 or instr(CLIENT_EMAIL, ? ) != 0  OR instr(CLIENT_TEL, ? ) != 0 )  ");
 	    } 
+	    if (rDTO.getSort() ==0) {
+	    	query.append("		 order by client_start_date desc    ");
+	    } else if (rDTO.getSort() == 1) {
+	    	query.append("		 order by CLIENT_NAME asc   ");
+	    } else if (rDTO.getSort() == 2) {
+	    	query.append("		 order by CLIENT_NAME desc   ");
+	    } else if (rDTO.getSort() == 3) {
+	    	query.append("		 order by client_start_date asc   ");
+	    }else if (rDTO.getSort() == 4) {
+	    	query.append("		 order by client_start_date desc    ");
+	    }
 	    
-	    query.append("		order by client_start_date desc ))  ")
-	    .append("		where n between ? and ?  ");
+	    query.append("	))	where n between ? and ?  ");
 	    
 	    try {
             con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
