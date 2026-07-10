@@ -8,7 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class RangeDTO {
-	private int startNum, endNum;
+	private int startNum, endNum, sort;
 	private int totalCnt;
 	private int pageCnt;
 	private String keyword;
