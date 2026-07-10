@@ -19,30 +19,17 @@
 
 <script type="text/javascript">
 $(function(){
-    function searchUser(){
-        let keyword = $("#searchInput").val().toLowerCase().trim();
-
-        $(".user-row").each(function(){
-            let name = $(this).data("name").toLowerCase();
-            let email = $(this).data("email").toLowerCase();
-            let phone = $(this).data("phone");
-            if(name.includes(keyword) || email.includes(keyword) || phone.includes(keyword)){
-                $(this).show();
-            }else{
-                $(this).hide();
-            }
-        });
-    }//searchUser
-    
     $("#searchBtn").click(function(){
         let keyword=$("#searchInput").val();
-        location.href="adminUsers.jsp?currentPage=1&keyword="+encodeURIComponent(keyword);
+        let sort = "${param.sort}";
+        location.href="adminUsers.jsp?currentPage=1&keyword="+encodeURIComponent(keyword)+"&sort="+sort;
     });
 
     $("#searchInput").keypress(function(e){
         if(e.key === "Enter"){
             let keyword=$("#searchInput").val();
-            location.href="adminUsers.jsp?currentPage=1&keyword="+encodeURIComponent(keyword);
+            let sort = "${param.sort}";
+            location.href="adminUsers.jsp?currentPage=1&keyword="+encodeURIComponent(keyword)+"&sort="+sort;
         }
     });
 
@@ -50,28 +37,15 @@ $(function(){
         $("#sortMenu").toggle();
     });//click
 
-    $("#sortMenu li").click(function(){
-        let type = $(this).data("sort");
-        let rows = $(".user-row").get();
+    $("#sortMenu li").click(function () {
+        let sort = $(this).data("sort");
+        let keyword = $("#searchInput").val();
 
-        rows.sort(function(a,b){
-            let aName = $(a).data("name");
-            let bName = $(b).data("name");
-            let aDate = new Date($(a).data("date"));
-            let bDate = new Date($(b).data("date"));
-
-            switch(type){
-                case "nameAsc": return aName.localeCompare(bName);
-                case "nameDesc": return bName.localeCompare(aName);
-                case "dateAsc": return aDate - bDate;
-                case "dateDesc": return bDate - aDate;
-            }
-        });
-
-        $(".user-table tbody").html(rows);
-        $("#sortMenu").hide();
+        location.href = 
+        	"adminUsers.jsp?currentPage=1" + "&keyword=" + encodeURIComponent(keyword) + 
+        			"&sort=" + sort;
     });
-
+    
     // 바깥 클릭 시 정렬 메뉴 닫기
     $(document).click(function(e){
         if(!$(e.target).closest(".sort-box").length){
@@ -167,6 +141,14 @@ $(function(){
 		}
 		rDTO.setKeyword(keyword);
 		
+		int sort = 0;
+		try{
+		    sort = Integer.parseInt(request.getParameter("sort"));
+		}catch(Exception e){
+		    sort = 0;
+		}
+		rDTO.setSort(sort);
+		
 		int currentPage = 1;
 		try{
 		    currentPage = Integer.parseInt(request.getParameter("currentPage"));
@@ -257,10 +239,10 @@ $(function(){
 							<div class="sort-box">
 								<button type="button" id="sortBtn">정렬 ⇔</button>
 								<ul id="sortMenu" class="sort-menu">
-									<li data-sort="nameAsc">이름 오름차순</li>
-									<li data-sort="nameDesc">이름 내림차순</li>
-									<li data-sort="dateAsc">가입일 오름차순</li>
-									<li data-sort="dateDesc">가입일 내림차순</li>
+									<li data-sort="1">이름 오름차순</li>
+									<li data-sort="2">이름 내림차순</li>
+									<li data-sort="3">가입일 오름차순</li>
+									<li data-sort="4">가입일 내림차순</li>
 								</ul>
 							</div>
 						</div>
@@ -299,7 +281,7 @@ $(function(){
 						    <!-- 이전 그룹 -->
 						    <c:if test="${startPage > 1}">
 						        <a class="page"
-						           href="adminUsers.jsp?currentPage=${startPage-1}&keyword=${param.keyword}">
+						           href="adminUsers.jsp?currentPage=${startPage-1}&keyword=${param.keyword}&sort=${param.sort}">
 						            ◀
 						        </a>
 						    </c:if>
@@ -312,7 +294,7 @@ $(function(){
 						            </c:when>
 						            <c:otherwise>
 						                <a class="page"
-						                   href="adminUsers.jsp?currentPage=${i}&keyword=${param.keyword}">
+						                   href="adminUsers.jsp?currentPage=${i}&keyword=${param.keyword}&sort=${param.sort}">
 						                    ${i}
 						                </a>
 						            </c:otherwise>
@@ -322,7 +304,7 @@ $(function(){
 						    <!-- 다음 그룹 -->
 						    <c:if test="${endPage < rDTO.pageCnt}">
 						        <a class="page"
-						           href="adminUsers.jsp?currentPage=${endPage+1}&keyword=${param.keyword}">
+						           href="adminUsers.jsp?currentPage=${endPage+1}&keyword=${param.keyword}&sort=${param.sort}">
 						            ▶
 						        </a>
 						    </c:if>
