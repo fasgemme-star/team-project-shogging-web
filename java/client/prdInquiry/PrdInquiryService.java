@@ -14,11 +14,11 @@ public class PrdInquiryService {
 	}
 	
 	//상품별 문의 목록 조회
-	public List<InquiryDTO> getInquiryList(String prdId){
-		return piDAO.selectInquiryList(prdId);
+	public List<InquiryDTO> getInquiryList(String clientNo){
+		return piDAO.selectInquiryList(clientNo);
 	}
 	//문의 상세 내용 조회
-	public InquiryDTO getInquiryDetail(int inquiryId) {
+	public InquiryDTO getInquiryDetail(String inquiryId) {
 
         return piDAO.selectInquiryDetail(inquiryId);
     }

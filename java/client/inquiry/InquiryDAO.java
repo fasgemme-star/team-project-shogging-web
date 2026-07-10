@@ -133,7 +133,7 @@ public class InquiryDAO {
 		try {
 			con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
 
-			String sql = "UPDATE INQUIRY SET INQUIRY_STATUS = 'Y' WHERE INQUIRY_ID = ? AND CLIENT_NO = ?";
+			String sql = "DELETE FROM INQUIRY WHERE INQUIRY_ID = ? AND CLIENT_NO=? ";
 
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, inquiryId);

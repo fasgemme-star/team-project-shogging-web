@@ -11,10 +11,12 @@
     }
 
     String inquiryId = request.getParameter("inquiryId");
+	
+    boolean deleteInquiry=(inquiryId==null && clientNo==null)? null : mpInquiryService.deleteInquiry(inquiryId,clientNo);
+    
+    /* boolean result = (inquiryId != null && !inquiryId.trim().isEmpty())
+            && mpInquiryService.deleteInquiry(inquiryId, clientNo); */
 
-    boolean result = (inquiryId != null && !inquiryId.trim().isEmpty())
-            && mpInquiryService.deleteInquiry(inquiryId, clientNo);
-
-    session.setAttribute("toastMsg", result ? "문의 내역을 삭제했습니다." : "문의 내역 삭제에 실패했습니다.");
+    session.setAttribute("toastMsg", deleteInquiry ? "문의 내역을 삭제했습니다." : "문의 내역 삭제에 실패했습니다.");
     response.sendRedirect(request.getContextPath() + "/myPage.jsp?tab=inquiry");
 %>
