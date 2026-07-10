@@ -19,21 +19,6 @@
 
 <script type="text/javascript">
 $(function(){
-    function searchUser(){
-        let keyword = $("#searchInput").val().toLowerCase().trim();
-
-        $(".user-row").each(function(){
-            let name = $(this).data("name").toLowerCase();
-            let email = $(this).data("email").toLowerCase();
-            let phone = $(this).data("phone");
-            if(name.includes(keyword) || email.includes(keyword) || phone.includes(keyword)){
-                $(this).show();
-            }else{
-                $(this).hide();
-            }
-        });
-    }//searchUser
-    
     $("#searchBtn").click(function(){
         let keyword=$("#searchInput").val();
         let sort = "${param.sort}";
