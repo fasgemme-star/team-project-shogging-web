@@ -153,4 +153,108 @@ public class InquiryDAO {
 
 		return cnt;
 	}
+	//신규 주문/결제 문의 등록
+		public int insertOrderInquiry(InquiryDTO iDTO) {
+			
+
+	        int cnt = 0;
+
+	        DbConnection dbcon = DbConnection.getInstance();
+	        
+	        Connection con = null;
+	        PreparedStatement pstmt = null;
+
+	        
+			
+			try {
+				
+				con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+
+	            StringBuilder sql = new StringBuilder();
+
+	            sql.append(" INSERT INTO INQUIRY ");
+	            sql.append(" (INQUIRY_DATE, INQUIRY_TITLE, ");
+	            sql.append(" INQUIRY_SECRET, INQUIRY_CONTENT, ");
+	            sql.append(" ANSWER_STATUS, INQUIRY_STATUS, ");
+	            sql.append(" INQUIRY_CODE, CLIENT_NO , OPTION_ID) ");
+	            sql.append(" VALUES ");
+	            sql.append(" (SYSDATE, ?, ?, ?, ");
+	            sql.append(" '답변대기','Y', 'TYP000001',?, ?) "); 
+	            
+	            pstmt = con.prepareStatement(sql.toString());
+	            
+
+	            pstmt.setString(1, iDTO.getInquiryTitle());
+	            pstmt.setString(2, iDTO.getInquirySecret());
+	            pstmt.setString(3, iDTO.getInquiryContent());
+	            pstmt.setString(4, iDTO.getClientNo());
+	            pstmt.setString(5, iDTO.getOptionNo());
+
+	            cnt = pstmt.executeUpdate();
+
+	        } catch(Exception e) {
+	            e.printStackTrace();
+	        }finally {
+	        	try {
+					dbcon.dbClose(null, pstmt, con);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        }
+
+	        return cnt;
+	    }
+		//신규 서비스/기타 문의 등록
+		public int insertServiceInquiry(InquiryDTO iDTO) {
+			
+			
+			int cnt = 0;
+			
+			DbConnection dbcon = DbConnection.getInstance();
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			
+			
+			
+			try {
+				
+				con = dbcon.getConn(new File(Path.DATABASE_PROPERTIES));
+				
+				StringBuilder sql = new StringBuilder();
+				
+				sql.append(" INSERT INTO INQUIRY ");
+				sql.append(" (INQUIRY_DATE, INQUIRY_TITLE, ");
+				sql.append(" INQUIRY_SECRET, INQUIRY_CONTENT, ");
+				sql.append(" ANSWER_STATUS, INQUIRY_STATUS, ");
+				sql.append(" INQUIRY_CODE, CLIENT_NO , OPTION_ID) ");
+				sql.append(" VALUES ");
+				sql.append(" (SYSDATE, ?, ?, ?, ");
+				sql.append(" '답변대기','Y', 'TYP000002',?, ?) "); 
+				
+				pstmt = con.prepareStatement(sql.toString());
+				
+				
+				pstmt.setString(1, iDTO.getInquiryTitle());
+				pstmt.setString(2, iDTO.getInquirySecret());
+				pstmt.setString(3, iDTO.getInquiryContent());
+				pstmt.setString(4, iDTO.getClientNo());
+				pstmt.setString(5, iDTO.getOptionNo());
+				
+				cnt = pstmt.executeUpdate();
+				
+			} catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					dbcon.dbClose(null, pstmt, con);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			return cnt;
+		}
 }//class
