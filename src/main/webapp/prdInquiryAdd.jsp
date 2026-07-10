@@ -23,7 +23,7 @@
     iDTO.setInquirySecret("Y".equals(request.getParameter("inquirySecret")) ? "Y" : "N");
     iDTO.setProductId(request.getParameter("prdID"));
     iDTO.setClientNo(clientNo);
-    iDTO.setClientNo(optionNo);
+    iDTO.setOptionNo(optionNo);
 
     boolean result = pdInquiryService.registerInquiry(iDTO);
 
