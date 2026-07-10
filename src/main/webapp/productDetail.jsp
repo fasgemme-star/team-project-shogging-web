@@ -116,7 +116,7 @@ request.setAttribute("product2", product2);
     <div class="flex justify-center items-center border-b border-surface-variant gap-12 md:gap-20">
       <button class="tab-btn py-4 text-body-sm tracking-wider sub-tab-active" onclick="switchDetailTab(event, 'tab-info')">상품설명</button>
       <button class="tab-btn py-4 text-body-sm tracking-wider text-on-surface-variant hover:text-primary transition-colors" onclick="switchDetailTab(event, 'tab-spec')">상세정보</button>
-      <button class="tab-btn py-4 text-body-sm tracking-wider text-on-surface-variant hover:text-primary transition-colors" onclick="switchDetailTab(event, 'tab-qna')">문의하기 (${fn:length(prdInquiryList)})</button>
+      <button class="tab-btn py-4 text-body-sm tracking-wider text-on-surface-variant hover:text-primary transition-colors" onclick="switchDetailTab(event, 'tab-qna')">문의하기 (${fn:length(getPrdDetailInquiryList)})</button>
     </div>
 
     <div class="py-12">
@@ -244,6 +244,7 @@ request.setAttribute("product2", product2);
             <c:when test="${not empty sessionScope.clientNo}">
               <form method="post" action="prdInquiryAdd.jsp" class="bg-surface-container-low rounded-xl p-6 border border-surface-variant space-y-4">
                 <input type="hidden" name="prdID" value="${product.prdID}"/>
+                <input type="hidden" name="optionNo" value="${optionNo}"/>
                 <input type="hidden" name="redirectTo" value="productDetail.jsp?optionNo=${optionNo}"/>
                 <input class="w-full border border-outline-variant rounded-lg px-4 py-2" type="text" name="inquiryTitle" placeholder="문의 제목" required/>
                 <textarea class="w-full border border-outline-variant rounded-lg px-4 py-2" name="inquiryContent" rows="4" placeholder="문의 내용을 입력해주세요" required></textarea>

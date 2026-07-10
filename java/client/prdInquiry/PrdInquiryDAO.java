@@ -207,8 +207,12 @@ public class PrdInquiryDAO {
         return iDTO;
     }
 	
+	
+	
+	
 	//신규 상품 문의 등록
-	public int insertInquiry(InquiryDTO dto) {
+	public int insertInquiry(InquiryDTO iDTO) {
+		
 
         int cnt = 0;
 
@@ -241,11 +245,11 @@ public class PrdInquiryDAO {
             pstmt = con.prepareStatement(sql.toString());
             
 
-            pstmt.setString(1, dto.getInquiryTitle());
-            pstmt.setString(2, dto.getInquirySecret());
-            pstmt.setString(3, dto.getInquiryContent());
-            pstmt.setString(4, dto.getClientNo());
-            pstmt.setString(5, dto.getOptionNo());
+            pstmt.setString(1, iDTO.getInquiryTitle());
+            pstmt.setString(2, iDTO.getInquirySecret());
+            pstmt.setString(3, iDTO.getInquiryContent());
+            pstmt.setString(4, iDTO.getClientNo());
+            pstmt.setString(5, iDTO.getOptionNo());
 
             cnt = pstmt.executeUpdate();
 
